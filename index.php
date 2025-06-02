@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container dtr-container">
         <div class="text-center mb-4">
-            <!-- NOVADEC Logo -->
             <img src="images/nova.png" alt="NOVADEC Logo" class="coop-logo">
             <div class="current-time"><?php echo date('Y-m-d h:i a'); ?></div>
         </div>
@@ -47,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" id="employee_id" name="employee_id" class="form-control" 
                                    placeholder="Enter member ID" required>
                             <button class="btn btn-search" type="submit" name="search">
-                                Search
+                                <i class="fas fa-search"></i> Search
                             </button>
                         </div>
                     </div>
