@@ -1,15 +1,45 @@
 <?php
-// Process form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $employee_id = htmlspecialchars($_POST['employee_id']);
-    
-    if (isset($_POST['search'])) {
-        $message = "Member ID: <strong>$employee_id</strong> found";
-        $show_time_button = true;
-    } elseif (isset($_POST['time_in']) || isset($_POST['time_out'])) {
-        $action = isset($_POST['time_in']) ? 'Time In' : 'Time Out';
-        $time_now = date('Y-m-d h:i a');
-        $message = "✅ $action recorded for <strong>$employee_id</strong> at <strong>$time_now</strong>";
+session_start();
+date_default_timezone_set('Asia/Manila');
+$today = date('Y-m-d');
+
+if (!isset($_SESSION['time_log'])) {
+    $_SESSION['time_log'] = [];
+}
+
+$searchedMemberID = null;
+$timedInStatus = false;
+$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+unset($_SESSION['message']); // Clear the message after displaying
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
+    $memberID = trim($_POST['member_id']);
+    if ($memberID !== '') {
+        $searchedMemberID = $memberID;
+
+        if (isset($_POST['action'])) {
+            if ($_POST['action'] === 'time_in') {
+                $_SESSION['time_log'][$today][$memberID] = [
+                    'timed_in' => true,
+                    'timed_out' => false,
+                    'time_in_time' => date('H:i:s'),
+                    'time_out_time' => null,
+                ];
+                $_SESSION['message'] = "Member $memberID timed in at " . date("M j, Y, g:i:s A", strtotime("$today " . $_SESSION['time_log'][$today][$memberID]['time_in_time']));
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit;
+            } elseif ($_POST['action'] === 'time_out' && isset($_SESSION['time_log'][$today][$memberID])) {
+                $_SESSION['time_log'][$today][$memberID]['timed_out'] = true;
+                $_SESSION['time_log'][$today][$memberID]['time_out_time'] = date('H:i:s');
+                $_SESSION['message'] = "Member $memberID timed out at " . date("M j, Y, g:i:s A", strtotime("$today " . $_SESSION['time_log'][$today][$memberID]['time_out_time']));
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit;
+            }
+        } else {
+            $timedInStatus = isset($_SESSION['time_log'][$today][$memberID]) &&
+                $_SESSION['time_log'][$today][$memberID]['timed_in'] &&
+                !$_SESSION['time_log'][$today][$memberID]['timed_out'];
+        }
     }
 }
 ?>
@@ -17,55 +47,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOVADEC DTR System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NOVADECI Medical | Dashboard</title>
+    
+    <!-- Bootstrap 4.6 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container dtr-container">
-        <div class="text-center mb-4">
-            <img src="images/nova.png" alt="NOVADEC Logo" class="coop-logo">
-            <div class="current-time"><?php echo date('Y-m-d h:i a'); ?></div>
-        </div>
-        
-        <div class="card">
-            <div class="card-body">
-                <?php if (isset($message)): ?>
-                    <div class="alert alert-info" role="alert">
-                        <?php echo $message; ?>
+
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="search-box text-center">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="https://www.novadeci.com/wp-content/uploads/2017/03/nvdc-BANNER.png"
+                         alt="Logo" class="img-fluid logo-img">
+                </a>
+
+                <?php if ($message): ?>
+                    <div class="alert alert-success"><?= htmlspecialchars($message) ?></div>
+                <?php endif; ?>
+
+                <form method="POST" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="member_id" class="form-control search-input" placeholder="Enter Member ID / PB#" required
+                               value="<?= htmlspecialchars($searchedMemberID ?? '') ?>">
+                        <div class="input-group-append">
+                            <button class="btn text-white" type="submit" style="background-color: #3DB272;">
+                                <i class="fas fa-search mr-1"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <?php if ($searchedMemberID !== null): ?>
+                    <form method="POST" class="mb-4">
+                        <input type="hidden" name="member_id" value="<?= htmlspecialchars($searchedMemberID) ?>">
+                        <input type="hidden" name="action" value="<?= $timedInStatus ? 'time_out' : 'time_in' ?>">
+                        <button class="btn btn-block timein-btn text-white py-2" type="submit">
+                            <i class="fas fa-clock mr-1"></i> <?= $timedInStatus ? 'Time Out' : 'Time In' ?>
+                        </button>
+                    </form>
+
+                    <div class="mt-4">
+                        <h5 id="realtime-clock" class="font-weight-normal text-dark"></h5>
                     </div>
                 <?php endif; ?>
-                
-                <form method="post" action="">
-                    <div class="form-group mb-3">
-                        <label for="employee_id" class="form-label">Member ID/ PDR</label>
-                        <div class="input-group">
-                            <input type="text" id="employee_id" name="employee_id" class="form-control" 
-                                   placeholder="Enter member ID" required>
-                            <button class="btn btn-search" type="submit" name="search">
-                                <i class="fas fa-search"></i> Search
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <?php if (isset($show_time_button) || isset($_POST['time_in']) || isset($_POST['time_out'])): ?>
-                        <div class="time-buttons">
-                            <button type="submit" name="time_in" class="btn btn-time-in">
-                                TIME IN
-                            </button>
-                            <button type="submit" name="time_out" class="btn btn-time-out">
-                                TIME OUT
-                            </button>
-                        </div>
-                    <?php endif; ?>
-                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery, Popper.js, Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('en-US', {
+            hour: 'numeric', minute: 'numeric', second: 'numeric',
+            hour12: true, month: 'short', day: 'numeric', year: 'numeric'
+        });
+        document.getElementById('realtime-clock').innerText = formattedTime;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
 </body>
 </html>
