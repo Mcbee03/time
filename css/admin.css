@@ -7,7 +7,7 @@ body {
     background-color: #3DB272;
     height: 56px;
     z-index: 1040;
-    margin-left: 220px;
+    margin-left: 0px;
     transition: all 0.3s ease;
     position: fixed;
     top: 0;
