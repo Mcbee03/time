@@ -10,7 +10,9 @@ if (!isset($_SESSION['time_log'])) {
 $searchedMemberID = null;
 $timedInStatus = false;
 $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
-unset($_SESSION['message']); // Clear the message after displaying
+$totalHours = isset($_SESSION['total_hours']) ? $_SESSION['total_hours'] : '';
+unset($_SESSION['message']);
+unset($_SESSION['total_hours']);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
     $memberID = trim($_POST['member_id']);
@@ -31,7 +33,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
             } elseif ($_POST['action'] === 'time_out' && isset($_SESSION['time_log'][$today][$memberID])) {
                 $_SESSION['time_log'][$today][$memberID]['timed_out'] = true;
                 $_SESSION['time_log'][$today][$memberID]['time_out_time'] = date('H:i:s');
+                
+                // Calculate total time worked including seconds
+                $timeIn = new DateTime($_SESSION['time_log'][$today][$memberID]['time_in_time']);
+                $timeOut = new DateTime($_SESSION['time_log'][$today][$memberID]['time_out_time']);
+                $interval = $timeIn->diff($timeOut);
+                $hours = $interval->h;
+                $minutes = $interval->i;
+                $seconds = $interval->s;
+                $totalHoursWorked = "$hours hours, $minutes minutes, and $seconds seconds";
+                
                 $_SESSION['message'] = "Member $memberID timed out at " . date("M j, Y, g:i:s A", strtotime("$today " . $_SESSION['time_log'][$today][$memberID]['time_out_time']));
+                $_SESSION['total_hours'] = "Total time worked: $totalHoursWorked";
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit;
             }
@@ -71,6 +84,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
 
                 <?php if ($message): ?>
                     <div class="alert alert-success"><?= htmlspecialchars($message) ?></div>
+                    <?php if ($totalHours): ?>
+                        <div class="alert alert-info"><?= htmlspecialchars($totalHours) ?></div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <form method="POST" class="mb-4">
