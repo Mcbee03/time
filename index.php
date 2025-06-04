@@ -91,11 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
 
                 <form method="POST" class="mb-4">
                     <div class="input-group">
-<<<<<<< HEAD
                         <input type="text" name="member_id" class="form-control search-input" placeholder="Enter Member ID / PB#" required
-=======
-                        <input type="text" name="member_id" class="form-control search-input" placeholder="Enter Member ID / PB# 444" required
->>>>>>> 203c4ff5635939c820d03fba33fc41b445c2268e
                                value="<?= htmlspecialchars($searchedMemberID ?? '') ?>">
                         <div class="input-group-append">
                             <button class="btn text-white" type="submit" style="background-color: #3DB272;">
