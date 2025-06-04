@@ -1,0 +1,26 @@
+/* Logo Styling */
+.login-logo {
+    display: block;
+    margin: 40px auto 20px auto;
+    max-width: 240px;
+    height: auto;
+    animation: fadeInTop 0.8s ease-out;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Optional hover effect */
+.login-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Animation for smooth entry */
+@keyframes fadeInTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

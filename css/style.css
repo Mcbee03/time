@@ -1,0 +1,43 @@
+body {
+    background-color: #f4f6f9;
+}
+
+.search-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    height: 45px;
+    font-size: 16px;
+}
+
+.timein-btn {
+    background-color: #3DB272;
+    border: none;
+}
+
+.timein-btn:hover {
+    background-color: #276d56;
+}
+
+.message {
+    margin-top: 15px;
+    color: #3DB272;
+    font-weight: 600;
+}
+
+.logo-img {
+    max-height: 80px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.alert {
+    margin-bottom: 15px;
+}
+
