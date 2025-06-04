@@ -323,21 +323,16 @@ body.sidebar-collapsed .main-content {
     }
 }
 
-
 .green-header {
-        background-color: #2b7d62;
+        background-color: #276d56; /* Darker green color */
         color: white;
         
     }
     .green-header th {
-        color: white; 
-        border-color: #fff; 
+        color: white; /* Ensures all header text is white */
+        border-color: #fff; /* White borders */
     }
     .green-header a {
-        color: white !important; 
-    }
+        color: white !important; /* If there are any links in header */
+    }    
 
-
-    .sidebar {
-    font-weight: bold;
-}
