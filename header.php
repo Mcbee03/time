@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>NOVADECI Medical | <?= $pageTitle ?? 'Admin' ?></title>
+    <title>DATE RATE TIME. | <?= $pageTitle ?? 'Admin' ?></title>
 
     <!-- Bootstrap & Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
+        
     <!-- External Custom CSS -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -17,7 +17,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <button id="sidebarToggle" class="btn btn-link text-white mr-3"><i class="fas fa-bars"></i></button>
-    <a class="navbar-brand text-white" href="#">NOVADECI Medical</a>
+    <a class="navbar-brand text-white" href="#">DTR </a>
 
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
@@ -31,7 +31,7 @@
             </div>
         </li>
     </ul>
-</nav>
+</nav>  
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -46,6 +46,5 @@
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php"><i class="fas fa-chart-bar"></i> REPORT</a></li>
     </ul>
 </div>
-
 <!-- Main Content -->
 <div class="main-content">
