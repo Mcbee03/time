@@ -15,6 +15,13 @@
 
     <!-- External Custom CSS -->
     <link rel="stylesheet" href="css/admin.css">
+
+    <!-- Make sidebar text bold -->
+    <style>
+        .sidebar {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <!-- Navbar -->
@@ -28,13 +35,11 @@
                 <i class="fas fa-user-circle fa-lg"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                <!-- UPDATED LOGOUT LINK -->
                 <a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </li>
     </ul>
 </nav>
- 
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -48,7 +53,6 @@
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Reports"><i class="fas fa-chart-bar"></i> REPORT</a></li>
     </ul>
 </div>
-
 
 <!-- Main Content -->
 <div class="main-content">

@@ -1,6 +1,6 @@
 /* Base Styles */
 body {
-    background-color: #f8f9fa;
+    background-color: #fff;
     transition: all 0.3s ease;
     margin: 0;
 }
@@ -73,9 +73,9 @@ body {
 }
 
 .sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.8);
+    color:  rgba(255, 238, 4, 0.8);
     padding: 20px 10px;
-    margin: 20px 0;
+    margin: 5px 0;
     border-left: 2px solid transparent;
     transition: all 0.3s ease;
     display: flex;
@@ -93,7 +93,7 @@ body {
 /* Hover and Active States */
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
-    color: rgb(255, 247, 1);
+    color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.1);
     border-left: 4px solid #fff;
     text-decoration: none;
@@ -163,10 +163,10 @@ body.sidebar-collapsed .main-content {
 }
 
 .card-header {
-    background-color: #ffffff;
+    background-color: #e9ecef;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     font-weight: 700;
-    color: #2b7d62;
+    color:#2b7d62;
 }
 
 .card.card-primary.card-outline {
@@ -182,7 +182,7 @@ body.sidebar-collapsed .main-content {
 .table th {
     border-top: none;
     font-weight: 700;
-    color: #495057;
+    color: #000000;
 }
 
 /* Badge */
@@ -206,7 +206,7 @@ body.sidebar-collapsed .main-content {
     position: absolute;
     left: 15px;
     top: 10px;
-    color: #6c757d;
+    color: #2b7d62;
 }
 
 /* User Info */
@@ -235,7 +235,7 @@ body.sidebar-collapsed .main-content {
 .btn-custom-green:hover,
 .btn-custom-green:focus,
 .btn-green:hover {
-    background-color: #246b55;
+    background-color: #2b7d62;
     color: #fff;
 }
 
@@ -323,3 +323,21 @@ body.sidebar-collapsed .main-content {
     }
 }
 
+
+.green-header {
+        background-color: #2b7d62;
+        color: white;
+        
+    }
+    .green-header th {
+        color: white; 
+        border-color: #fff; 
+    }
+    .green-header a {
+        color: white !important; 
+    }
+
+
+    .sidebar {
+    font-weight: bold;
+}

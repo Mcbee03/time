@@ -48,7 +48,7 @@ include 'header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="page-title">DEDUCTION SETTINGS</h3>
+        <h3 class="page-title"></h3>
         <div>
             <form method="GET" class="search-box d-inline-block mr-2">
                 <i class="fas fa-search search-icon"></i>
@@ -143,57 +143,6 @@ include 'header.php';
         </div>
     </div>
 
-    <!-- Add User Modal -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #2b7d62; color: white;">
-                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" style="color: white;">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addUserForm">
-                    <form id="addUserForm">
-                        <div class="form-group">
-                            <label for="addUserName">Name</label>
-                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
-                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
-                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addUserPbNumber">PB#</label>
-                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
-                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addUserCommittee">Committee</label>
-                            <select class="form-control" id="addUserCommittee" required>
-                            <select class="form-control" id="addUserCommittee" required>
-                                <option value="">Select Committee</option>
-                                <option value="Program Committee">Program Committee</option>
-                                <option value="Finance Committee">Finance Committee</option>
-                                <option value="Logistics Committee">Logistics Committee</option>
-                                <option value="Marketing Committee">Marketing Committee</option>
-                                <option value="Security">Security</option>
-                                <option value="Media">Media</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Update User Modal -->
     <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
@@ -212,21 +161,17 @@ include 'header.php';
                         <div class="form-group">
                             <label for="updateUserName">Name</label>
                             <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
-                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                             <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserPbNumber">PB#</label>
                             <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
-                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserCommittee">Committee</label>
-                            <select class="form-control" id="updateUserCommittee" required>
                             <select class="form-control" id="updateUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
@@ -241,7 +186,6 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                 </div>
             </div>
