@@ -1,4 +1,6 @@
 <?php
+$pageTitle = "Monthly Allowance";
+$activePage = "monthly";
 
 include 'header.php';
 ?>
