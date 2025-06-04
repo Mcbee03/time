@@ -17,7 +17,7 @@ $users = [
 ];
 
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-$filteredUsers = $users;
+$filteredDeductions = $deductions;
 
 if ($searchQuery !== '') {
     $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {

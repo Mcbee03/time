@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "User Management";
-$activePage = "users";
+$pageTitle = "Report";
+$activePage = "report";
 
 // User data
 $users = [
