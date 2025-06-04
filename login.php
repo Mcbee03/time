@@ -1,83 +1,155 @@
-<?php
-// login.php
-$pageTitle = "Login";
-?>
+    <?php
+    session_start();
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $pageTitle ?> | NOVADECI</title>
+    $error = null;
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signin'])) {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+        
+        // Demo authentication (replace with your real DB check)
+        if ($username === 'admin' && $password === 'password123') {
+            $_SESSION['authenticated'] = true;
+            header("Location: index.php");  // Redirect to index.php instead of admin.php
+            exit;
+        } else {
+            $error = "Invalid username or password";
+        }
+    }
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content="<?= bin2hex(random_bytes(32)) ?>" />
+        <title>NOVADECI Medical | Login</title>
 
-    <!-- Bootstrap 4.6 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+        <!-- Favicon -->
+        <link rel="icon" href="images/nova.png" type="image/png" />
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <!-- Bootstrap 4.6 CSS -->
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        />
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/login.logout.css">
-</head>
-<body class="bg-light">
+        <!-- FontAwesome -->
+        <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        />
 
-    <!-- Logo at top center -->
-<div class="text-center">
-    <img src="nova.png" alt="NOVADECI Logo" class="login-logo">
-</div>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="css/login.logout.css" />
+    </head>
+    <body class="login-page">
 
+        <!-- Preloader -->
+        <div class="preloader">
+            <img src="images/nova.png" alt="Logo" class="preloader-logo" />
+        </div>
 
-    <div class="d-flex justify-content-center align-items-center">
-        <div class="card shadow-sm" style="width: 24rem;">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <p class="text-muted font-weight-bold mb-0">Sign into your account</p>
-                </div>
-
-                <!-- Optional error message -->
-                <?php if (isset($_GET['error'])): ?>
-                    <div class="alert alert-danger font-weight-bold">
-                        <?= htmlspecialchars($_GET['error']) ?>
-                    </div>
-                <?php endif; ?>
-
-                <form action="login_process.php" method="POST">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required autofocus>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+        <div class="container-login">
+            <div class="login-box">
+                <div class="card card-outline card-primary">
+                    <div class="card-header text-center bg-white">
+                        <img src="images/nova.png" alt="NOVADECI Logo" class="logo-img" />
+                        <?php if ($error): ?>
+                            <div class="alert alert-danger mt-2 mb-0 font-weight-bold">
+                                <?= htmlspecialchars($error) ?>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
+                    <div class="card-body">
+                        <h5><b>Login to Account</b></h5>
+                        <h6 class="mb-4 text-muted">Enter your credentials to access your account.</h6>
 
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="showPassword">
-                        <label class="form-check-label" for="showPassword">Show password</label>
+                        <form id="loginForm" method="POST" novalidate>
+                            <div class="input-group mb-3">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Username"
+                                    id="username"
+                                    name="username"
+                                    required
+                                    autofocus
+                                />
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    placeholder="Password"
+                                    id="password"
+                                    name="password"
+                                    required
+                                />
+                                <div class="input-group-append">
+                                    <div class="input-group-text" style="cursor:pointer;">
+                                        <i class="fas fa-eye-slash" id="togglePassword"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group text-right">
+                                <a href="#" class="text-secondary font-weight-bold">Forgot Password?</a>
+                            </div>
+
+                            <div class="form-group">
+                                <button
+                                    type="submit"
+                                    name="signin"
+                                    class="btn btn-success btn-block font-weight-bold"
+                                >
+                                    Login
+                                </button>
+                            </div>
+                        </form>
                     </div>
-
-                    <button type="submit" class="btn btn-success btn-block font-weight-bold">Login</button>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- jQuery + Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- jQuery, Popper.js, Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 
-    <script>
-        // Toggle password visibility
-        $('#showPassword').on('change', function () {
-            const passwordField = $('#password');
-            passwordField.attr('type', this.checked ? 'text' : 'password');
-        });
-    </script>
-</body>
-</html>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const togglePassword = document.getElementById("togglePassword");
+                const passwordInput = document.getElementById("password");
+
+                if (togglePassword && passwordInput) {
+                    togglePassword.addEventListener("click", function () {
+                        const isPassword = passwordInput.type === "password";
+                        passwordInput.type = isPassword ? "text" : "password";
+                        this.classList.toggle("fa-eye");
+                        this.classList.toggle("fa-eye-slash");
+                    });
+                }
+
+                window.addEventListener("load", function () {
+                    const preloader = document.querySelector(".preloader");
+                    if (preloader) {
+                        preloader.style.opacity = "0";
+                        setTimeout(() => {
+                            preloader.style.display = "none";
+                        }, 500);
+                    }
+                });
+
+                $.ajaxSetup({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    },
+                });
+            });
+        </script>
+
+        <!-- Custom JS -->
+        <script src="js/script.js"></script>
+    </body>
+    </html>

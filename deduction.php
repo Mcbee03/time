@@ -17,19 +17,21 @@ $users = [
 ];
 
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-$filteredDeductions = $deductions;
+
+// Default filteredUsers to all users if no search
+$filteredUsers = $users;
 
 if ($searchQuery !== '') {
     $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {
         return stripos($user['name'], $searchQuery) !== false ||
-            stripos($user['member_id'], $searchQuery) !== false ||
-            stripos($user['pb_number'], $searchQuery) !== false;
+               stripos($user['member_id'], $searchQuery) !== false ||
+               stripos($user['pb_number'], $searchQuery) !== false;
     });
 }
 
-$usersPerPage = 10;
+$usersPerPage = 5;
 $totalUsers = count($filteredUsers);
-$totalPages = ceil($totalUsers / $usersPerPage);
+$totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
@@ -39,7 +41,7 @@ include 'header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="page-title">MANAGEMENT</h3>
+        <h3 class="page-title">DEDUCTION SETTINGS</h3>
         <div>
             <form method="GET" class="search-box d-inline-block mr-2">
                 <i class="fas fa-search search-icon"></i>
@@ -145,22 +147,22 @@ include 'header.php';
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="addUserForm">
                         <div class="form-group">
                             <label for="addUserName">Name</label>
-                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name">
+                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID">
+                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserPbNumber">PB#</label>
-                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number">
+                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserCommittee">Committee</label>
-                            <select class="form-control" id="addUserCommittee">
+                            <select class="form-control" id="addUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
                                 <option value="Finance Committee">Finance Committee</option>
@@ -174,7 +176,7 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;">Add User</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
                 </div>
             </div>
         </div>
@@ -191,23 +193,23 @@ include 'header.php';
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="updateUserForm">
                         <input type="hidden" id="updateUserId">
                         <div class="form-group">
                             <label for="updateUserName">Name</label>
-                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name">
+                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID">
+                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserPbNumber">PB#</label>
-                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number">
+                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserCommittee">Committee</label>
-                            <select class="form-control" id="updateUserCommittee">
+                            <select class="form-control" id="updateUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
                                 <option value="Finance Committee">Finance Committee</option>
@@ -221,7 +223,7 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;">Update User</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                 </div>
             </div>
         </div>
@@ -233,42 +235,66 @@ include 'header.php';
     <form method="POST" action="process_allowance.php" id="deleteForm">
       <input type="hidden" name="delete_id" id="delete_id" value="">
       <div class="modal-content">
-        <div class="modal-header bg-danger text-white">
+        <div class="modal-header" style="background-color: #2b7d62; color: white;">
           <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete this allowance?
+          Are you sure you want to delete this?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" name="confirm_delete" class="btn btn-danger">Delete</button>
+          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Yes, Delete</button>
         </div>
       </div>
     </form>
   </div>
 </div>
 
+
 <script>
-$(document).ready(function () {
-    // Update member_id input when employee selected
-    $('select[name="employee_id"]').change(function () {
-        const empId = $(this).val();
-        if (empId) {
-            $('input[name="member_id"]').val("EMP" + empId.toString().padStart(4, '0'));
-        } else {
-            $('input[name="member_id"]').val("");
-        }
+    // Prefill update modal when clicking edit button
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const memberId = btn.getAttribute('data-member-id');
+            const pbNumber = btn.getAttribute('data-pb-number');
+            const committee = btn.getAttribute('data-committee');
+
+            document.getElementById('updateUserId').value = id;
+            document.getElementById('updateUserName').value = name;
+            document.getElementById('updateUserMemberId').value = memberId;
+            document.getElementById('updateUserPbNumber').value = pbNumber;
+            document.getElementById('updateUserCommittee').value = committee;
+        });
     });
 
-    // Pass allowance ID to delete modal hidden input
-    $('.btn-delete').on('click', function () {
-        var allowanceId = $(this).data('id');
-        $('#delete_id').val(allowanceId);
+    // Prefill delete modal when clicking delete button
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            document.getElementById('delete_id').value = id;
+            // You can optionally add the name inside modal body if you want
+        });
     });
-});
+
+    // Add User button handler (example only)
+    document.getElementById('addUserBtn').addEventListener('click', () => {
+        // Validation and AJAX submit logic here
+        alert('Add user functionality to be implemented');
+        $('#addUserModal').modal('hide');
+    });
+
+    // Update User button handler (example only)
+    document.getElementById('updateUserBtn').addEventListener('click', () => {
+        // Validation and AJAX submit logic here
+        alert('Update user functionality to be implemented');
+        $('#updateUserModal').modal('hide');
+    });
 </script>
 
 <?php include 'footer.php'; ?>
