@@ -61,9 +61,7 @@
                         <?php endif; ?>
                     </div>
                     <div class="card-body">
-                        <h5><b>Login to Account</b></h5>
-                        <h6 class="mb-4 text-muted">Enter your credentials to access your account.</h6>
-
+                        <h5><b>Sign into your Account</b></h5>
                         <form id="loginForm" method="POST" novalidate>
                             <div class="input-group mb-3">
                                 <input
@@ -93,9 +91,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group text-right">
-                                <a href="#" class="text-secondary font-weight-bold">Forgot Password?</a>
-                            </div>
 
                             <div class="form-group">
                                 <button

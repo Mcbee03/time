@@ -2,7 +2,6 @@
 $pageTitle = "Committee Management";
 $activePage = "committee";
 
-// Sample data structured to match the image
 $committees = [
     [
         'name' => 'ETHICS AND GRIEVANCE COMMITTEE',
