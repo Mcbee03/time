@@ -1,260 +1,274 @@
 <?php
-$pageTitle = "Deduction Management";
-$activePage = "deductions";
+$pageTitle = "Management";
+$activePage = "users";
 
-// Sample data
-$deductions = [
-    ['id' => 1, 'deduction' => 'RCBC', 'date_from' => '6/1/2025', 'date_to' => '6/3/2025'],
-    ['id' => 2, 'deduction' => 'Security Bank', 'date_from' => '6/2/2025', 'date_to' => '6/4/2025'],
-    ['id' => 3, 'deduction' => 'BPI', 'date_from' => '6/3/2025', 'date_to' => '6/5/2025'],
-    ['id' => 4, 'deduction' => 'Metrobank', 'date_from' => '6/4/2025', 'date_to' => '6/6/2025'],
-    ['id' => 5, 'deduction' => 'UnionBank', 'date_from' => '6/5/2025', 'date_to' => '6/7/2025'],
-    ['id' => 6, 'deduction' => 'Landbank', 'date_from' => '6/6/2025', 'date_to' => '6/8/2025'],
-    ['id' => 7, 'deduction' => 'PNB', 'date_from' => '6/7/2025', 'date_to' => '6/9/2025'],
-    ['id' => 8, 'deduction' => 'Chinabank', 'date_from' => '6/8/2025', 'date_to' => '6/10/2025'],
-    ['id' => 9, 'deduction' => 'EastWest', 'date_from' => '6/9/2025', 'date_to' => '6/11/2025'],
-    ['id' => 10, 'deduction' => 'BDO', 'date_from' => '6/10/2025', 'date_to' => '6/12/2025'],
-    ['id' => 11, 'deduction' => 'HSBC', 'date_from' => '6/11/2025', 'date_to' => '6/13/2025'],
-    ['id' => 12, 'deduction' => 'Citibank', 'date_from' => '6/12/2025', 'date_to' => '6/14/2025'],
-    ['id' => 13, 'deduction' => 'Maybank', 'date_from' => '6/13/2025', 'date_to' => '6/15/2025'],
+$users = [
+    ['id' => 1, 'name' => 'John Doe', 'member_id' => '2025HG67C', 'pb_number' => '100F6783', 'committee' => 'Program Committee'],
+    ['id' => 2, 'name' => 'Jane Smith', 'member_id' => '2025HG68D', 'pb_number' => '100F6784', 'committee' => 'Finance Committee'],
+    ['id' => 3, 'name' => 'Mark Lee', 'member_id' => '2025HG69E', 'pb_number' => '100F6785', 'committee' => 'Logistics Committee'],
+    ['id' => 4, 'name' => 'Lara Croft', 'member_id' => '2025HG70F', 'pb_number' => '100F6786', 'committee' => 'Marketing Committee'],
+    ['id' => 5, 'name' => 'Bruce Wayne', 'member_id' => '2025HG71G', 'pb_number' => '100F6787', 'committee' => 'Security'],
+    ['id' => 6, 'name' => 'Clark Kent', 'member_id' => '2025HG72H', 'pb_number' => '100F6788', 'committee' => 'Media'],
+    ['id' => 7, 'name' => 'Diana Prince', 'member_id' => '2025HG73I', 'pb_number' => '100F6789', 'committee' => 'Program Committee'],
+    ['id' => 8, 'name' => 'Peter Parker', 'member_id' => '2025HG74J', 'pb_number' => '100F6790', 'committee' => 'Marketing Committee'],
+    ['id' => 9, 'name' => 'Tony Stark', 'member_id' => '2025HG75K', 'pb_number' => '100F6791', 'committee' => 'Finance Committee'],
+    ['id' => 10, 'name' => 'Steve Rogers', 'member_id' => '2025HG76L', 'pb_number' => '100F6792', 'committee' => 'Logistics Committee'],
+    ['id' => 11, 'name' => 'Natasha Romanoff', 'member_id' => '2025HG77M', 'pb_number' => '100F6793', 'committee' => 'Security'],
 ];
-
-// Pagination logic
-$perPage = 5;
-$totalEntries = count($deductions);
-$totalPages = ceil($totalEntries / $perPage);
-$currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
-$offset = ($currentPage - 1) * $perPage;
-$currentPageDeductions = array_slice($deductions, $offset, $perPage);
 
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filteredDeductions = $deductions;
 
 if ($searchQuery !== '') {
-    $filteredDeductions = array_filter($deductions, function($deduction) use ($searchQuery) {
-        return stripos($deduction['deduction'], $searchQuery) !== false || 
-               stripos($deduction['date_from'], $searchQuery) !== false ||
-               stripos($deduction['date_to'], $searchQuery) !== false;
+    $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {
+        return stripos($user['name'], $searchQuery) !== false ||
+            stripos($user['member_id'], $searchQuery) !== false ||
+            stripos($user['pb_number'], $searchQuery) !== false;
     });
-    $totalEntries = count($filteredDeductions);
-    $totalPages = ceil($totalEntries / $perPage);
-    $currentPageDeductions = array_slice($filteredDeductions, $offset, $perPage);
 }
+
+$usersPerPage = 10;
+$totalUsers = count($filteredUsers);
+$totalPages = ceil($totalUsers / $usersPerPage);
+$currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
+$offset = ($currentPage - 1) * $usersPerPage;
+$paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
 
 include 'header.php';
 ?>
 
-<style>
-    .btn-custom-green {
-        background-color: #3DB272;
-        border-color: #3DB272;
-        color: white;
-    }
-    
-    .btn-custom-green:hover {
-        background-color: #35A068;
-        border-color: #35A068;
-        color: white;
-    }
-    
-    .btn-outline-custom-green {
-        color: #3DB272;
-        border-color: #3DB272;
-    }
-    
-    .btn-outline-custom-green:hover {
-        background-color: #3DB272;
-        color: white;
-    }
-    
-    .bg-custom-green {
-        background-color: #3DB272 !important;
-    }
-    
-    .text-custom-green {
-        color: #3DB272 !important;
-    }
-    
-    .pagination .page-item.active .page-link {
-        background-color: #3DB272;
-        border-color: #3DB272;
-    }
-    
-    .pagination .page-link {
-        color: #3DB272;
-    }
-</style>
+<div class="main-content-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="page-title">MANAGEMENT</h3>
+        <div>
+            <form method="GET" class="search-box d-inline-block mr-2">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
+            </form>
+            <button class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" data-toggle="modal" data-target="#addUserModal">
+                <i class="fas fa-plus"></i> ADD
+            </button>
+        </div>
+    </div>
 
-<!-- Main Content -->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                    <form method="GET" class="#">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="<?= htmlspecialchars($searchQuery) ?>">
-                            <input type="hidden" name="page" value="1">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary btn-sm" type="submit">
-                                    <i class="fas fa-search"></i>
+    <div class="card card-primary card-outline elevation-2 p-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Member ID</th>
+                            <th>PB#</th>
+                            <th>Committee</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($paginatedUsers as $user): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user['name']) ?></td>
+                            <td><?= htmlspecialchars($user['member_id']) ?></td>
+                            <td><?= htmlspecialchars($user['pb_number']) ?></td>
+                            <td><?= htmlspecialchars($user['committee']) ?></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary edit-btn" data-toggle="modal" data-target="#updateUserModal" 
+                                    data-id="<?= $user['id'] ?>"
+                                    data-name="<?= htmlspecialchars($user['name']) ?>"
+                                    data-member-id="<?= htmlspecialchars($user['member_id']) ?>"
+                                    data-pb-number="<?= htmlspecialchars($user['pb_number']) ?>"
+                                    data-committee="<?= htmlspecialchars($user['committee']) ?>">
+                                    <i class="fas fa-edit"></i>
                                 </button>
-                            </div>
-                        </div>
-                    </form>
-                    <button class="btn btn-custom-green btn-sm ml-3" data-toggle="modal" data-target="#addDeductionModal">
-                        <i class="fas fa-plus mr-1"></i> ADD
+                                <button class="btn btn-sm btn-outline-danger delete-btn" 
+                                    data-toggle="modal" data-target="#deleteConfirmModal" 
+                                    data-id="<?= $user['id'] ?>" 
+                                    data-name="<?= htmlspecialchars($user['name']) ?>">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <?php if ($totalPages > 1): ?>
+                <div class="mt-3 d-flex justify-content-center">
+                    <a 
+                        href="?search=<?= urlencode($searchQuery) ?>&page=<?= max(1, $currentPage - 1) ?>" 
+                        class="btn mr-2 <?= $currentPage == 1 ? 'disabled' : '' ?>"
+                        role="button" 
+                        aria-disabled="<?= $currentPage == 1 ? 'true' : 'false' ?>"
+                        style="background-color: <?= $currentPage == 1 ? '#a3c2b5' : '#2b7d62' ?>; color: white; border-color: #2b7d62;"
+                    >
+                        &laquo; Previous
+                    </a>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a 
+                            href="?search=<?= urlencode($searchQuery) ?>&page=<?= $i ?>" 
+                            class="btn mx-1"
+                            style="
+                                background-color: <?= $i == $currentPage ? '#2b7d62' : 'transparent' ?>; 
+                                color: <?= $i == $currentPage ? 'white' : '#2b7d62' ?>; 
+                                border: 1px solid #2b7d62;
+                            "
+                        >
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+
+                    <a 
+                        href="?search=<?= urlencode($searchQuery) ?>&page=<?= min($totalPages, $currentPage + 1) ?>" 
+                        class="btn ml-2 <?= $currentPage == $totalPages ? 'disabled' : '' ?>"
+                        role="button" 
+                        aria-disabled="<?= $currentPage == $totalPages ? 'true' : 'false' ?>"
+                        style="background-color: <?= $currentPage == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color: white; border-color: #2b7d62;"
+                    >
+                        Next &raquo;
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #2b7d62; color: white;">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="color: white;">&times;</span>
                     </button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th width="5%">ID</th>
-                                    <th width="30%">Deduction</th>
-                                    <th width="20%">Date From</th>
-                                    <th width="20%">Date To</th>
-                                    <th width="25%">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (count($currentPageDeductions) > 0): ?>
-                                    <?php foreach ($currentPageDeductions as $deduction): ?>
-                                    <tr>
-                                        <td><?= $deduction['id'] ?></td>
-                                        <td><?= htmlspecialchars($deduction['deduction']) ?></td>
-                                        <td><?= htmlspecialchars($deduction['date_from']) ?></td>
-                                        <td><?= htmlspecialchars($deduction['date_to']) ?></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-custom-green mr-1 edit-deduction" 
-                                                    data-toggle="modal" 
-                                                    data-target="#editDeductionModal"
-                                                    data-id="<?= $deduction['id'] ?>"
-                                                    data-name="<?= htmlspecialchars($deduction['deduction']) ?>"
-                                                    data-datefrom="<?= htmlspecialchars($deduction['date_from']) ?>"
-                                                    data-dateto="<?= htmlspecialchars($deduction['date_to']) ?>">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4">No deductions found</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                        <div class="text-muted small">
-                            Showing <?= $offset + 1 ?> to <?= min($offset + $perPage, $totalEntries) ?> of <?= $totalEntries ?> entries
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addUserName">Name</label>
+                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name">
                         </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm mb-0">
-                                <?php if ($currentPage > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($searchQuery) ?>" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                    <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($searchQuery) ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-                                
-                                <?php if ($currentPage < $totalPages): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $currentPage + 1 ?>&search=<?= urlencode($searchQuery) ?>" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </nav>
-                    </div>
+                        <div class="form-group">
+                            <label for="addUserMemberId">Member ID</label>
+                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="addUserPbNumber">PB#</label>
+                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number">
+                        </div>
+                        <div class="form-group">
+                            <label for="addUserCommittee">Committee</label>
+                            <select class="form-control" id="addUserCommittee">
+                                <option value="">Select Committee</option>
+                                <option value="Program Committee">Program Committee</option>
+                                <option value="Finance Committee">Finance Committee</option>
+                                <option value="Logistics Committee">Logistics Committee</option>
+                                <option value="Marketing Committee">Marketing Committee</option>
+                                <option value="Security">Security</option>
+                                <option value="Media">Media</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;">Add User</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Create Deduction Modal -->
-<div class="modal fade" id="addDeductionModal" tabindex="-1" role="dialog" aria-labelledby="addDeductionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-custom-green text-white">
-                <h5 class="modal-title" id="addDeductionModalLabel">Create Deduction</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="createDeductionForm">
-                    <div class="form-group">
-                        <label for="deductionName">Deduction Name</label>
-                        <input type="text" class="form-control" id="deductionName" name="deduction_name" placeholder="Enter Deduction Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateFrom">Date From</label>
-                        <input type="date" class="form-control" id="dateFrom" name="date_from" placeholder="Select Date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateTo">Date To</label>
-                        <input type="date" class="form-control" id="dateTo" name="date_to" placeholder="Select Date" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" form="createDeductionForm" class="btn btn-custom-green">Submit</button>
+    <!-- Update User Modal -->
+    <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #2b7d62; color: white;">
+                    <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="color: white;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" id="updateUserId">
+                        <div class="form-group">
+                            <label for="updateUserName">Name</label>
+                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserMemberId">Member ID</label>
+                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserPbNumber">PB#</label>
+                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserCommittee">Committee</label>
+                            <select class="form-control" id="updateUserCommittee">
+                                <option value="">Select Committee</option>
+                                <option value="Program Committee">Program Committee</option>
+                                <option value="Finance Committee">Finance Committee</option>
+                                <option value="Logistics Committee">Logistics Committee</option>
+                                <option value="Marketing Committee">Marketing Committee</option>
+                                <option value="Security">Security</option>
+                                <option value="Media">Media</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;">Update User</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form method="POST" action="process_allowance.php" id="deleteForm">
+      <input type="hidden" name="delete_id" id="delete_id" value="">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this allowance?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" name="confirm_delete" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
-<!-- Update Deduction Modal -->
-<div class="modal fade" id="editDeductionModal" tabindex="-1" role="dialog" aria-labelledby="editDeductionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-custom-green text-white">
-                <h5 class="modal-title" id="editDeductionModalLabel">Update Deduction</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="updateDeductionForm">
-                    <input type="hidden" id="editDeductionId" name="id">
-                    <div class="form-group">
-                        <label for="editDeductionName">Deduction Name</label>
-                        <input type="text" class="form-control" id="editDeductionName" name="deduction_name" placeholder="Enter Deduction Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDateFrom">Date From</label>
-                        <input type="date" class="form-control" id="editDateFrom" name="date_from" placeholder="Select Date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDateTo">Date To</label>
-                        <input type="date" class="form-control" id="editDateTo" name="date_to" placeholder="Select Date" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" form="updateDeductionForm" class="btn btn-custom-green">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
+$(document).ready(function () {
+    // Update member_id input when employee selected
+    $('select[name="employee_id"]').change(function () {
+        const empId = $(this).val();
+        if (empId) {
+            $('input[name="member_id"]').val("EMP" + empId.toString().padStart(4, '0'));
+        } else {
+            $('input[name="member_id"]').val("");
+        }
+    });
+
+    // Pass allowance ID to delete modal hidden input
+    $('.btn-delete').on('click', function () {
+        var allowanceId = $(this).data('id');
+        $('#delete_id').val(allowanceId);
+    });
+});
+</script>
 
 <?php include 'footer.php'; ?>
