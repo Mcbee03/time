@@ -159,21 +159,17 @@ include 'header.php';
                         <div class="form-group">
                             <label for="addUserName">Name</label>
                             <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
-                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
                             <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserPbNumber">PB#</label>
                             <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
-                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserCommittee">Committee</label>
-                            <select class="form-control" id="addUserCommittee" required>
                             <select class="form-control" id="addUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
@@ -212,21 +208,17 @@ include 'header.php';
                         <div class="form-group">
                             <label for="updateUserName">Name</label>
                             <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
-                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserMemberId">Member ID</label>
-                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                             <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserPbNumber">PB#</label>
                             <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
-                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserCommittee">Committee</label>
-                            <select class="form-control" id="updateUserCommittee" required>
                             <select class="form-control" id="updateUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
@@ -241,7 +233,6 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                 </div>
             </div>
