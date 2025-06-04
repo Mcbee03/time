@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signin'])) {
     
     // Static authentication (hardcoded credentials)
     $valid_username = 'admin';
-    $valid_password = 'admin123';
+    $valid_password = 'password123';
     
     if ($username === $valid_username && $password === $valid_password) {
         $_SESSION['authenticated'] = true;
