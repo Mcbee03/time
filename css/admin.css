@@ -1,9 +1,11 @@
+/* Base Styles */
 body {
     background-color: #f8f9fa;
     transition: all 0.3s ease;
     margin: 0;
 }
 
+/* Navbar */
 /* Navbar */
 .navbar-custom {
     background-color: #ffffff;
@@ -15,6 +17,7 @@ body {
     top: 0;
     right: 0;
     left: 220px;
+    padding: 0.5rem 1rem;
 }
 
 .navbar-custom .navbar-brand,
@@ -156,11 +159,11 @@ body.sidebar-collapsed .main-content {
 .card {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(249, 23, 23, 0.05);
+    margin-bottom: 20px;
 }
 
 .card-header {
     background-color: #ffffff;
-    font-family: 'Lucida Sans';
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     font-weight: 700;
     color: #2b7d62;
@@ -207,9 +210,10 @@ body.sidebar-collapsed .main-content {
 }
 
 /* User Info */
+/* User Info */
 .user-info {
     background-color: white;
-    padding: 50px;
+    padding: 30px;
     border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
@@ -280,6 +284,7 @@ body.sidebar-collapsed .main-content {
     opacity: 0.5;
 }
 
+/* Modal */
 /* Modal */
 .modal-header.bg-custom-green {
     background-color: #2b7d62;

@@ -21,16 +21,23 @@ $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 // Default filteredUsers to all users if no search
 $filteredUsers = $users;
 
+// Default filteredUsers to all users if no search
+$filteredUsers = $users;
+
 if ($searchQuery !== '') {
     $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {
         return stripos($user['name'], $searchQuery) !== false ||
+               stripos($user['member_id'], $searchQuery) !== false ||
+               stripos($user['pb_number'], $searchQuery) !== false;
                stripos($user['member_id'], $searchQuery) !== false ||
                stripos($user['pb_number'], $searchQuery) !== false;
     });
 }
 
 $usersPerPage = 5;
+$usersPerPage = 5;
 $totalUsers = count($filteredUsers);
+$totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
 $offset = ($currentPage - 1) * $usersPerPage;
@@ -148,20 +155,25 @@ include 'header.php';
                 </div>
                 <div class="modal-body">
                     <form id="addUserForm">
+                    <form id="addUserForm">
                         <div class="form-group">
                             <label for="addUserName">Name</label>
+                            <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
                             <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserMemberId">Member ID</label>
                             <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
+                            <input type="text" class="form-control" id="addUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserPbNumber">PB#</label>
                             <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
+                            <input type="text" class="form-control" id="addUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="addUserCommittee">Committee</label>
+                            <select class="form-control" id="addUserCommittee" required>
                             <select class="form-control" id="addUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
@@ -176,6 +188,7 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
                 </div>
             </div>
@@ -194,21 +207,26 @@ include 'header.php';
                 </div>
                 <div class="modal-body">
                     <form id="updateUserForm">
+                    <form id="updateUserForm">
                         <input type="hidden" id="updateUserId">
                         <div class="form-group">
                             <label for="updateUserName">Name</label>
+                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
                             <input type="text" class="form-control" id="updateUserName" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserMemberId">Member ID</label>
                             <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
+                            <input type="text" class="form-control" id="updateUserMemberId" placeholder="Enter member ID" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserPbNumber">PB#</label>
                             <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
+                            <input type="text" class="form-control" id="updateUserPbNumber" placeholder="Enter PB number" required>
                         </div>
                         <div class="form-group">
                             <label for="updateUserCommittee">Committee</label>
+                            <select class="form-control" id="updateUserCommittee" required>
                             <select class="form-control" id="updateUserCommittee" required>
                                 <option value="">Select Committee</option>
                                 <option value="Program Committee">Program Committee</option>
@@ -223,6 +241,7 @@ include 'header.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="updateUserBtn">Update User</button>
                 </div>
             </div>
@@ -280,8 +299,46 @@ include 'header.php';
             document.getElementById('delete_id').value = id;
             // You can optionally add the name inside modal body if you want
         });
+    // Prefill update modal when clicking edit button
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const memberId = btn.getAttribute('data-member-id');
+            const pbNumber = btn.getAttribute('data-pb-number');
+            const committee = btn.getAttribute('data-committee');
+
+            document.getElementById('updateUserId').value = id;
+            document.getElementById('updateUserName').value = name;
+            document.getElementById('updateUserMemberId').value = memberId;
+            document.getElementById('updateUserPbNumber').value = pbNumber;
+            document.getElementById('updateUserCommittee').value = committee;
+        });
     });
 
+    // Prefill delete modal when clicking delete button
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            document.getElementById('delete_id').value = id;
+            // You can optionally add the name inside modal body if you want
+        });
+    });
+
+    // Add User button handler (example only)
+    document.getElementById('addUserBtn').addEventListener('click', () => {
+        // Validation and AJAX submit logic here
+        alert('Add user functionality to be implemented');
+        $('#addUserModal').modal('hide');
+    });
+
+    // Update User button handler (example only)
+    document.getElementById('updateUserBtn').addEventListener('click', () => {
+        // Validation and AJAX submit logic here
+        alert('Update user functionality to be implemented');
+        $('#updateUserModal').modal('hide');
+    });
     // Add User button handler (example only)
     document.getElementById('addUserBtn').addEventListener('click', () => {
         // Validation and AJAX submit logic here
