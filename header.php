@@ -42,7 +42,8 @@
         <img src="images/logo.png" alt="NOVADECI Logo" class="img-fluid sidebar-logo">
     </div>
     <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="admin.php" data-title="User Management"><i class="fas fa-users"></i> USER MANAGEMENT</a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="admin.php" data-title="User Management"><i class="fas fa-users"></i> ADMIN</a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'user' ? 'active' : '' ?>" href="user.php" data-title="User Management"><i class="fas fa-users"></i> USER MANAGEMENT</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deduction.php" data-title="Setup"><i class="fas fa-calculator"></i> SETUP</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'monthly' ? 'active' : '' ?>" href="monthly.php" data-title="Monthly Allowance"><i class="fas fa-money-bill-wave"></i> MONTHLY ALLOWANCE</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Reports"><i class="fas fa-chart-bar"></i> REPORT</a></li>

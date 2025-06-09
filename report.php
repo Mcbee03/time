@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "Committee Management";
-$activePage = "committee";
+$pageTitle = "Reports";
+$activePage = "report";
 
 $committees = [
     [

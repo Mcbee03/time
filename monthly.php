@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "Allowance Management";
-$activePage = "allowances";
+$pageTitle = "Monthly Allowance";
+$activePage = "monthly";
 
 include 'header.php';
 

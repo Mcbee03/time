@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "Management";
-$activePage = "users";
+$pageTitle = "Deduction Setup";
+$activePage = "deduction";
 
 $users = [
     ['id' => 1, 'name' => 'John Doe', 'member_id' => '2025HG67C', 'pb_number' => '100F6783', 'committee' => 'Program Committee'],
@@ -21,23 +21,16 @@ $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 // Default filteredUsers to all users if no search
 $filteredUsers = $users;
 
-// Default filteredUsers to all users if no search
-$filteredUsers = $users;
-
 if ($searchQuery !== '') {
     $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {
         return stripos($user['name'], $searchQuery) !== false ||
-               stripos($user['member_id'], $searchQuery) !== false ||
-               stripos($user['pb_number'], $searchQuery) !== false;
                stripos($user['member_id'], $searchQuery) !== false ||
                stripos($user['pb_number'], $searchQuery) !== false;
     });
 }
 
 $usersPerPage = 5;
-$usersPerPage = 5;
 $totalUsers = count($filteredUsers);
-$totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
 $offset = ($currentPage - 1) * $usersPerPage;
@@ -48,12 +41,11 @@ include 'header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="page-title">DEDUCTION SETTINGS</h3>
+        <form method="GET" class="search-box d-inline-block mr-2">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
+        </form>
         <div>
-            <form method="GET" class="search-box d-inline-block mr-2">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
-            </form>
             <button class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" data-toggle="modal" data-target="#addUserModal">
                 <i class="fas fa-plus"></i> ADD
             </button>
@@ -155,7 +147,6 @@ include 'header.php';
                 </div>
                 <div class="modal-body">
                     <form id="addUserForm">
-                    <form id="addUserForm">
                         <div class="form-group">
                             <label for="addUserName">Name</label>
                             <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
@@ -185,7 +176,6 @@ include 'header.php';
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
                 </div>
             </div>
         </div>
@@ -202,7 +192,6 @@ include 'header.php';
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateUserForm">
                     <form id="updateUserForm">
                         <input type="hidden" id="updateUserId">
                         <div class="form-group">
@@ -286,50 +275,10 @@ include 'header.php';
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
             document.getElementById('delete_id').value = id;
-            // You can optionally add the name inside modal body if you want
-        });
-    // Prefill update modal when clicking edit button
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
-            const memberId = btn.getAttribute('data-member-id');
-            const pbNumber = btn.getAttribute('data-pb-number');
-            const committee = btn.getAttribute('data-committee');
-
-            document.getElementById('updateUserId').value = id;
-            document.getElementById('updateUserName').value = name;
-            document.getElementById('updateUserMemberId').value = memberId;
-            document.getElementById('updateUserPbNumber').value = pbNumber;
-            document.getElementById('updateUserCommittee').value = committee;
         });
     });
 
-    // Prefill delete modal when clicking delete button
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
-            document.getElementById('delete_id').value = id;
-            // You can optionally add the name inside modal body if you want
-        });
-    });
-
-    // Add User button handler (example only)
-    document.getElementById('addUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Add user functionality to be implemented');
-        $('#addUserModal').modal('hide');
-    });
-
-    // Update User button handler (example only)
-    document.getElementById('updateUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Update user functionality to be implemented');
-        $('#updateUserModal').modal('hide');
-    });
     // Add User button handler (example only)
     document.getElementById('addUserBtn').addEventListener('click', () => {
         // Validation and AJAX submit logic here
@@ -344,5 +293,4 @@ include 'header.php';
         $('#updateUserModal').modal('hide');
     });
 </script>
-
 <?php include 'footer.php'; ?>
