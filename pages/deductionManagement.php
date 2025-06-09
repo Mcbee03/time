@@ -1,5 +1,12 @@
 <?php
+<<<<<<< HEAD:deduction.php
+$pageTitle = "Deduction Setup";
+=======
 $pageTitle = "Management";
+<<<<<<< HEAD:deduction.php
+=======
+>>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/deductionManagement.php
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/deductionManagement.php
 $activePage = "deduction";
 
 $users = [
@@ -21,39 +28,35 @@ $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 // Default filteredUsers to all users if no search
 $filteredUsers = $users;
 
-// Default filteredUsers to all users if no search
-$filteredUsers = $users;
-
 if ($searchQuery !== '') {
     $filteredUsers = array_filter($users, function ($user) use ($searchQuery) {
         return stripos($user['name'], $searchQuery) !== false ||
-               stripos($user['member_id'], $searchQuery) !== false ||
-               stripos($user['pb_number'], $searchQuery) !== false;
                stripos($user['member_id'], $searchQuery) !== false ||
                stripos($user['pb_number'], $searchQuery) !== false;
     });
 }
 
 $usersPerPage = 5;
-$usersPerPage = 5;
 $totalUsers = count($filteredUsers);
-$totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $totalPages = max(1, ceil($totalUsers / $usersPerPage));
 $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
+<<<<<<< HEAD:deduction.php
         <h3 class="page-title"></h3>
+=======
+        <form method="GET" class="search-box d-inline-block mr-2">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
+        </form>
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/deductionManagement.php
         <div>
-            <form method="GET" class="search-box d-inline-block mr-2">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
-            </form>
             <button class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" data-toggle="modal" data-target="#addUserModal">
                 <i class="fas fa-plus"></i> ADD
             </button>
@@ -155,7 +158,6 @@ include 'header.php';
                 </div>
                 <div class="modal-body">
                     <form id="addUserForm">
-                    <form id="addUserForm">
                         <div class="form-group">
                             <label for="addUserName">Name</label>
                             <input type="text" class="form-control" id="addUserName" placeholder="Enter name" required>
@@ -185,7 +187,6 @@ include 'header.php';
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" id="addUserBtn">Add User</button>
                 </div>
             </div>
         </div>
@@ -202,7 +203,6 @@ include 'header.php';
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateUserForm">
                     <form id="updateUserForm">
                         <input type="hidden" id="updateUserId">
                         <div class="form-group">
@@ -287,8 +287,19 @@ include 'header.php';
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
             document.getElementById('delete_id').value = id;
+<<<<<<< HEAD:deduction.php
             // You can optionally add the name inside modal body if you want
         });
+=======
+        });
+    });
+
+    // Add User button handler (example only)
+    document.getElementById('addUserBtn').addEventListener('click', () => {
+        // Validation and AJAX submit logic here
+        alert('Add user functionality to be implemented');
+        $('#addUserModal').modal('hide');
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/deductionManagement.php
     });
 
     // Update User button handler (example only)
@@ -298,5 +309,4 @@ include 'header.php';
         $('#updateUserModal').modal('hide');
     });
 </script>
-
 <?php include 'footer.php'; ?>

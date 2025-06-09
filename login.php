@@ -8,12 +8,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signin'])) {
 
     // Static credentials
     $valid_username = 'admin';
+<<<<<<< HEAD
     $valid_password = 'admin123';
+=======
+    $valid_password = 'password123';
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16
 
     if ($username === $valid_username && $password === $valid_password) {
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $username;
-        header("Location: admin.php");
+        header("Location: Admin.php");
         exit;
     } else {
         $error = "Invalid username or password";
@@ -30,7 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signin'])) {
     <!-- Bootstrap 4.6 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
     <!-- FontAwesome -->
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> 
+=======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
 
@@ -76,7 +84,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signin'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Password Toggle -->
+<<<<<<< HEAD
     <script>    
+=======
+    <script>
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16
         $(document).ready(function () {
             $('#showPassword').on('change', function () {
                 const passwordInput = $('#password');

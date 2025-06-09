@@ -2,7 +2,6 @@
 $pageTitle = "Admin Management";
 $activePage = "admin";
 
-<<<<<<< HEAD
 // Sample users
 $users = [
     ['id' => 1, 'name' => 'John Doe', 'member_id' => '2025HG67C', 'pb_number' => '100F6783', 'role' => 'Superadmin'],
@@ -32,13 +31,10 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $currentPage = max(1, min($currentPage, $totalPages));
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
-=======
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
-<<<<<<< HEAD
 <!-- Top User Info Card -->
 <div class="card card-primary card-outline elevation-2 p-3 mb-3">
     <div class="card-body">
@@ -179,7 +175,3 @@ $(document).ready(function () {
 </script>
 
 <?php include 'footer.php'; ?>
-=======
-
-<?php include 'footer.php'; ?>
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16

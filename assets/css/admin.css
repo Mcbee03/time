@@ -307,3 +307,131 @@ body.sidebar-collapsed .sidebar .nav-link i {
         font-size: 24px;
     }
 }
+<<<<<<< HEAD:css/admin.css
+=======
+
+.green-header {
+        background-color: #276d56; /* Darker green color */
+        color: white;
+        
+    }
+    .green-header th {
+        color: white; /* Ensures all header text is white */
+        border-color: #fff; /* White borders */
+    }
+    .green-header a {
+        color: white !important; /* If there are any links in header */
+    }    
+
+   /* Card Styles */
+.card-custom {
+    max-width: 480px;
+    margin: 60px auto;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Form Layout */
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Row Styles */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Form Group Styles */
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* Input Controls */
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Date Input with Icon */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon .fas {
+    position: absolute;
+    right: 12px;
+    top: 38px;
+    color: #777;
+}
+
+.date-input {
+    padding-right: 35px !important;
+}
+
+select.form-control {
+    background-color: #fff;         /* White background */
+    color: #333;                    /* Dark readable text */
+    font-size: 16px;                /* Clear font size */
+    padding: 8px 12px;              /* Adequate padding */
+    border: 1px solid #ccc;         /* Clean border */
+    border-radius: 5px;
+    width: 100%;                    /* Full width to container */
+    appearance: none; 
+     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 15px;
+    padding-right: 36px;             /* For cleaner dropdown in some browsers */
+}
+
+select.form-control:focus {
+    outline: none;
+    border-color: #2b7d62;          /* Highlight on focus */
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+    
+
+/* Button Styles */
+.generate-btn {
+    background-color: #2c7a7b;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    font-size: 15px;
+    transition: background-color 0.3s;
+}
+
+.generate-btn:hover {
+    background-color: #245f5f;
+}
+
+.generate-btn .fas {
+    margin-right: 8px;
+}
+
+
+>>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:assets/css/admin.css

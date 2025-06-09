@@ -1,8 +1,8 @@
 <!-- Content will be loaded here -->
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<?php include 'head.php'; ?>
+
 
 <script>
 $(document).ready(function() {
@@ -37,13 +37,19 @@ $(document).ready(function() {
 </script>
 
 <script>
-// Initialize tooltips
+document.getElementById('sidebarToggle').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+});
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
-})
+});
 </script>
 
+
+<<<<<<< HEAD:footer.php
 
 
 </body>
 </html>
+=======
+>>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:includes/footer.php
