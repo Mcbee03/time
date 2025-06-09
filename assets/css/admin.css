@@ -8,7 +8,7 @@ body {
 /* Navbar */
 .navbar-custom {
     background-color: #ffffff;
-    font-family: 'Lucida Sans';
+    font-family: 'Lucida Sans', Arial, sans-serif;
     height: 56px;
     z-index: 1040;
     position: fixed;
@@ -17,6 +17,7 @@ body {
     left: 220px;
     padding: 0.5rem 1rem;
     transition: all 0.3s ease;
+    width: calc(100% - 220px);
 }
 
 .navbar-custom .navbar-brand,
@@ -88,21 +89,39 @@ body {
 }
 
 /* Responsive Sidebar */
+@media (max-width: 991.98px) {
+    .navbar-custom {
+        left: 0 !important;
+        width: 100%;
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    .sidebar-toggle-btn {
+        display: block;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1100;
+        background: none;
+        border: none;
+        color: #2b7d62;
+        font-size: 24px;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 70px;
         overflow: hidden;
     }
-
     .sidebar .nav-link span {
         display: none;
     }
-
     .sidebar .nav-link i {
         margin-right: 0;
         font-size: 20px;
     }
-
     .sidebar-logo,
     .sidebar-search {
         display: none;
@@ -118,6 +137,7 @@ body.sidebar-collapsed .sidebar {
 
 body.sidebar-collapsed .navbar-custom {
     left: 70px !important;
+    width: calc(100% - 70px);
 }
 
 body.sidebar-collapsed .main-content {
@@ -284,46 +304,7 @@ body.sidebar-collapsed .sidebar .nav-link i {
     color: white !important;
 }
 
-/* Responsive Navbar Fix */
-@media (max-width: 991.98px) {
-    .navbar-custom {
-        left: 0 !important;
-        width: 100%;
-    }
-
-    .main-content {
-        margin-left: 0 !important;
-    }
-
-    .sidebar-toggle-btn {
-        display: block;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 1100;
-        background: none;
-        border: none;
-        color: #2b7d62;
-        font-size: 24px;
-    }
-}
-<<<<<<< HEAD:css/admin.css
-=======
-
-.green-header {
-        background-color: #276d56; /* Darker green color */
-        color: white;
-        
-    }
-    .green-header th {
-        color: white; /* Ensures all header text is white */
-        border-color: #fff; /* White borders */
-    }
-    .green-header a {
-        color: white !important; /* If there are any links in header */
-    }    
-
-   /* Card Styles */
+/* Card Styles for Reports */
 .card-custom {
     max-width: 480px;
     margin: 60px auto;
@@ -389,27 +370,26 @@ body.sidebar-collapsed .sidebar .nav-link i {
 }
 
 select.form-control {
-    background-color: #fff;         /* White background */
-    color: #333;                    /* Dark readable text */
-    font-size: 16px;                /* Clear font size */
-    padding: 8px 12px;              /* Adequate padding */
-    border: 1px solid #ccc;         /* Clean border */
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    width: 100%;                    /* Full width to container */
-    appearance: none; 
-     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    width: 100%;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 15px;
-    padding-right: 36px;             /* For cleaner dropdown in some browsers */
+    padding-right: 36px;
 }
 
 select.form-control:focus {
     outline: none;
-    border-color: #2b7d62;          /* Highlight on focus */
+    border-color: #2b7d62;
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
-    
 
 /* Button Styles */
 .generate-btn {
@@ -432,6 +412,3 @@ select.form-control:focus {
 .generate-btn .fas {
     margin-right: 8px;
 }
-
-
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:assets/css/admin.css

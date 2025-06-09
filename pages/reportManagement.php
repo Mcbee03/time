@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Report Management";
-$pageTitle = "Report";
+$activePage = "report";
 
 // Sample data structured to match the image
 $committees = [

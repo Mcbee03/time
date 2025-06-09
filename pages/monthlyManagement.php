@@ -1,7 +1,8 @@
 <?php
 
-$pageTitle = "Monthly Management";
-$activePage = "monthly";
+$pageTitle = "Allowance Management";
+$activePage = "monthlyallowance";
+
 include '../includes/header.php';
 
 // Sample allowances data

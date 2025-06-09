@@ -1,7 +1,5 @@
 <?php
 $pageTitle = "Deduction Setup";
-
-
 $activePage = "deduction";
 
 $users = [
