@@ -1,8 +1,12 @@
 <?php
 $pageTitle = "Deduction Setup";
+<<<<<<< HEAD
 
 $pageTitle = "Management";
 
+=======
+$pageTitle = "Management";
+>>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
 $activePage = "deduction";
 
 $users = [
@@ -44,7 +48,10 @@ include '../includes/header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
         <h3 class="page-title"></h3>
 
         <form method="GET" class="search-box d-inline-block mr-2">
@@ -283,19 +290,8 @@ include '../includes/header.php';
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
             document.getElementById('delete_id').value = id;
-<<<<<<< HEAD:deduction.php
             // You can optionally add the name inside modal body if you want
         });
-=======
-        });
-    });
-
-    // Add User button handler (example only)
-    document.getElementById('addUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Add user functionality to be implemented');
-        $('#addUserModal').modal('hide');
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/deductionManagement.php
     });
 
     // Update User button handler (example only)

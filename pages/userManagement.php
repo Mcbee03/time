@@ -6,10 +6,8 @@ $activePage = "admin";
 include '../includes/header.php';
 ?>
 
-<<<<<<< HEAD:admin.php
-
 <?php include 'footer.php'; ?>
-=======
+
 <!-- Top User Info Card -->
 <div class="user-info card card-primary card-outline elevation-2 p-3 mb-3">
     <div class="row">
@@ -176,4 +174,4 @@ $(document).ready(function () {
 </script>
 
 <?php include '..//footer.php'; ?>
->>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/userManagement.php
+
