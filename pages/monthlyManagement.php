@@ -1,11 +1,7 @@
 <?php
-<<<<<<< HEAD:monthly.php
-$pageTitle = "Monthly Allowance";
-$activePage = "monthly";
-=======
+
 $pageTitle = "Allowance Management";
 $activePage = "monthlyallowance";
->>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/monthlyManagement.php
 
 include '../includes/header.php';
 

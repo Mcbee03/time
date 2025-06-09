@@ -1,13 +1,5 @@
 <?php
-<<<<<<< HEAD:report.php
 $pageTitle = "Report Management";
-=======
-<<<<<<< HEAD:report.php
-$pageTitle = "Reports";
-=======
-$pageTitle = "Committee Management";
->>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/reportManagement.php
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/reportManagement.php
 $activePage = "report";
 
 // Sample data structured to match the image
@@ -195,7 +187,6 @@ include '../includes/header.php';
         </div>
     </div>
 </div>
-<<<<<<< HEAD:report.php
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -240,5 +231,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?php include 'footer.php'; ?>
-=======
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/reportManagement.php
