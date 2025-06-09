@@ -1,5 +1,6 @@
 <?php
 $pageTitle = "Deduction Setup";
+$pageTitle = "Management";
 $activePage = "deduction";
 
 $users = [
@@ -41,6 +42,10 @@ include '../includes/header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
+<<<<<<< HEAD
+
+=======
+>>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
         <h3 class="page-title"></h3>
 
         <form method="GET" class="search-box d-inline-block mr-2">

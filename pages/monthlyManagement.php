@@ -1,7 +1,16 @@
 <?php
 
+<<<<<<< HEAD
+$pageTitle = "Monthly Allowance";
+$activePage = "monthly";
+
 $pageTitle = "Allowance Management";
 $activePage = "monthlyallowance";
+
+=======
+$pageTitle = "Allowance Management";
+$activePage = "monthlyallowance";
+>>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
 
 include '../includes/header.php';
 

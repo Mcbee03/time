@@ -42,4 +42,9 @@ $(function () {
 });
 </script>
 
+<<<<<<< HEAD
+</body>
+</html>
+=======
+>>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
 
