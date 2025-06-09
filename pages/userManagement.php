@@ -1,6 +1,6 @@
 <?php
-$pageTitle = "Admin Management";
-$activePage = "admin";
+$pageTitle = "User Management";
+$activePage = "user";
 
 
 include '../includes/header.php';

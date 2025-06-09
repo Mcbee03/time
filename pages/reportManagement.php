@@ -1,14 +1,6 @@
 <?php
 $pageTitle = "Report Management";
-<<<<<<< HEAD
-
-$pageTitle = "Reports";
-
-$pageTitle = "Committee Management";
-
-=======
->>>>>>> 02fe2482d41500ea0a254c4dcf41f272cd9686ee
-$activePage = "report";
+$pageTitle = "Report";
 
 // Sample data structured to match the image
 $committees = [
