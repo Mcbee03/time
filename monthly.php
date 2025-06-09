@@ -26,7 +26,7 @@ $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $startIndex = ($currentPage - 1) * $perPage;
 $pagedAllowances = array_slice($allowances, $startIndex, $perPage);
 
-// For pagination links, define $searchQuery for safety (even if not used here)
+// For pagination links
 $searchQuery = $_GET['search'] ?? '';
 ?>
 
@@ -43,10 +43,7 @@ $searchQuery = $_GET['search'] ?? '';
                 <input type="date" id="date_to" name="date_to" class="form-control" value="<?= htmlspecialchars($_GET['date_to'] ?? '') ?>">
             </div>
             <div class="form-group col-auto">
-                <button type="submit" class="btn btn-custom-green btn-block"><i class="fas fa-filter"></i> Apply</button>
-            </div>
-            <div class="form-group col-auto">
-                <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="btn btn-outline-custom-green btn-block"><i class="fas fa-times-circle"></i> Clear</a>
+                <button type="submit" class="btn btn-custom-green btn-block"><i class="fas fa-filter"></i> Filter</button>
             </div>
             <div class="form-group col-auto ml-auto">
                 <button type="button" class="btn btn-custom-green btn-block" data-toggle="modal" data-target="#addAllowanceModal"><i class="fas fa-plus"></i> Add Allowance</button>
@@ -215,30 +212,31 @@ $searchQuery = $_GET['search'] ?? '';
         </div>
     </div>
 </div>
-
+                   
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form method="POST" action="process_allowance.php" id="deleteForm">
       <input type="hidden" name="delete_id" id="delete_id" value="">
       <div class="modal-content">
-        <div class="modal-header bg-danger text-white">
+        <div class="modal-header" style="background-color: #2b7d62; color: white;">
           <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete this allowance?
+          Are you sure you want to delete this?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" name="confirm_delete" class="btn btn-danger">Delete</button>
+          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Yes, Delete</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
 
 <script>
 $(document).ready(function () {

@@ -3,16 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DATE RATE TIME. | <?= $pageTitle ?? 'Admin' ?></title>
+    <title>DATE RATE TIME | <?= $pageTitle ?? 'Admin' ?></title>
 
+    <!-- Google Font - Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap & Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+
     <!-- External Custom CSS -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
@@ -25,17 +28,17 @@
                 <i class="fas fa-user-circle fa-lg"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                <a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <!-- UPDATED LOGOUT LINK -->
+                <a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </li>
     </ul>
-</nav>  
+</nav>
+ 
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-    <div class="text-center p-3">
+    <div class="text-center p-4">
         <img src="images/logo.png" alt="NOVADECI Logo" class="img-fluid sidebar-logo">
     </div>
     <ul class="nav flex-column">
@@ -45,5 +48,7 @@
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Reports"><i class="fas fa-chart-bar"></i> REPORT</a></li>
     </ul>
 </div>
+
+
 <!-- Main Content -->
 <div class="main-content">

@@ -135,9 +135,11 @@ include 'header.php';
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <!-- Delete button removed modal triggers -->
+                                <!-- Delete Button triggers modal -->
                                 <button 
-                                    class="btn btn-sm btn-outline-danger delete-btn"
+                                    class="btn btn-sm btn-outline-danger delete-btn" 
+                                    data-toggle="modal" 
+                                    data-target="#deleteConfirmModal"
                                     data-id="<?= $user['id'] ?>"
                                     data-name="<?= htmlspecialchars($user['name']) ?>"
                                 >
@@ -193,9 +195,44 @@ include 'header.php';
     </div>
 </div>
 
+
+    <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form method="POST" action="process_allowance.php" id="deleteForm">
+      <input type="hidden" name="delete_id" id="delete_id" value="">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #2b7d62; color: white;">
+          <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Yes, Delete</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <script>
 $(document).ready(function () {
-    // Remove delete modal script since modal is removed
+    // Populate Delete Modal with user data when delete button clicked
+    $('.delete-btn').on('click', function () {
+        var button = $(this);
+        var userId = button.data('id');
+        var userName = button.data('name');
+
+        $('#delete_id').val(userId);
+        $('#deleteUserName').text(userName);
+    });
+
     // You can add your edit button JS here if needed
 });
 </script>
