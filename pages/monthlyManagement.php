@@ -1,9 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-$pageTitle = "Monthly Allowance";
-$activePage = "monthly";
-
 $pageTitle = "Allowance Management";
 $activePage = "monthlyallowance";
 
