@@ -48,14 +48,14 @@
         <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deductionManagement.php" data-title="Setup"><i class="fas fa-calculator"></i> <span>Settings</span></a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'monthlyallowance' ? 'active' : '' ?>" href="monthlyManagement.php" data-title="Allowance Management"><i class="fas fa-money-bill-wave"></i> <span>Monthly Allowance</span>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="reportManagement.php" data-title="Report Management"><i class="fas fa-chart-bar"></i> <span>Report</span></a></li>
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:includes/header.php
+
     </ul>
 </div>
 
 
 <!-- Main Content -->
-<<<<<<< HEAD:header.php
+
 <div class="main-content">`
-=======
+
 <div class="main-content">
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:includes/header.php
+
