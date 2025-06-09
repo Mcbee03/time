@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Management";
-$activePage = "users";
+$activePage = "deduction";
 
 $users = [
     ['id' => 1, 'name' => 'John Doe', 'member_id' => '2025HG67C', 'pb_number' => '100F6783', 'committee' => 'Program Committee'],
@@ -43,7 +43,7 @@ $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
 <div class="main-content-container">

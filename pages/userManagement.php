@@ -71,10 +71,11 @@ if ($currentPage > $totalPages) $currentPage = $totalPages;
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
-<div class="user-info">
+<!-- Top User Info Card -->
+<div class="user-info card card-primary card-outline elevation-2 p-3 mb-3">
     <div class="row">
         <div class="col-md-4 col-12 mb-2">
             <div class="user-info-label">Name:</div>
@@ -90,6 +91,7 @@ include 'header.php';
         </div>
     </div>
 </div>
+
 
 <!-- Card with the requested classes -->
 <div class="card card-primary card-outline elevation-2 p-3">
@@ -237,4 +239,4 @@ $(document).ready(function () {
 });
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include '..//footer.php'; ?>
