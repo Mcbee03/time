@@ -42,14 +42,13 @@ include '../includes/header.php';
 
 <div class="main-content-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-<<<<<<< HEAD:deduction.php
         <h3 class="page-title"></h3>
-=======
+
         <form method="GET" class="search-box d-inline-block mr-2">
             <i class="fas fa-search search-icon"></i>
             <input type="text" name="search" class="form-control" placeholder="Search" value="<?= htmlspecialchars($searchQuery) ?>">
         </form>
->>>>>>> b0ee5c6af78a9d84e63ed6f9d8e5a644a62c5a16:pages/deductionManagement.php
+
         <div>
             <button class="btn btn-primary" style="background-color: #2b7d62; border-color: #2b7d62;" data-toggle="modal" data-target="#addUserModal">
                 <i class="fas fa-plus"></i> ADD

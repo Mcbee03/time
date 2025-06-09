@@ -1,8 +1,5 @@
 <!-- Content will be loaded here -->
-</div>
-
 <?php include 'head.php'; ?>
-
 
 <script>
 $(document).ready(function() {
@@ -46,10 +43,3 @@ $(function () {
 </script>
 
 
-<<<<<<< HEAD:footer.php
-
-
-</body>
-</html>
-=======
->>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:includes/footer.php
