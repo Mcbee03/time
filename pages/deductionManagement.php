@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD:deduction.php
 $pageTitle = "Deduction Setup";
+=======
+$pageTitle = "Management";
+>>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/deductionManagement.php
 $activePage = "deduction";
 
 $users = [
@@ -36,7 +40,7 @@ $currentPage = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages
 $offset = ($currentPage - 1) * $usersPerPage;
 $paginatedUsers = array_slice($filteredUsers, $offset, $usersPerPage);
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
 <div class="main-content-container">

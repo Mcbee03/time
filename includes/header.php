@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DATE RATE TIME | <?= $pageTitle ?? 'Admin' ?></title>
 
-    <!-- Google Font - Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <?php include 'head.php'; ?>
     
-    <!-- Bootstrap & Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- External Custom CSS -->
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <button id="sidebarToggle" class="btn btn-link text-white mr-3"><i class="fas fa-bars"></i></button>
     <a class="navbar-brand text-white" href="#">DTR </a>
 
@@ -34,19 +29,26 @@
         </li>
     </ul>
 </nav>
- 
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="text-center p-4">
-        <img src="images/logo.png" alt="NOVADECI Logo" class="img-fluid sidebar-logo">
+        <img src="/assets/images/logo.png" alt="NOVADECI Logo" class="img-fluid sidebar-logo">
     </div>
     <ul class="nav flex-column">
+<<<<<<< HEAD:header.php
         <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="admin.php" data-title="User Management"><i class="fas fa-users"></i> ADMIN</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'user' ? 'active' : '' ?>" href="user.php" data-title="User Management"><i class="fas fa-users"></i> USER MANAGEMENT</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deduction.php" data-title="Setup"><i class="fas fa-calculator"></i> SETUP</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'monthly' ? 'active' : '' ?>" href="monthly.php" data-title="Monthly Allowance"><i class="fas fa-money-bill-wave"></i> MONTHLY ALLOWANCE</a></li>
         <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Reports"><i class="fas fa-chart-bar"></i> REPORT</a></li>
+=======
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="adminManagement.php" data-title="Admin"><i class="fas fa-user-shield"></i> <span>Admin</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'users' ? 'active' : '' ?>" href="userManagement.php" data-title="User Management"><i class="fas fa-users"></i> <span>User Management</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deductionManagement.php" data-title="Setup"><i class="fas fa-calculator"></i> <span>Settings</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'monthlyallowance' ? 'active' : '' ?>" href="monthlyManagement.php" data-title="Allowance Management"><i class="fas fa-money-bill-wave"></i> <span>Monthly Allowance</span>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="reportManagement.php" data-title="Report Management"><i class="fas fa-chart-bar"></i> <span>Report</span></a></li>
+>>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:includes/header.php
     </ul>
 </div>
 

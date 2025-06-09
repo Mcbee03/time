@@ -1,7 +1,12 @@
 <?php
+<<<<<<< HEAD:report.php
 $pageTitle = "Reports";
+=======
+$pageTitle = "Committee Management";
+>>>>>>> cd25a4b6fa627cfcbeefa6e0a77040910b47e8c3:pages/reportManagement.php
 $activePage = "report";
 
+// Sample data structured to match the image
 $committees = [
     [
         'name' => 'ETHICS AND GRIEVANCE COMMITTEE',
@@ -137,7 +142,7 @@ $committees = [
     ]
 ];
 
-include 'header.php';
+include '../includes/header.php';
 ?>
 
 <div class="main-content-container">
@@ -163,23 +168,21 @@ include 'header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($committees as $committee): ?>
-                            <tr class="committee-header">
-                                <td colspan="9" class="font-weight-bold bg-light">
-                                    <?= htmlspecialchars($committee['name']) ?>
-                                </td>
+                            <tr class="committee-header bg-light">
+                                <td colspan="9" class="font-weight-bold"><?= htmlspecialchars($committee['name']) ?></td>
                             </tr>
                             <?php foreach ($committee['users'] as $user): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($user['name']) ?></td>
-                                <td><?= htmlspecialchars($user['member_id']) ?></td>
-                                <td><?= htmlspecialchars($user['duty_hours']) ?></td>
-                                <td><?= htmlspecialchars($user['rate']) ?></td>
-                                <td><?= htmlspecialchars($user['transpo_allowance']) ?></td>
-                                <td><?= htmlspecialchars($user['less']['RCBC']) ?></td>
-                                <td><?= htmlspecialchars($user['less']['NORF']) ?></td>
-                                <td><?= htmlspecialchars($user['less']['Rice']) ?></td>
-                                <td><?= htmlspecialchars($user['regular_savings_deposit']) ?></td>
-                            </tr>
+                                <tr>
+                                    <td><?= htmlspecialchars($user['name']) ?></td>
+                                    <td><?= htmlspecialchars($user['member_id']) ?></td>
+                                    <td><?= htmlspecialchars($user['duty_hours']) ?></td>
+                                    <td><?= htmlspecialchars($user['rate']) ?></td>
+                                    <td><?= htmlspecialchars($user['transpo_allowance']) ?></td>
+                                    <td><?= htmlspecialchars($user['less']['RCBC']) ?></td>
+                                    <td><?= htmlspecialchars($user['less']['NORF']) ?></td>
+                                    <td><?= htmlspecialchars($user['less']['Rice']) ?></td>
+                                    <td><?= htmlspecialchars($user['regular_savings_deposit']) ?></td>
+                                </tr>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
                     </tbody>
@@ -188,45 +191,3 @@ include 'header.php';
         </div>
     </div>
 </div>
- 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
-    const moveToTopButton = document.getElementById('moveToTopButton');
-    const tbody = document.querySelector('#usersTable tbody');
-    
-    // Search functionality
-    function filterUsers() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = tbody.querySelectorAll('tr');
-        
-        rows.forEach(row => {
-            if (row.classList.contains('committee-header')) {
-                // Always show committee headers
-                row.style.display = '';
-                return;
-            }
-            
-            const rowText = row.textContent.toLowerCase();
-            row.style.display = rowText.includes(searchTerm) ? '' : 'none';
-        });
-    }
-    
-    // Move last row to top functionality
-    function moveLastToTop() {
-        const rows = tbody.querySelectorAll('tr');
-        if (rows.length > 1) {
-            const lastRow = rows[rows.length - 1];
-            tbody.insertBefore(lastRow, rows[0]);
-        }
-    }
-    
-    // Event listeners
-    searchInput.addEventListener('keyup', filterUsers);
-    searchButton.addEventListener('click', filterUsers);
-    moveToTopButton.addEventListener('click', moveLastToTop);
-});
-</script>
-
-<?php include 'footer.php'; ?>
