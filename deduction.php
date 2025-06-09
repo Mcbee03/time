@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Management";
-$activePage = "users";
+$activePage = "deduction";
 
 $users = [
     ['id' => 1, 'name' => 'John Doe', 'member_id' => '2025HG67C', 'pb_number' => '100F6783', 'committee' => 'Program Committee'],
@@ -250,7 +250,7 @@ include 'header.php';
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>
+        </div>              
         <div class="modal-body">
           Are you sure you want to delete this?
         </div>
@@ -286,55 +286,9 @@ include 'header.php';
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
             document.getElementById('delete_id').value = id;
             // You can optionally add the name inside modal body if you want
         });
-    // Prefill update modal when clicking edit button
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
-            const memberId = btn.getAttribute('data-member-id');
-            const pbNumber = btn.getAttribute('data-pb-number');
-            const committee = btn.getAttribute('data-committee');
-
-            document.getElementById('updateUserId').value = id;
-            document.getElementById('updateUserName').value = name;
-            document.getElementById('updateUserMemberId').value = memberId;
-            document.getElementById('updateUserPbNumber').value = pbNumber;
-            document.getElementById('updateUserCommittee').value = committee;
-        });
-    });
-
-    // Prefill delete modal when clicking delete button
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
-            document.getElementById('delete_id').value = id;
-            // You can optionally add the name inside modal body if you want
-        });
-    });
-
-    // Add User button handler (example only)
-    document.getElementById('addUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Add user functionality to be implemented');
-        $('#addUserModal').modal('hide');
-    });
-
-    // Update User button handler (example only)
-    document.getElementById('updateUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Update user functionality to be implemented');
-        $('#updateUserModal').modal('hide');
-    });
-    // Add User button handler (example only)
-    document.getElementById('addUserBtn').addEventListener('click', () => {
-        // Validation and AJAX submit logic here
-        alert('Add user functionality to be implemented');
-        $('#addUserModal').modal('hide');
     });
 
     // Update User button handler (example only)

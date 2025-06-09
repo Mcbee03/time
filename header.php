@@ -15,17 +15,10 @@
 
     <!-- External Custom CSS -->
     <link rel="stylesheet" href="css/admin.css">
-
-    <!-- Make sidebar text bold -->
-    <style>
-        .sidebar {
-            font-weight: bold;
-        }
-    </style>
 </head>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <button id="sidebarToggle" class="btn btn-link text-white mr-3"><i class="fas fa-bars"></i></button>
     <a class="navbar-brand text-white" href="#">DTR </a>
 
@@ -35,11 +28,13 @@
                 <i class="fas fa-user-circle fa-lg"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+                <!-- UPDATED LOGOUT LINK -->
                 <a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </li>
     </ul>
 </nav>
+ 
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -47,12 +42,14 @@
         <img src="images/logo.png" alt="NOVADECI Logo" class="img-fluid sidebar-logo">
     </div>
     <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="admin.php" data-title="User Management"><i class="fas fa-users"></i> USER MANAGEMENT</a></li>
-        <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deduction.php" data-title="Setup"><i class="fas fa-calculator"></i> SETUP</a></li>
-        <li class="nav-item"><a class="nav-link <?= $activePage === 'monthly' ? 'active' : '' ?>" href="monthly.php" data-title="Monthly Allowance"><i class="fas fa-money-bill-wave"></i> MONTHLY ALLOWANCE</a></li>
-        <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Reports"><i class="fas fa-chart-bar"></i> REPORT</a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'admin' ? 'active' : '' ?>" href="admin.php" data-title="Admin"><i class="fas fa-user-shield"></i> <span>Admin</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'user' ? 'active' : '' ?>" href="user.php" data-title="User Management"><i class="fas fa-users"></i> <span>User Management</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'deduction' ? 'active' : '' ?>" href="deduction.php" data-title="Setup"><i class="fas fa-calculator"></i> <span>Settings</span></a></li>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'allowances' ? 'active' : '' ?>" href="monthly.php" data-title="Allowance Management"><i class="fas fa-user-shield"></i> <span>Monthly Allowance</span>
+        <li class="nav-item"><a class="nav-link <?= $activePage === 'report' ? 'active' : '' ?>" href="report.php" data-title="Report Management"><i class="fas fa-chart-bar"></i> <span>Report</span></a></li>
     </ul>
 </div>
 
+
 <!-- Main Content -->
-<div class="main-content">
+<div class="main-content">`

@@ -41,3 +41,12 @@ body {
     margin-bottom: 15px;
 }
 
+
+.btn-top-border {
+    border-top: 4px solid #3DB272 !important; /* green top border */
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-radius: 0 !important; /* optional: remove rounded corners */
+}
+

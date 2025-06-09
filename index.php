@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
                     <form method="POST" class="mb-4">
                         <input type="hidden" name="member_id" value="<?= htmlspecialchars($searchedMemberID) ?>">
                         <input type="hidden" name="action" value="<?= $timedInStatus ? 'time_out' : 'time_in' ?>">
-                        <button class="btn btn-block text-white py-2" type="submit" style="background-color: <?= $timedInStatus ? '#dc3545' : '#3DB272' ?>;">
+                        <button class="btn btn-block text-white py-2 btn-top-border" type="submit" style="background-color: <?= $timedInStatus ? '#dc3545' : '#3DB272' ?>;">
                             <i class="fas fa-clock mr-1"></i> <?= $timedInStatus ? 'Time Out' : 'Time In' ?>
                         </button>
                     </form>
