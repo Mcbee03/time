@@ -13,11 +13,6 @@ if (!isset($_SESSION['admin_id'])) {
 $pageTitle = "Report Management";
 $activePage = "report";
 
-<<<<<<< HEAD
-session_start();
-=======
-
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 
 if (file_exists('../includes/db_connection.php')) {
     include '../includes/db_connection.php';
@@ -116,7 +111,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<<<<<<< HEAD
-<?php include '../includes/footer.php'; ?>
-=======
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462

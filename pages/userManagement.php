@@ -1,7 +1,4 @@
 <?php
-<<<<<<< HEAD
-$pageTitle = "User Management";
-=======
 session_start();
 include '../config/db.php';
 
@@ -14,7 +11,6 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 $pageTitle = "Users Management";
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 $activePage = "users";
 
 // Sample committee members
@@ -49,15 +45,6 @@ $paginated = array_slice($filteredMembers, $offset, $perPage);
 
 include '../includes/header.php';
 ?>
-<<<<<<< HEAD
-
-<!-- Member Management Table -->
-<div class="card card-primary card-outline elevation-2 p-3">
-    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
-        <!-- Search Box LEFT -->
-        <div class="d-flex align-items-center mr-auto mb-2 mb-md-0" style="max-width:300px;">
-            <div class="input-group">
-=======
 <!-- Member Management Table -->
 <div class="card card-primary card-outline elevation-2 p-3">
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
@@ -65,17 +52,12 @@ include '../includes/header.php';
         <div class="d-flex align-items-center gap-2">
             <!-- Remove form, use input only for instant search -->
             <div class="input-group mb-0 mr-2" style="max-width:300px;">
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-white border-right-0" style="color:#2b7d62;">
                         <i class="fas fa-search"></i>
                     </span>
                 </div>
-<<<<<<< HEAD
-                <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Search" aria-label="Search">
-=======
                 <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Search..." aria-label="Search">
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
             </div>
             <!-- Clean, modern Add Member button with a + icon -->
             <button class="btn btn-success d-flex align-items-center"
@@ -272,12 +254,6 @@ include '../includes/header.php';
           </button>
         </div>
         <div class="modal-body">
-<<<<<<< HEAD
-          <div class="form-group"><label>PB#</label><input type="text" name="pb_number" class="form-control" required></div>
-          <div class="form-group"><label>Member ID</label><input type="text" name="member_id" class="form-control" required></div>
-          <div class="form-group"><label>Name</label><input type="text" name="name" class="form-control" required></div>
-          <div class="form-group"><label>Committee</label><input type="text" name="committee" class="form-control" required></div>
-=======
           <div class="form-group">
             <label>PB#</label>
             <input type="text" name="pb_number" class="form-control" required>
@@ -294,7 +270,6 @@ include '../includes/header.php';
             <label>Committee</label>
             <input type="text" name="committee" class="form-control" required>
           </div>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -313,13 +288,9 @@ include '../includes/header.php';
       <div class="modal-content">
         <div class="modal-header" style="background-color: #2b7d62; color: white;">
           <h5 class="modal-title">Confirm Delete</h5>
-<<<<<<< HEAD
-          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
-=======
           <button type="button" class="close text-white" data-dismiss="modal">
             <span>&times;</span>
           </button>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
         </div>
         <div class="modal-body">Are you sure you want to delete this member?</div>
         <div class="modal-footer">
@@ -339,15 +310,6 @@ include '../includes/header.php';
       <div class="modal-content">
         <div class="modal-header" style="background-color: #2b7d62; color: white;">
           <h5 class="modal-title" id="editMemberModalLabel">Edit Member</h5>
-<<<<<<< HEAD
-          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group"><label>PB#</label><input type="text" name="pb_number" id="edit_pb_number" class="form-control" required></div>
-          <div class="form-group"><label>Member ID</label><input type="text" name="member_id" id="edit_member_id_input" class="form-control" required></div>
-          <div class="form-group"><label>Name</label><input type="text" name="name" id="edit_name" class="form-control" required></div>
-          <div class="form-group"><label>Committee</label><input type="text" name="committee" id="edit_committee" class="form-control" required></div>
-=======
           <button type="button" class="close text-white" data-dismiss="modal">
             <span>&times;</span>
           </button>
@@ -369,7 +331,6 @@ include '../includes/header.php';
             <label>Committee</label>
             <input type="text" name="committee" id="edit_committee" class="form-control" required>
           </div>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -381,24 +342,14 @@ include '../includes/header.php';
 </div>
 
 <script>
-<<<<<<< HEAD
-=======
 // filepath: c:\laragon\www\time\pages\userManagement.php
 // Instant search for user management table
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('searchInput');
   const table = document.getElementById('memberTable');
   if (!searchInput || !table) return;
   const rows = table.querySelectorAll('tbody tr');
 
-<<<<<<< HEAD
-  searchInput.addEventListener('keyup', function () {
-    const filter = this.value.toLowerCase();
-    rows.forEach(function (row) {
-      const rowText = row.textContent.toLowerCase();
-      row.style.display = rowText.indexOf(filter) > -1 ? '' : 'none';
-=======
   searchInput.addEventListener('keyup', function() {
     const filter = this.value.toLowerCase();
     rows.forEach(function(row) {
@@ -423,7 +374,6 @@ $(document).ready(function () {
     });
     $('.delete-btn').on('click', function () {
         $('#delete_id').val($(this).data('id'));
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
     });
   });
 });
@@ -443,10 +393,6 @@ $(document).ready(function () {
 });
 </script>
 
-<<<<<<< HEAD
-<?php include '../includes/footer.php'; ?>
-  
-=======
 <style>
 .action-anim:hover, .action-anim:focus {
     transform: scale(1.13) rotate(-4deg);
@@ -455,4 +401,3 @@ $(document).ready(function () {
 }
 </style>
 
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462

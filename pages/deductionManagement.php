@@ -1,9 +1,4 @@
 <?php
-<<<<<<< HEAD
-$pageTitle = "Deduction Management";
-$activePage = "deduction";
-
-=======
 session_start();
 include '../config/db.php';
 
@@ -18,7 +13,6 @@ if (!isset($_SESSION['admin_id'])) {
 $pageTitle = "Deduction Management";
 $activePage = "deduction";
 
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 // Sample deductions data
 $deductions = [
     ['id'=>1, 'deduction'=>'RCBC',      'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
@@ -35,38 +29,23 @@ include '../includes/header.php';
 <div class="card card-primary card-outline elevation-2 p-3">
   <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
     <h5 class="mb-2 mb-md-0"></h5>
-<<<<<<< HEAD
-    <div class="d-flex align-items-center gap-2 w-100 justify-content-between flex-wrap">
-      <div class="input-group" style="max-width:220px;">
-=======
     <div class="d-flex align-items-center gap-2">
       <!-- Search bar with icon beside +Add button -->
       <div class="input-group mr-2" style="max-width:220px;">
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
         <div class="input-group-prepend">
           <span class="input-group-text bg-white border-right-0" style="color:#2b7d62;">
             <i class="fas fa-search"></i>
           </span>
         </div>
-<<<<<<< HEAD
-        <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Search">
-      </div>
-
-=======
         <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Search deduction...">
       </div>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
       <button class="btn btn-success d-flex align-items-center"
               style="background:#2b7d62; color:#fff; font-weight:600; border-radius:6px; border:none; padding:7px 16px;"
               data-toggle="modal" data-target="#addDeductionModal">
         <span style="font-size:1.3rem; margin-right:7px; line-height:1;">
           <i class="fas fa-plus-circle"></i>
         </span>
-<<<<<<< HEAD
-        <span style="font-size:1rem;">Add</span>
-=======
         <span style="font-size:1rem;">Add Deduction</span>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
       </button>
     </div>
   </div>
@@ -119,11 +98,7 @@ include '../includes/header.php';
   </div>
 </div>
 
-<<<<<<< HEAD
-<!-- Add Deduction Modal -->
-=======
 <!-- Add Deduction Modal (sample only) -->
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 <div class="modal fade" id="addDeductionModal" tabindex="-1" role="dialog" aria-labelledby="addDeductionModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form>
@@ -155,11 +130,7 @@ include '../includes/header.php';
   </div>
 </div>
 
-<<<<<<< HEAD
-<!-- Edit Deduction Modal -->
-=======
 <!-- Edit Deduction Modal (sample only) -->
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 <div class="modal fade" id="editDeductionModal" tabindex="-1" role="dialog" aria-labelledby="editDeductionModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form>
@@ -180,11 +151,7 @@ include '../includes/header.php';
   </div>
 </div>
 
-<<<<<<< HEAD
-<!-- Delete Deduction Modal -->
-=======
 <!-- Delete Deduction Modal (sample only) -->
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 <div class="modal fade" id="deleteDeductionModal" tabindex="-1" role="dialog" aria-labelledby="deleteDeductionModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form>
@@ -221,10 +188,6 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 });
 </script>
 
-<<<<<<< HEAD
-
-<?php include '../includes/footer.php'; ?>
-=======
 <style>
 .action-anim:hover, .action-anim:focus {
     transform: scale(1.13) rotate(-4deg);
@@ -232,4 +195,3 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     z-index: 2;
 }
 </style>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462

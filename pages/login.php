@@ -1,17 +1,5 @@
 <?php
 session_start();
-<<<<<<< HEAD
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    if ($username === 'admin' && $password === 'password123') {
-        $_SESSION['user'] = $username;
-        header('Location: /pages/adminManagement.php');
-        exit();
-    } else {
-        $error = "Invalid username or password.";
-    }
-=======
 include '../config/db.php';
 
 // Check if user is already logged in
@@ -26,7 +14,6 @@ if (isset($_SESSION['admin_id'])) {
         header('Location: /pages/adminManagement.php');
     }
     exit;
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 }
 ?>
 <!DOCTYPE html>
@@ -45,15 +32,7 @@ if (isset($_SESSION['admin_id'])) {
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
                 <img src="../assets/images/nova.png" alt="NOVADECI Logo" width="250">
-<<<<<<< HEAD
-                <?php if (!empty($error)): ?>
-                <div class="alert alert-danger mt-2 mb-0 error-text font-weight-bold" role="alert">
-                    <?= htmlspecialchars($error) ?>
-                </div>
-                <?php endif; ?>
-=======
                 <div class="alert alert-danger mt-2 mb-0 error-text d-none font-weight-bold" role="alert"></div>
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
             </div>
             <div class="card-body">
                 <h5 class="login-title"><b>Sign in to Account</b></h5>
@@ -86,10 +65,5 @@ if (isset($_SESSION['admin_id'])) {
 </div>
 
 <script src="../assets/js/login.js"></script>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 </body>
 </html>
