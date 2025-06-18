@@ -1,6 +1,24 @@
 <?php
+<<<<<<< HEAD
 $pageTitle    = "Allowance Management";
 $activePage   = "monthlyallowance";
+=======
+session_start();
+include '../config/db.php';
+
+// Redirect to login if not authenticated
+if (!isset($_SESSION['admin_id'])) {
+    // Store current URL for redirect back after login
+    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+    header('Location: /pages/login.php');
+    exit;
+}
+
+$pageTitle = "Allowance Management";
+$activePage = "monthlyallowance";
+
+include '../includes/header.php';
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 
 // Sample allowances data
 $allowances = [
@@ -20,6 +38,7 @@ $allowances = [
 $date_from = isset($_GET['date_from']) ? $_GET['date_from'] : '';
 $date_to = isset($_GET['date_to']) ? $_GET['date_to'] : '';
 $filtered = $allowances;
+<<<<<<< HEAD
 
 if ($date_from || $date_to) {
     $filtered = array_filter($allowances, function($row) use ($date_from, $date_to) {
@@ -73,6 +92,61 @@ include '../includes/header.php';
         </div>
     </form>
 </div>
+=======
+
+if ($date_from || $date_to) {
+    $filtered = array_filter($allowances, function($row) use ($date_from, $date_to) {
+        $row_date = $row['date'];
+        if ($date_from && $date_to) {
+            return $row_date >= $date_from && $row_date <= $date_to;
+        } elseif ($date_from) {
+            return $row_date >= $date_from;
+        } elseif ($date_to) {
+            return $row_date <= $date_to;
+        }
+        return true;
+    });
+}
+
+$perPage     = 5;
+$totalItems  = count($filtered);
+$totalPages  = max(1, ceil($totalItems/$perPage));
+$page        = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page        = max(1, min($page,$totalPages));
+$offset      = ($page-1)*$perPage;
+$paginated   = array_slice($filtered,$offset,$perPage);
+
+
+?>
+
+<div class="main-content-container">
+    <!-- Filter Form -->
+    <div class="card card-primary card-outline elevation-2 p-3 mb-4">
+        <form method="GET" class="form-row align-items-end">
+            <div class="form-group col-md-3">
+                <label for="date_from" class="font-weight-bold">Date From</label>
+                <input type="date" id="date_from" name="date_from" class="form-control filter-input" value="<?= htmlspecialchars($date_from) ?>">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="date_to" class="font-weight-bold">Date To</label>
+                <input type="date" id="date_to" name="date_to" class="form-control filter-input" value="<?= htmlspecialchars($date_to) ?>">
+            </div>
+            <div class="form-group col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-success mr-2" style="background:#2b7d62; border-radius:6px;">
+                    <i class="fas fa-filter mr-2"></i> Filter
+                </button>
+                <button type="button" class="btn btn-light" id="clearFilterBtn" style="border:1px solid #2b7d62; color:#2b7d62; border-radius:6px;">
+                    <i class="fas fa-times-circle mr-2"></i> Clear
+                </button>
+            </div>
+            <div class="form-group col-md-3 d-flex justify-content-end align-items-end">
+                <button type="button" class="btn btn-success" style="background:#2b7d62; border-radius:6px;" data-toggle="modal" data-target="#addAllowanceModal">
+                    <i class="fas fa-plus-circle mr-2"></i> Add Allowance
+                </button>
+            </div>
+        </form>
+    </div>
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 
     <!-- Table -->
     <div class="card card-primary card-outline elevation-2 p-3">
@@ -97,6 +171,7 @@ include '../includes/header.php';
                                     <td><?= htmlspecialchars($row['date']) ?></td>
                                     <td><?= htmlspecialchars($row['date']) ?></td>
                                     <td>
+<<<<<<< HEAD
                                         <div class="d-flex">
                                             <button class="btn btn-sm d-flex align-items-center justify-content-center mr-2 edit-btn"
                                                     style="background-color:#2b7d62; border-radius:10px; width:36px; height:36px;"
@@ -119,6 +194,16 @@ include '../includes/header.php';
                                                     data-name="<?= htmlspecialchars($row['name']) ?>"
                                                     title="Delete">
                                                 <i class="fas fa-trash-alt" style="color:#ff4d4d; font-size:16px;"></i>
+=======
+                                        <div class="d-flex justify-content-center">
+                                            <button class="btn btn-sm d-flex align-items-center justify-content-center mr-1"
+                                                    style="background-color:#2b7d62; border-radius:10px; width:30px; height:30px;">
+                                                <i class="fas fa-edit text-white" style="font-size:14px;"></i>
+                                            </button>
+                                            <button class="btn btn-sm d-flex align-items-center justify-content-center"
+                                                    style="background-color:#ffecec; border-radius:10px; width:30px; height:30px;">
+                                                <i class="fas fa-trash-alt" style="color:#ff4d4d; font-size:14px;"></i>
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
                                             </button>
                                         </div>
                                     </td>
@@ -156,7 +241,11 @@ include '../includes/header.php';
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Add Allowance Modal (existing) -->
+=======
+    <!-- Modal -->
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
     <div class="modal fade" id="addAllowanceModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content" style="border-radius:16px;">
@@ -215,6 +304,7 @@ include '../includes/header.php';
                     <button type="button" class="btn font-weight-bold text-white px-4" style="background:#2b7d62; border-radius:8px;">Save</button>
                 </div>
             </div>
+<<<<<<< HEAD
         </div>
     </div>
 
@@ -282,6 +372,8 @@ include '../includes/header.php';
                     </div>
                 </div>
             </form>
+=======
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
         </div>
     </div>
 </div>
@@ -292,6 +384,7 @@ document.getElementById('clearFilterBtn').addEventListener('click', function() {
         input.value = '';
     });
     this.closest('form').submit();
+<<<<<<< HEAD
 });
 
 $(document).ready(function(){
@@ -349,3 +442,15 @@ $(document).ready(function(){
 </script>
 
 <?php include '../includes/footer.php'; ?>
+=======
+});
+</script>
+
+<style>
+@media (min-width: 768px) {
+    .form-row.align-items-end > .form-group {
+        margin-bottom: 0;
+    }
+}
+</style>
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462

@@ -1,5 +1,6 @@
 <?php
 session_start();
+<<<<<<< HEAD
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -10,6 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $error = "Invalid username or password.";
     }
+=======
+include '../config/db.php';
+
+// Check if user is already logged in
+if (isset($_SESSION['admin_id'])) {
+    // Check kung saan dapat i-redirect
+    if (isset($_SESSION['redirect_url'])) {
+        $redirect = $_SESSION['redirect_url'];
+        unset($_SESSION['redirect_url']);
+        header('Location: '.$redirect);
+    } else {
+        // Default redirect kung walang stored URL
+        header('Location: /pages/adminManagement.php');
+    }
+    exit;
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 }
 ?>
 <!DOCTYPE html>
@@ -17,10 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NOVADECI Medical | Login</title>
-    <!-- External Bootstrap, jQuery, etc -->
+    <title>DATE RATE TIME | Login</title>
     <?php include '../includes/head.php'; ?>
-    <!-- External Custom CSS -->
     <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body class="hold-transition login-page login-body">
@@ -30,14 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
                 <img src="../assets/images/nova.png" alt="NOVADECI Logo" width="250">
+<<<<<<< HEAD
                 <?php if (!empty($error)): ?>
                 <div class="alert alert-danger mt-2 mb-0 error-text font-weight-bold" role="alert">
                     <?= htmlspecialchars($error) ?>
                 </div>
                 <?php endif; ?>
+=======
+                <div class="alert alert-danger mt-2 mb-0 error-text d-none font-weight-bold" role="alert"></div>
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
             </div>
             <div class="card-body">
-                <h5 class="login-title"><b>Login to Account</b></h5>
+                <h5 class="login-title"><b>Sign in to Account</b></h5>
                 <h6 class="login-subtitle mb-4">Enter your credentials to access your account.</h6>
                 
                 <form method="POST" id="loginForm">
@@ -55,7 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="form-group mt-4">
-                        <button type="submit" name="signin" class="btn btn-success btn-block font-weight-bold">Sign In</button>
+                        <button type="submit" name="signin" class="btn btn-success btn-block font-weight-bold">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="submit-text">Sign In</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -64,7 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script src="../assets/js/login.js"></script>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 95b3aff88a9c36e700340ea5563d2726737de462
 </body>
 </html>

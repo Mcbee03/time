@@ -1,0 +1,29 @@
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form id="deleteForm" action="../logic/AdminManagement/deleteAdminLogic.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+        <input type="hidden" name="id" id="delete_id">
+        
+        <div class="modal-body">
+          <p>Are you sure you want to delete this admin?</p>
+          <p class="font-weight-bold" id="adminToDelete"></p>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">
+            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+            Delete
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
