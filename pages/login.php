@@ -1,3 +1,17 @@
+<?php
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    if ($username === 'admin' && $password === 'password123') {
+        $_SESSION['user'] = $username;
+        header('Location: /pages/adminManagement.php');
+        exit();
+    } else {
+        $error = "Invalid username or password.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,9 +30,11 @@
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
                 <img src="../assets/images/nova.png" alt="NOVADECI Logo" width="250">
-                <div class="alert alert-danger mt-2 mb-0 error-text d-none font-weight-bold" role="alert">
-                    text message error
+                <?php if (!empty($error)): ?>
+                <div class="alert alert-danger mt-2 mb-0 error-text font-weight-bold" role="alert">
+                    <?= htmlspecialchars($error) ?>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="card-body">
                 <h5 class="login-title"><b>Login to Account</b></h5>
@@ -26,7 +42,7 @@
                 
                 <form method="POST" id="loginForm">
                     <div class="form-group mb-3">
-                        <input type="text" class="form-control" placeholder="Username" name="username" required autofocus>
+                        <input type="text" class="form-control" placeholder="Username" name="username" id="username" required autofocus>
                     </div>
 
                     <div class="input-group mb-3">
@@ -48,6 +64,7 @@
 </div>
 
 <script src="../assets/js/login.js"></script>
+
 
 </body>
 </html>

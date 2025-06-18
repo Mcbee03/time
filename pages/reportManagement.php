@@ -2,232 +2,103 @@
 $pageTitle = "Report Management";
 $activePage = "report";
 
-// Sample data structured to match the image
-$committees = [
-    [
-        'name' => 'ETHICS AND GRIEVANCE COMMITTEE',
-        'users' => [
-            [
-                'name' => '1. Yolanda Pinzon',
-                'member_id' => '25475',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '250.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '2,490.00'
-            ],
-            [
-                'name' => '2. Randolph Macato',
-                'member_id' => '3034',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '500.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '2,240.00'
-            ],
-            [
-                'name' => '3. Virginia Danganan',
-                'member_id' => '013890',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '1,000.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '1,740.00'
-            ]
-        ]
-    ],
-    [
-        'name' => 'MEDIATION AND CONCILIATION COMMITTEE',
-        'users' => [
-            [
-                'name' => '1. Ferdinand Santos',
-                'member_id' => '8622',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '1,500.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '1,240.00'
-            ],
-            [
-                'name' => '2. Loreta Gualberto',
-                'member_id' => '742399',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '500.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '2,240.00'
-            ],
-            [
-                'name' => '3. Mary Jane B. Merioles',
-                'member_id' => '23306',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '500.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '2,240.00'
-            ]
-        ]
-    ],
-    [
-        'name' => 'GENDER AND DEVELOPMENT COMMITTEE',
-        'users' => [
-            [
-                'name' => '1. Jose Ferdinand S. Mendoza',
-                'member_id' => '1958',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '1,500.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '1,240.00'
-            ],
-            [
-                'name' => '2. Ma Helen Lamo',
-                'member_id' => '3102',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '0.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '2,740.00'
-            ],
-            [
-                'name' => '3. Elisa Ulbata',
-                'member_id' => '157309',
-                'duty_hours' => '52.00',
-                'rate' => '62.50',
-                'transpo_allowance' => '3,250.00',
-                'less' => [
-                    'RCBC' => '1,000.00',
-                    'NORF' => '200.00',
-                    'Rice' => '310.00'
-                ],
-                'regular_savings_deposit' => '1,740.00'
-            ]
-        ]
-    ]
-];
+session_start();
+
+if (file_exists('../includes/db_connection.php')) {
+    include '../includes/db_connection.php';
+    
+    try {
+        $checkStmt = $conn->query("SELECT COUNT(*) as count FROM tbl_report");
+        if ($checkStmt) {
+            $row = $checkStmt->fetch_assoc();
+            if ($row['count'] > 0) {
+                header("Location: report.php");
+                exit();
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Database error: " . $e->getMessage());
+    }
+}
 
 include '../includes/header.php';
+
+if (isset($_SESSION['error_message'])) {
+    echo '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert" style="max-width: 800px; margin: 20px auto;">
+        <i class="fas fa-exclamation-circle mr-2"></i> ' . $_SESSION['error_message'] . '
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>';
+    unset($_SESSION['error_message']);
+}
 ?>
 
-<div class="main-content-container">
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover mb-0" id="usersTable">
-                    <thead class="green-header">
-                        <tr>
-                            <th rowspan="2">Name</th>
-                            <th rowspan="2">Member ID</th>
-                            <th rowspan="2">Duty Hours</th>
-                            <th rowspan="2">Rate</th>
-                            <th rowspan="2">Transpo Allowance</th>
-                            <th colspan="3" class="text-center">Less</th>
-                            <th rowspan="2">Regular Savings Deposit</th>
-                        </tr>
-                        <tr>
-                            <th>RCBC</th>
-                            <th>NORF</th>
-                            <th>Rice</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($committees as $committee): ?>
-                            <tr class="committee-header bg-light">
-                                <td colspan="9" class="font-weight-bold"><?= htmlspecialchars($committee['name']) ?></td>
-                            </tr>
-                            <?php foreach ($committee['users'] as $user): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($user['name']) ?></td>
-                                    <td><?= htmlspecialchars($user['member_id']) ?></td>
-                                    <td><?= htmlspecialchars($user['duty_hours']) ?></td>
-                                    <td><?= htmlspecialchars($user['rate']) ?></td>
-                                    <td><?= htmlspecialchars($user['transpo_allowance']) ?></td>
-                                    <td><?= htmlspecialchars($user['less']['RCBC']) ?></td>
-                                    <td><?= htmlspecialchars($user['less']['NORF']) ?></td>
-                                    <td><?= htmlspecialchars($user['less']['Rice']) ?></td>
-                                    <td><?= htmlspecialchars($user['regular_savings_deposit']) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+<!-- Adjusted Container with more margin-top -->
+<div class="container d-flex align-items-start justify-content-center" style="margin-top: 100px;">
+    <div class="card card-primary card-outline elevation-2 p-3 mb-3">
+        <div class="card-header" style="background: #2b7d62; color: #fff; border-radius: 12px 12px 0 0; border-bottom: none;">
+            <h5 class="mb-0" style="font-weight: 700; letter-spacing: 1px;">Generate Report</h5>
+        </div>
+        <div class="card-body" style="background: #fff; border-radius: 0 0 12px 12px;">
+            <form action="report.php" method="post" class="report-form" id="reportForm">
+
+                <!-- Report Selection -->
+                <div class="form-group">
+                    <label style="font-weight:600;">Report</label>
+                    <select class="form-control" name="reportType" required>
+                        <option value="" selected disabled>Select Report</option>
+                        <option value="monthly">Monthly Report</option>
+                        <option value="monthly">DTR Report</option>
+                     
+                    </select>
+                </div>
+
+                <!-- Date Range Row -->
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="dateFrom" style="font-weight:600;">Date From</label>
+                        <input type="date" class="form-control date-input" id="dateFrom" name="dateFrom" required>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="dateTo" style="font-weight:600;">Date To</label>
+                        <input type="date" class="form-control date-input" id="dateTo" name="dateTo" required>
+                    </div>
+                </div>
+
+                <!-- PB#/Member ID -->
+                <div class="form-group">
+                    <label style="font-weight:600;">PB#/Member ID</label>
+                    <input type="text" class="form-control" name="memberId" placeholder="Enter PB#/Member ID" required>
+                </div>
+
+                
+
+                <!-- Generate Button -->
+                <button type="submit" class="btn btn-block" style="background: #2b7d62; color: #fff; font-weight:700; border-radius: 6px;">
+                    <i class="fas fa-file-export"></i> Generate
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- JavaScript for confirmation -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
-    const moveToTopButton = document.getElementById('moveToTopButton');
-    const tbody = document.querySelector('#usersTable tbody');
-
-    function filterUsers() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = tbody.querySelectorAll('tr');
-
-        rows.forEach(row => {
-            if (row.classList.contains('committee-header')) {
-                row.style.display = '';
-                return;
-            }
-
-            const rowText = row.textContent.toLowerCase();
-            row.style.display = rowText.includes(searchTerm) ? '' : 'none';
-        });
-    }
-
-    function moveLastToTop() {
-        const rows = Array.from(tbody.querySelectorAll('tr')).reverse();
-        for (const row of rows) {
-            if (!row.classList.contains('committee-header')) {
-                tbody.insertBefore(row, tbody.firstChild);
-                break;
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reportForm');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (confirm('Are you sure you want to generate the report?')) {
+            form.submit();
         }
-    }
-
-    if (searchInput && searchButton) {
-        searchInput.addEventListener('keyup', filterUsers);
-        searchButton.addEventListener('click', filterUsers);
-    }
-    if (moveToTopButton) {
-        moveToTopButton.addEventListener('click', moveLastToTop);
-    }
+    });
 });
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

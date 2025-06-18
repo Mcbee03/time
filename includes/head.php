@@ -7,9 +7,7 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<!-- Custom CSS -->
-<link rel="stylesheet" href="css/admin.css"> <!-- or your main site-wide CSS -->
-<link rel="stylesheet" href="css/login.logout.css"> <!-- optional, if shared on other pages -->
+
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -39,3 +37,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
+<!-- Custom CSS -->
+
+<link rel="stylesheet" href=".css"> 
+
+<!-- JS dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
