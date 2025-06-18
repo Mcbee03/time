@@ -1,77 +1,56 @@
 $(document).ready(function() {
-    // Password toggle functionality
+    // Password toggle
     $(document).on('click', '.password-toggle', function() {
         const input = $(this).closest('.input-group').find('input');
         const icon = $(this).find('i');
-        
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
+        input.attr('type', input.attr('type') === 'password' ? 'text' : 'password');
+        icon.toggleClass('fa-eye fa-eye-slash');
     });
 
-    // Add admin form validation and submission
-    $('#addAdminForm').on('submit', function(e) {
+    // Add Admin Form
+    $(document).on('submit', '#addAdminForm', function(e) {
         e.preventDefault();
-        
         const form = $(this);
-        const password = form.find('input[name="password"]').val();
-        const confirmPassword = form.find('input[name="confirm_password"]').val();
+        const submitBtn = form.find('button[type="submit"]');
         
-        if (password.length < 8) {
-            showAlert('danger', 'Password must be at least 8 characters long');
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            showAlert('danger', 'Passwords do not match');
-            return;
-        }
-        
-        const submitBtn = form.find('#addAdminBtn');
+        // Disable button immediately
         submitBtn.prop('disabled', true);
-        submitBtn.find('.spinner-border').removeClass('d-none');
         
         $.ajax({
-            url: '../logic/AdminManagement/addAdminLogic.php',
-            method: 'POST',
+            url: form.attr('action'),
+            type: 'POST',
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $('#addModal').modal('hide');
                     form.trigger('reset');
-                    showAlert('success', 'Admin added successfully');
-                    setTimeout(() => location.reload(), 1500);
+                    $('#addModal').modal('hide');
+                    
+                    // Force button enable + reload after modal closes
+                    setTimeout(() => {
+                        submitBtn.prop('disabled', false);
+                        location.reload();
+                    }, 300);
                 } else {
-                    showAlert('danger', response.message || 'Error adding admin');
+                    toastr.error(response.message);
+                    submitBtn.prop('disabled', false);
                 }
             },
-            error: function(xhr, status, error) {
-                showAlert('danger', 'Error adding admin: ' + error);
-            },
-            complete: function() {
+            error: function() {
+                toastr.error('Server error');
                 submitBtn.prop('disabled', false);
-                submitBtn.find('.spinner-border').addClass('d-none');
             }
         });
     });
 
-    // Edit admin modal data loading
+    // Edit Admin Load Data
     $(document).on('click', '.edit-btn', function(e) {
         e.stopPropagation();
         const id = $(this).data('id');
         
-        const editBtn = $(this);
-        editBtn.prop('disabled', true);
-        editBtn.html('<i class="fas fa-spinner fa-spin"></i>');
-        
         $.ajax({
             url: '../logic/AdminManagement/getAdminData.php',
-            method: 'POST',
+            type: 'POST',
             data: { id: id },
             dataType: 'json',
             success: function(admin) {
@@ -81,108 +60,17 @@ $(document).ready(function() {
                 $('#edit_name').val(admin.Name);
                 $('#edit_username').val(admin.username);
             },
-            error: function(xhr, status, error) {
-                showAlert('danger', 'Error fetching admin data: ' + error);
-            },
-            complete: function() {
-                editBtn.prop('disabled', false);
-                editBtn.html('<i class="fas fa-edit"></i>');
+            error: function() {
+                toastr.error('Failed to load admin data');
             }
         });
     });
 
-    // Edit admin form submission
-    $('#editAdminForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const form = $(this);
-        const submitBtn = form.find('#editAdminBtn');
-        submitBtn.prop('disabled', true);
-        submitBtn.find('.spinner-border').removeClass('d-none');
-        
-        $.ajax({
-            url: '../logic/AdminManagement/editAdminLogic.php',
-            method: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    $('#editModal').modal('hide');
-                    showAlert('success', 'Admin updated successfully');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showAlert('danger', response.message || 'Error updating admin');
-                }
-            },
-            error: function(xhr, status, error) {
-                showAlert('danger', 'Error updating admin: ' + error);
-            },
-            complete: function() {
-                submitBtn.prop('disabled', false);
-                submitBtn.find('.spinner-border').addClass('d-none');
-            }
-        });
-    });
-
-    // Delete button click handler
-    $(document).on('click', '.delete-btn', function(e) {
-        e.preventDefault();
+    // Delete Confirmation
+    $(document).on('click', '.delete-btn', function() {
         const adminId = $(this).data('id');
         const adminName = $(this).data('name');
-        
-        $('#deleteModal').find('.modal-body').html(`Are you sure you want to delete admin <strong>${adminName}</strong>?`);
         $('#delete_id').val(adminId);
-        $('#deleteModal').modal('show');
+        $('#deleteModal .modal-body').html(`Delete admin <strong>${adminName}</strong>?`);
     });
-
-    // Delete confirmation handler
-    $('#deleteForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const form = $(this);
-        const submitBtn = form.find('button[type="submit"]');
-        submitBtn.prop('disabled', true);
-        submitBtn.html('<span class="spinner-border spinner-border-sm" role="status"></span> Deleting...');
-        
-        $.ajax({
-            url: '../logic/AdminManagement/deleteAdmin.php',
-            method: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    $('#deleteModal').modal('hide');
-                    showAlert('success', 'Admin deleted successfully');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showAlert('danger', response.message || 'Error deleting admin');
-                }
-            },
-            error: function(xhr, status, error) {
-                showAlert('danger', 'Error deleting admin: ' + error);
-            },
-            complete: function() {
-                submitBtn.prop('disabled', false);
-                submitBtn.html('Yes, Delete');
-            }
-        });
-    });
-
-    // Alert function
-    function showAlert(type, message) {
-        const alertHtml = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        `;
-        
-        $('.alert-container').html(alertHtml);
-        
-        setTimeout(() => {
-            $('.alert').alert('close');
-        }, 5000);
-    }
 });
