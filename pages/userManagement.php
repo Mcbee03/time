@@ -69,6 +69,96 @@ include '../includes/header.php';
                 <span style="font-size:1rem;">Add</span>
             </button>
         </div>
+
+        <!-- Add Button RIGHT -->
+        <button class="btn btn-success d-flex align-items-center"
+                style="background:#2b7d62; color:#fff; font-weight:600; border-radius:6px; border:none; padding:7px 16px;"
+                data-toggle="modal" data-target="#addMemberModal">
+            <span style="font-size:1.3rem; margin-right:7px; line-height:1;">
+                <i class="fas fa-plus-circle"></i>
+            </span>
+            <span style="font-size:1rem;">Add</span>
+        </button>
+    </div>
+
+    <div class="card-body">
+    <div class="table-responsive">
+      <table id="memberTable" class="table table-bordered table-hover table-striped bg-white" style="border:4px solid #2b7d62;">
+        <thead class="thead" style="background:#2b7d62; color:#fff;">
+          <tr>
+            <th style="color: white;">ID</th>
+            <th style="color: white;">PB#</th>
+            <th style="color: white;">Member ID</th>
+            <th style="color: white;">Name</th>
+            <th style="color: white;">Committee</th>
+            <th style="color: white;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php if (empty($paginated)): ?>
+            <tr><td colspan="6" class="text-center">No members found.</td></tr>
+        <?php else: ?>
+            <?php foreach ($paginated as $member): ?>
+                <tr>
+                    <td><?= $member['id'] ?></td>
+                    <td><strong><?= htmlspecialchars($member['pb_number']) ?></strong></td>
+                    <td><strong><?= htmlspecialchars($member['member_id']) ?></strong></td>
+                    <td><strong><?= htmlspecialchars($member['name']) ?></strong></td>
+                    <td><strong><?= htmlspecialchars($member['committee']) ?></strong></td>
+                    <td>
+                        <button class="d-inline-flex justify-content-center align-items-center action-anim edit-btn"
+                                style="background:#2b7d62; color:#fff; border:none; border-radius:8px; width:32px; height:32px; margin-right:6px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
+                                title="Edit"
+                                data-toggle="modal"
+                                data-target="#editMemberModal"
+                                data-id="<?= $member['id'] ?>"
+                                data-name="<?= htmlspecialchars($member['name']) ?>"
+                                data-member_id="<?= htmlspecialchars($member['member_id']) ?>"
+                                data-pb_number="<?= htmlspecialchars($member['pb_number']) ?>"
+                                data-committee="<?= htmlspecialchars($member['committee']) ?>">
+                            <i class="fas fa-edit" style="font-size:1.1rem;"></i>
+                        </button>
+                        <button class="d-inline-flex justify-content-center align-items-center action-anim delete-btn"
+                                style="background:#ffefef; color:#e74c3c; border:none; border-radius:8px; width:32px; height:32px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
+                                title="Delete"
+                                data-toggle="modal"
+                                data-target="#deleteConfirmModal"
+                                data-id="<?= $member['id'] ?>"
+                                data-name="<?= htmlspecialchars($member['name']) ?>">
+                            <i class="fas fa-trash-alt" style="font-size:1.1rem;"></i>
+                        </button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+    <div class="mt-3 d-flex justify-content-end">
+        <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= max(1, $page - 1) ?>"
+           class="btn mr-2 <?= $page == 1 ? 'disabled' : '' ?>"
+           style="background-color: <?= $page == 1 ? '#a3c2b5' : '#2b7d62' ?>; color: white;">
+           &laquo; Previous
+        </a>
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= $i ?>"
+               class="btn mx-1"
+               style="background-color: <?= $i == $page ? '#2b7d62' : 'transparent' ?>;
+                      color: <?= $i == $page ? 'white' : '#2b7d62' ?>;
+                      border: 1px solid #2b7d62;">
+               <?= $i ?>
+            </a>
+        <?php endfor; ?>
+        <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= min($totalPages, $page + 1) ?>"
+           class="btn ml-2 <?= $page == $totalPages ? 'disabled' : '' ?>"
+           style="background-color: <?= $page == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color: white;">
+           Next &raquo;
+        </a>
+    </div>
+    <?php endif; ?>
     </div>
 
     <div class="card-body">
@@ -285,6 +375,21 @@ $(document).ready(function () {
     $('.delete-btn').on('click', function () {
         $('#delete_id').val($(this).data('id'));
     });
+  });
+});
+
+$(document).ready(function () {
+  $('.edit-btn').on('click', function () {
+    $('#edit_member_id').val($(this).data('id'));
+    $('#edit_pb_number').val($(this).data('pb_number'));
+    $('#edit_member_id_input').val($(this).data('member_id'));
+    $('#edit_name').val($(this).data('name'));
+    $('#edit_committee').val($(this).data('committee'));
+  });
+
+  $('.delete-btn').on('click', function () {
+    $('#delete_id').val($(this).data('id'));
+  });
 });
 </script>
 

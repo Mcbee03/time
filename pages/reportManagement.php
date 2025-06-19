@@ -14,7 +14,6 @@ $pageTitle = "Report Management";
 $activePage = "report";
 
 
-
 if (file_exists('../includes/db_connection.php')) {
     include '../includes/db_connection.php';
     

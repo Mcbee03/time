@@ -40,7 +40,7 @@ if (isset($_SESSION['admin_id'])) {
                 
                 <form method="POST" id="loginForm">
                     <div class="form-group mb-3">
-                        <input type="text" class="form-control" placeholder="Username" name="username" required autofocus>
+                        <input type="text" class="form-control" placeholder="Username" name="username" id="username" required autofocus>
                     </div>
 
                     <div class="input-group mb-3">
