@@ -1,19 +1,22 @@
 <?php
 session_start();
-require_once '../config/db.php';
-require_once '../includes/header.php';
-require_once '../logic/AdminManagement/adminManagementLogic.php';
+include '../config/db.php';
+
 
 $pageTitle = "Admin Management";
 $activePage = "admin";
+
+include '../config/db.php';
+include '../logic/AdminManagement/adminManagementLogic.php';
+include '../includes/header.php';
 ?>
 
 <!-- Admin Management Table -->
 <div class="card card-primary card-outline elevation-2 p-3">
   <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-    <h5 class="mb-2 mb-md-0">Admin Management</h5>
+    <h5 class="mb-2 mb-md-0"></h5>
     <div class="d-flex align-items-center gap-2">
-      <!-- Search bar -->
+      <!-- Search bar with icon beside +Admin button -->
       <form method="GET" class="d-flex align-items-center mr-2">
         <div class="input-group" style="max-width:220px;">
           <div class="input-group-prepend">
@@ -24,7 +27,6 @@ $activePage = "admin";
           <input type="text" name="search" class="form-control border-left-0" placeholder="Search name..." value="<?= htmlspecialchars($searchQuery) ?>">
         </div>
       </form>
-      <!-- Add Admin Button -->
       <button class="btn btn-success d-flex align-items-center"
               style="background:#2b7d62; color:#fff; font-weight:600; border-radius:6px; border:none; padding:7px 16px;"
               data-toggle="modal" data-target="#addModal">
@@ -39,18 +41,19 @@ $activePage = "admin";
   <div class="card-body">
     <div class="table-responsive">
       <table id="adminTable" class="table table-bordered table-hover table-striped bg-white" style="border:4px solid #2b7d62;">
-        <thead class="thead" style="background:#2b7d62; color:#fff;">
-          <tr>
+        <!-- In the table header -->
+          <thead class="thead" style="background:#2b7d62; color:#fff;">
+            <tr>
             <th style="color: white; font-weight:700;">ID</th>
             <th style="color: white; font-weight:700;">Name</th>
             <th style="color: white; font-weight:700;">Member ID</th>
             <th style="color: white; font-weight:700;">PB#</th>
             <th style="color: white; font-weight:700;">Action</th>
-          </tr>
-        </thead>
+            </tr>
+          </thead>
         <tbody>
           <?php if (empty($paginatedUsers)): ?>
-            <tr><td colspan="5" class="text-center">No admins found.</td></tr>
+            <tr><td colspan="6" class="text-center">No admins found.</td></tr>
           <?php else: ?>
             <?php foreach ($paginatedUsers as $index => $user): ?>
               <tr data-id="<?= $user['Id'] ?>" class="admin-row">
@@ -84,17 +87,39 @@ $activePage = "admin";
       </table>
     </div>
 
+    <!-- Pagination -->
     <?php if ($totalPages > 1): ?>
       <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Entries Info -->
         <div class="text-muted mb-2 mb-md-0">
           <?php
-            $startEntry = ($totalRows === 0) ? 0 : $offset + 1;
-            $endEntry = min($offset + $perPage, $totalRows);
+              $startEntry = ($totalRows === 0) ? 0 : $offset + 1;
+              $endEntry = min($offset + $perPage, $totalRows);
           ?>
           Showing <?= $startEntry ?> to <?= $endEntry ?> of <?= $totalRows ?> entries
         </div>
+
+        <!-- Pagination -->
         <div class="pagination-container d-flex flex-wrap justify-content-end">
-          <!-- Pagination links -->
+          <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= max(1, $currentPage - 1) ?>"
+             class="btn mr-2 <?= $currentPage == 1 ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == 1 ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+            &laquo; Previous
+          </a>
+          <?php for($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= $i ?>"
+               class="btn mx-1"
+               style="background-color: <?= $i == $currentPage ? '#2b7d62' : 'transparent' ?>;
+                      color: <?= $i == $currentPage ? 'white' : '#2b7d62' ?>;
+                      border:1px solid #2b7d62;">
+              <?= $i ?>
+            </a>
+          <?php endfor; ?>
+          <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= min($totalPages, $currentPage + 1) ?>"
+             class="btn ml-2 <?= $currentPage == $totalPages ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+            Next &raquo;
+          </a>
         </div>
       </div>
     <?php endif; ?>
@@ -107,6 +132,7 @@ include '../views/AdminManagement/addModal.php';
 include '../views/AdminManagement/editModal.php';
 include '../views/AdminManagement/deleteModal.php';
 ?>
+
 
 <script src="../assets/js/adminManagement.js"></script>
 

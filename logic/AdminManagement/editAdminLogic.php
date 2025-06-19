@@ -1,10 +1,17 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 include '../../config/db.php';
 
+// Block direct access via GET
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(403);
+    exit('Forbidden');
+}
 
 // Verify CSRF token
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'CSRF token validation failed']);
     exit;
 }
@@ -25,6 +32,7 @@ if (empty($name)) $errors[] = "Name is required";
 if (empty($username)) $errors[] = "Username is required";
 
 if (!empty($errors)) {
+    http_response_code(400);
     echo json_encode(['success' => false, 'message' => implode("<br>", $errors)]);
     exit;
 }
@@ -34,6 +42,7 @@ $stmt = $conn->prepare("SELECT Id FROM tbl_adminlogin WHERE username = ? AND Id 
 $stmt->bind_param('si', $username, $id);
 $stmt->execute();
 if ($stmt->get_result()->num_rows > 0) {
+    http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Username already exists']);
     exit;
 }
@@ -51,9 +60,9 @@ if ($password) {
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Admin updated successfully']);
 } else {
+    http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
 }
 
 $stmt->close();
 $conn->close();
-?>
