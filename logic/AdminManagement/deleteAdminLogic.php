@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 include '../../config/db.php';
 
 // Verify CSRF token
@@ -44,11 +45,10 @@ try {
     } else {
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
     }
-    
+
     $deleteStmt->close();
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 } finally {
     $conn->close();
 }
-?>

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    //  Password Toggle
+    // 🔐 Password Toggle
     $(document).on('click', '.password-toggle', function () {
         const input = $(this).closest('.input-group').find('input[type="password"], input[type="text"]');
         const icon = $(this).find('i');
@@ -10,46 +10,47 @@ $(document).ready(function () {
         }
     });
 
-    //  Add Admin
-    $(document).on('submit', '#addAdminForm', function (e) {
+    // ➕ ADD Admin - Submit
+     // Add Admin Form
+    $(document).on('submit', '#addAdminForm', function(e) {
         e.preventDefault();
         const form = $(this);
         const submitBtn = form.find('button[type="submit"]');
-        submitBtn.prop('disabled', true);
-
+        
+        // Disable button immediately
+        submitBtn.prop('disabled', true).html('Adding...');
+        
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
-            success: function (response) {
+            success: function(response) {
                 if (response.success) {
-                    form[0].reset();
+                    form.trigger('reset');
                     $('#addModal').modal('hide');
+                    
+                    // Force button enable + reload after modal closes
                     setTimeout(() => {
+                        submitBtn.prop('disabled', false);
                         location.reload();
                     }, 300);
                 } else {
-                    toastr.error(response.message || 'Failed to add admin.');
+                    toastr.error(response.message);
                     submitBtn.prop('disabled', false);
                 }
             },
-            error: function () {
-                toastr.error('Server error while adding admin.');
+            error: function() {
+                toastr.error('Server error');
                 submitBtn.prop('disabled', false);
             }
         });
-    });
+    }); 
 
-    //  Load Admin Data into Edit Modal
-    $(document).on('click', '.edit-btn', function (e) {
-        e.preventDefault();
+    // ✏️ EDIT Admin - Load to modal
+    $(document).on('click', '.edit-btn', function () {
         const id = $(this).data('id');
-
-        if (!id) {
-            toastr.error('Admin ID missing.');
-            return;
-        }
+        if (!id) return toastr.error('Admin ID missing');
 
         $.ajax({
             url: '../logic/AdminManagement/getAdminData.php',
@@ -74,12 +75,14 @@ $(document).ready(function () {
         });
     });
 
-    //  Submit Edit Admin
+    // ✏️ EDIT Admin - Submit
     $(document).on('submit', '#editAdminForm', function (e) {
         e.preventDefault();
         const form = $(this);
         const submitBtn = form.find('button[type="submit"]');
-        submitBtn.prop('disabled', true);
+        const originalText = submitBtn.html();
+
+        submitBtn.prop('disabled', true).html('Updating...');
 
         $.ajax({
             url: form.attr('action'),
@@ -88,45 +91,39 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    $('#editModal').modal('hide');
-                    setTimeout(() => {
+                    $('#editModal').one('hidden.bs.modal', function () {
                         location.reload();
-                    }, 300);
+                    }).modal('hide');
+                    toastr.success('Admin updated successfully');
                 } else {
                     toastr.error(response.message || 'Update failed.');
-                    submitBtn.prop('disabled', false);
+                    submitBtn.prop('disabled', false).html(originalText);
                 }
             },
             error: function () {
                 toastr.error('Server error while updating admin.');
-                submitBtn.prop('disabled', false);
+                submitBtn.prop('disabled', false).html(originalText);
             }
         });
     });
 
-    //  Delete - Load Info into Modal
+    // 🗑️ DELETE Admin - Fill modal
     $(document).on('click', '.delete-btn', function () {
         const adminId = $(this).data('id');
         const adminName = $(this).data('name');
-
-        if (!adminId) {
-            toastr.error('No Admin ID provided.');
-            return;
-        }
-
         $('#delete_id').val(adminId);
         $('#adminToDelete').text(adminName || 'this admin');
+        $('#deleteModal').modal('show');
     });
 
-    //  Submit Delete Admin
+    // 🗑️ DELETE Admin - Submit
     $(document).on('submit', '#deleteForm', function (e) {
         e.preventDefault();
         const form = $(this);
         const submitBtn = form.find('button[type="submit"]');
-        const spinner = submitBtn.find('.spinner-border');
+        const originalText = submitBtn.html();
 
-        submitBtn.prop('disabled', true);
-        spinner.removeClass('d-none');
+        submitBtn.prop('disabled', true).html('Deleting...');
 
         $.ajax({
             url: form.attr('action'),
@@ -135,22 +132,34 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    toastr.success(response.message || 'Admin deleted.');
-                    $('#deleteModal').modal('hide');
-                    setTimeout(() => {
+                    $('#deleteModal').one('hidden.bs.modal', function () {
                         location.reload();
-                    }, 800);
+                    }).modal('hide');
+                    toastr.success(response.message || 'Admin deleted successfully');
                 } else {
                     toastr.error(response.message || 'Failed to delete admin.');
+                    submitBtn.prop('disabled', false).html(originalText);
                 }
             },
             error: function () {
                 toastr.error('Server error while deleting admin.');
-            },
-            complete: function () {
-                submitBtn.prop('disabled', false);
-                spinner.addClass('d-none');
+                submitBtn.prop('disabled', false).html(originalText);
             }
         });
+    });
+
+    // 🔁 Reset forms and buttons after modal close
+    $('#addModal, #editModal, #deleteModal').on('hidden.bs.modal', function () {
+        const form = $(this).find('form')[0];
+        const submitBtn = $(this).find('button[type="submit"]');
+        if (form) form.reset();
+        if (submitBtn.length) {
+            const btnId = submitBtn.attr('id');
+            const label = btnId === 'confirmDeleteBtn' ? 'Delete' : (btnId === 'editAdminBtn' ? 'Update' : 'Add');
+            submitBtn.prop('disabled', false).html(label);
+        }
+
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
     });
 });

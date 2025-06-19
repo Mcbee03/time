@@ -19,17 +19,17 @@ if (empty($_SESSION['csrf_token'])) {
         
         <div class="modal-body">
           <p>Are you sure you want to delete this admin?</p>
-          <p class="font-weight-bold" id="adminToDelete"></p>
+          <p class="font-weight-bold text-danger" id="adminToDelete"></p>
         </div>
         
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">
-            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+          <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">
+            <span class="spinner-border spinner-border-sm d-none mr-1" role="status"></span>
             Delete
           </button>
         </div>
-      </form>
+      </form>   
     </div>
   </div>
 </div>
