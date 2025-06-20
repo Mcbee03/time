@@ -162,3 +162,47 @@
     box-shadow: 0 2px 8px 0 rgba(44,125,98,0.13);
     z-index: 2;
 }
+
+/* Table Header Styles */
+.table thead.thead {
+    background-color: #2b7d62 !important;
+}
+
+.table thead.thead th {
+    color: white !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+    padding: 12px 15px;
+}
+
+/* Hover effect for table headers */
+.table thead.thead th:hover {
+    background-color: #23674f !important;
+}
+
+/* Remove any default link styling in headers */
+.table thead.thead th a {
+    color: white !important;
+    text-decoration: none;
+}
+
+/* Style for the "No admins found" message */
+.table tbody tr td.text-center {
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+    font-weight: 500;
+}
+
+/* Ensure consistent styling for all header cells */
+#adminTable thead.thead th {
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+/* Remove any inline style conflicts */
+#adminTable thead.thead th[style] {
+    color: white !important;
+    font-weight: 700 !important;
+}

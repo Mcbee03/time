@@ -24,7 +24,7 @@ include '../includes/header.php';
               <i class="fas fa-search"></i>
             </span>
           </div>
-          <input type="text" name="search" class="form-control border-left-0" placeholder="Search name..." value="<?= htmlspecialchars($searchQuery) ?>">
+          <input type="text" id="searchInput" name="search" class="form-control border-left-0" placeholder="Search name..." value="<?= htmlspecialchars($searchQuery) ?>">
         </div>
       </form>
       <button class="btn btn-success d-flex align-items-center"
@@ -44,11 +44,11 @@ include '../includes/header.php';
         <!-- In the table header -->
           <thead class="thead" style="background:#2b7d62; color:#fff;">
             <tr>
-            <th style="color: white; font-weight:700;">ID</th>
-            <th style="color: white; font-weight:700;">Name</th>
-            <th style="color: white; font-weight:700;">Member ID</th>
-            <th style="color: white; font-weight:700;">PB#</th>
-            <th style="color: white; font-weight:700;">Action</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Member ID</th>
+            <th>PB#</th>
+            <th>Action</th>
             </tr>
           </thead>
         <tbody>
@@ -136,4 +136,4 @@ include '../views/AdminManagement/deleteModal.php';
 
 <script src="../assets/js/adminManagement.js"></script>
 
-<?php include '../includes/footer.php'; ?>
+

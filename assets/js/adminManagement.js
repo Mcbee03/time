@@ -162,4 +162,24 @@ $(document).ready(function () {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
     });
+
+
+    // 🔍 Real-time Client-Side Search (No AJAX)
+    $(document).on('keyup', '#searchInput', function () {
+    const filter = $(this).val().toLowerCase().trim();
+    $('#adminTable tbody tr').each(function () {
+        const name = $(this).find('td:eq(1)').text().toLowerCase();
+        const memberId = $(this).find('td:eq(2)').text().toLowerCase();
+        const pbNum = $(this).find('td:eq(3)').text().toLowerCase();
+
+        if (name.includes(filter) || memberId.includes(filter) || pbNum.includes(filter)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
 });
+
+});
+
+

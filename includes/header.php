@@ -15,6 +15,7 @@ if (!isset($_SESSION['admin_id']) && basename($_SERVER['PHP_SELF']) !== 'login.p
     <title>DAILY TIME RECORD | <?= $pageTitle ?? 'Admin' ?></title>
     <?php include 'head.php'; ?>
     <link rel="stylesheet" href="/assets/css/nav.css">
+    <script src="../assets/js/nav.js"></script>
 </head>
 <body>
 <!-- Navbar -->
@@ -51,3 +52,5 @@ if (!isset($_SESSION['admin_id']) && basename($_SERVER['PHP_SELF']) !== 'login.p
 
 <!-- Main Content -->
 <div class="main-content">
+
+

@@ -1,0 +1,55 @@
+/* Style for the table header with white column names */
+.table thead.thead {
+    background-color: #2b7d62 !important;
+}
+
+.table thead.thead th {
+    color: white !important;
+    font-weight: 700;
+    border-bottom: 2px solid #fff;
+}
+
+/* Hover effect for better user experience */
+.table thead.thead th:hover {
+    background-color: #23674f !important;
+}
+
+/* Ensure the header stays white even when sorting or other interactions occur */
+.table thead.thead th a,
+.table thead.thead th span {
+    color: white !important;
+}
+
+/* Style for the "No users found" message */
+.table tbody tr td.text-center {
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+}
+/* Animation for action buttons */
+.action-anim {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.action-anim:hover, .action-anim:focus {
+    transform: scale(1.13) rotate(-4deg);
+    box-shadow: 0 2px 8px 0 rgba(44,125,98,0.13);
+    z-index: 2;
+}
+
+/* Table styling */
+.table thead.thead {
+    background-color: #2b7d62 !important;
+}
+
+.table thead.thead th {
+    color: white !important;
+    font-weight: 700;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+/* Ensure consistent row styling */
+.admin-row td {
+    vertical-align: middle;
+}
+
