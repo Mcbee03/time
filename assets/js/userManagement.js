@@ -16,9 +16,8 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
-                    form.trigger('reset');
                     $('#addMemberModal').modal('hide');
-
+                    toastr.success('User added successfully');
                     setTimeout(() => {
                         submitBtn.prop('disabled', false).html(originalText);
                         location.reload();
@@ -55,7 +54,7 @@ $(document).ready(function () {
                     $('#edit_committee_id').val(user.Committee_ID);
                     $('#editMemberModal').modal('show');
                 } else {
-                    toastr.error(res.message || 'Failed to fetch user data.');
+                    toastr.error(res.message || 'Invalid user data received.');
                 }
             },
             error: function () {
@@ -80,12 +79,14 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
-                    $('#editMemberModal').one('hidden.bs.modal', function () {
-                        location.reload();
-                    }).modal('hide');
+                    $('#editMemberModal').modal('hide');
                     toastr.success('User updated successfully');
+                    setTimeout(() => {
+                        submitBtn.prop('disabled', false).html(originalText);
+                        location.reload();
+                    }, 300);
                 } else {
-                    toastr.error(res.message || 'Update failed.');
+                    toastr.error(res.message || 'Failed to update user.');
                     submitBtn.prop('disabled', false).html(originalText);
                 }
             },
@@ -122,10 +123,12 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
-                    $('#deleteMemberModal').one('hidden.bs.modal', function () {
+                    $('#deleteMemberModal').modal('hide');
+                    toastr.success('User deleted successfully');
+                    setTimeout(() => {
+                        submitBtn.prop('disabled', false).html(originalText);
                         location.reload();
-                    }).modal('hide');
-                    toastr.success(res.message || 'User deleted successfully');
+                    }, 300);
                 } else {
                     toastr.error(res.message || 'Failed to delete user.');
                     submitBtn.prop('disabled', false).html(originalText);
@@ -138,27 +141,23 @@ $(document).ready(function () {
         });
     });
 
-    // 🔁 Reset forms + remove overlay issues
+    // 🔁 Reset forms and buttons when modal closes
     $('#addMemberModal, #editMemberModal, #deleteMemberModal').on('hidden.bs.modal', function () {
         const form = $(this).find('form')[0];
-        const submitBtn = $(this).find('button[type="submit"]');
-
         if (form) form.reset();
 
+        const submitBtn = $(this).find('button[type="submit"]');
         if (submitBtn.length) {
             const btnId = submitBtn.attr('id');
             let label = 'Submit';
             if (btnId === 'editUserBtn') label = 'Update';
             if (btnId === 'confirmDeleteUserBtn') label = 'Delete';
-
+            if (btnId === 'addUserBtn') label = 'Add';
             submitBtn.prop('disabled', false).html(label);
         }
-
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
     });
 
-    // 🔍 Real-time Table Search (optional)
+    // 🔍 Real-time Search
     $(document).on('keyup', '#searchInput', function () {
         const filter = $(this).val().toLowerCase().trim();
         $('#userTable tbody tr').each(function () {
@@ -166,11 +165,11 @@ $(document).ready(function () {
             const memberId = $(this).find('td:eq(2)').text().toLowerCase();
             const pbNum = $(this).find('td:eq(3)').text().toLowerCase();
 
-            if (name.includes(filter) || memberId.includes(filter) || pbNum.includes(filter)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
+            $(this).toggle(
+                name.includes(filter) ||
+                memberId.includes(filter) ||
+                pbNum.includes(filter)
+            );
         });
     });
 

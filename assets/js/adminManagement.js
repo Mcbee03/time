@@ -3,13 +3,13 @@ $(document).ready(function () {
     $(document).on('click', '.password-toggle', function () {
         const input = $(this).closest('.input-group').find('input[type="password"], input[type="text"]');
         const icon = $(this).find('i');
+
         if (input.length && icon.length) {
             const isPassword = input.attr('type') === 'password';
             input.attr('type', isPassword ? 'text' : 'password');
             icon.toggleClass('fa-eye fa-eye-slash');
         }
     });
-
     // ➕ ADD Admin - Submit
      // Add Admin Form
     $(document).on('submit', '#addAdminForm', function(e) {

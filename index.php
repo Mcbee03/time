@@ -1,68 +1,6 @@
-<?php
-session_start();
-date_default_timezone_set('Asia/Manila');
-$today = date('Y-m-d');
-
-if (!isset($_SESSION['time_log'])) {
-    $_SESSION['time_log'] = [];
-}
-
-$searchedMemberID = null;
-$timedInStatus = false;
-$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
-$messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'success';
-$totalHours = isset($_SESSION['total_hours']) ? $_SESSION['total_hours'] : '';
-unset($_SESSION['message']);
-unset($_SESSION['message_type']);
-unset($_SESSION['total_hours']);
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
-    $memberID = trim($_POST['member_id']);
-    if ($memberID !== '') {
-        $searchedMemberID = $memberID;
-
-        if (isset($_POST['action'])) {
-            if ($_POST['action'] === 'time_in') {
-                $_SESSION['time_log'][$today][$memberID] = [
-                    'timed_in' => true,
-                    'timed_out' => false,
-                    'time_in_time' => date('H:i:s'),
-                    'time_out_time' => null,
-                ];
-                $_SESSION['message'] = "Member $memberID timed in at " . date("M j, Y, g:i:s A", strtotime("$today " . $_SESSION['time_log'][$today][$memberID]['time_in_time']));
-                $_SESSION['message_type'] = 'success';
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit;
-            } elseif ($_POST['action'] === 'time_out' && isset($_SESSION['time_log'][$today][$memberID])) {
-                $_SESSION['time_log'][$today][$memberID]['timed_out'] = true;
-                $_SESSION['time_log'][$today][$memberID]['time_out_time'] = date('H:i:s');
-                
-                $timeIn = new DateTime($_SESSION['time_log'][$today][$memberID]['time_in_time']);
-                $timeOut = new DateTime($_SESSION['time_log'][$today][$memberID]['time_out_time']);
-                $interval = $timeIn->diff($timeOut);
-                $hours = $interval->h;
-                $minutes = $interval->i;
-                $seconds = $interval->s;
-                
-                if ($hours > 0 || $minutes > 0 || $seconds > 1) {
-                    $totalHoursWorked = "$hours hours, $minutes minutes, and $seconds seconds";
-                    $_SESSION['total_hours'] = "Total time worked: $totalHoursWorked";
-                }
-                
-                $_SESSION['message'] = "Member $memberID timed out at " . date("M j, Y, g:i:s A", strtotime("$today " . $_SESSION['time_log'][$today][$memberID]['time_out_time']));
-                $_SESSION['message_type'] = 'danger';
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit;
-            }
-        } else {
-            $timedInStatus = isset($_SESSION['time_log'][$today][$memberID]) &&
-                $_SESSION['time_log'][$today][$memberID]['timed_in'] &&
-                !$_SESSION['time_log'][$today][$memberID]['timed_out'];
-        }
-    }
-}
+<?php 
+include 'logic/Index/indexLogic.php'; 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,80 +8,120 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="images/logo.png" type="image/png" />
     <title>OFFICERS | DTR</title>
-    
-    <!-- Bootstrap 4.6 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .fade-out {
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-    </style>
+    <?php include 'includes/head.php'; ?>
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
-<div class="container-fluid" style="background: #f6f8fa; min-height: 100vh;">
-    <div class="row justify-content-center align-items-center min-vh-100">
-        <div class="col-12 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-            <div class="search-box text-center shadow p-4 rounded" style="background: #fff;">
-                <a class="navbar-brand d-flex align-items-center justify-content-center mb-3" href="#">
-                    <img src="https://www.novadeci.com/wp-content/uploads/2017/03/nvdc-BANNER.png"
-                         alt="Logo" class="img-fluid logo-img" style="max-height: 70px;">
-                </a>
-
+<div class="container-fluid dtr-container">
+    <div class="login-box">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <img src="https://www.novadeci.com/wp-content/uploads/2017/03/nvdc-BANNER.png"
+                     alt="Novaliches Development Cooperative Logo" class="img-fluid coop-logo">
+            </div>
+            <div class="card-body">
+                <!-- Message Alerts -->
                 <?php if ($message): ?>
-                    <div class="alert alert-<?= $messageType ?>" id="timed-message"><?= htmlspecialchars($message) ?></div>
-                    <?php if ($totalHours && !preg_match('/^Total time worked: 0 hours, 0 minutes, and \d+ seconds$/', $totalHours)): ?>
-                        <div class="alert alert-info" id="total-hours-message"><?= htmlspecialchars($totalHours) ?></div>
-                    <?php endif; ?>
+                    <div class="alert alert-<?= strpos($message, 'error') !== false ? 'danger' : 'success' ?> alert-dismissible fade show alert-dtr">
+                        <div class="d-flex align-items-center">
+                            <i class="fas <?= strpos($message, 'error') !== false ? 'fa-exclamation-circle' : 'fa-check-circle' ?> mr-2"></i>
+                            <div>
+                                <strong><?= htmlspecialchars($message) ?></strong>
+                                <?php if ($totalHours): ?>
+                                    <div class="small"><?= htmlspecialchars($totalHours) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 <?php endif; ?>
+                
+                <h4 class="dtr-title text-center">OFFICER DAILY TIME RECORD</h4>
+                
+                <!-- Divider -->
+                <hr class="divider">
 
+                <!-- Real Time Clock -->
+                <?php if (!$searchedMemberID): ?>
+                    <div class="mb-4 text-center">
+                        <span id="realtime-clock" class="realtime-clock">
+                            <i class="far fa-clock mr-2"></i>
+                            <span id="clock-text"></span>
+                        </span>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Search Form -->
                 <form method="POST" class="mb-4">
-                    <div class="input-group input-group-lg justify-content-center">
-                        <input type="text" name="member_id" class="form-control search-input rounded-left text-center" placeholder="Enter Member ID / PB#" required
+                    <div class="input-group input-group-lg shadow-sm">
+                        <input type="text" name="member_id" class="form-control search-input" 
+                               placeholder="Enter Member ID / PB#" required
                                value="<?= htmlspecialchars($searchedMemberID ?? '') ?>">
                         <div class="input-group-append">
-                            <button class="btn text-white rounded-right" type="submit" style="background-color: #3DB272;">
-                                <i class="fas fa-search mr-1"></i> Search
+                            <button class="btn btn-search text-white" type="submit">
+                                <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
                 </form>
-
-                <?php if ($searchedMemberID !== null): ?>
-                    <form method="POST" class="mb-4">
+                
+                <?php if ($searchedMemberID !== null && $userData): ?>
+                    <!-- Time In/Out Button -->
+                    <form method="POST" class="mb-3">
                         <input type="hidden" name="member_id" value="<?= htmlspecialchars($searchedMemberID) ?>">
                         <input type="hidden" name="action" value="<?= $timedInStatus ? 'time_out' : 'time_in' ?>">
-                        <button class="btn btn-block text-white py-2 btn-top-border"
-                            type="submit"
-                            style="background-color: <?= $timedInStatus ? '#dc3545' : '#3DB272' ?>; font-size: 1.2rem; font-weight: 600; border-radius: 8px;">
-                            <i class="fas fa-clock mr-1"></i>
-                            <?= $timedInStatus ? 'Time Out' : 'Time In' ?>
+                        <button class="btn btn-time <?= $timedInStatus ? 'btn-timeout' : 'btn-timein' ?>"
+                            type="submit">
+                            <i class="fas fa-clock mr-2"></i>
+                            <?= $timedInStatus ? 'TIME OUT' : 'TIME IN' ?>
                         </button>
                     </form>
-
-                    <div class="mb-3">
-                        <h5 id="realtime-clock" class="font-weight-bold text-dark"></h5>
+                    
+                    <!-- Time Status Card -->
+                    <div class="card status-card mt-3">
+                        <div class="card-body py-3 px-4">
+                            <h5 class="card-title status-title mb-1">
+                                <i class="fas fa-user-circle mr-2"></i>
+                                <?= htmlspecialchars($userData['Name']) ?> 
+                                <span class="badge <?= $timedInStatus ? 'badge-success' : 'badge-secondary' ?> ml-2">
+                                    <?= $timedInStatus ? 'TIMED IN' : 'NOT CLOCKED IN' ?>
+                                </span>
+                            </h5>
+                            <p class="card-text status-id mb-1">
+                                <i class="fas fa-id-card mr-2"></i>
+                                <?= htmlspecialchars($userData['MemberID']) ?> / PB#<?= htmlspecialchars($userData['PBNum']) ?>
+                            </p>
+                            
+                            <?php if ($timedInStatus): ?>
+                                <?php
+                                // Get the latest time in record using MySQLi
+                                $stmt = $conn->prepare("SELECT TimeIN FROM tbl_dtr 
+                                                      WHERE Users_Id = ? AND Date = ? 
+                                                      AND TimeOUT IS NULL ORDER BY TimeIN DESC LIMIT 1");
+                                $stmt->bind_param("is", $userData['Id'], $today);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+                                $timeInRecord = $result->fetch_assoc();
+                                $stmt->close();
+                                ?>
+                                <p class="card-text status-time mb-0 mt-2">
+                                    <i class="far fa-calendar-alt mr-2"></i>
+                                    <?= date("M j, Y, g:i:s A", strtotime($timeInRecord['TimeIN'])) ?>
+                                </p>
+                            <?php endif; ?>
+                        </div>
                     </div>
-
-                    <!-- Removed the entire DTR table display -->
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-<!-- jQuery, Popper.js, Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
-
-<script src="../assets/js/index.js"></script>
-
+<!-- Custom JS -->
+<script src="/assets/js/index.js"></script>
 
 </body>
-</html>
+</html> 

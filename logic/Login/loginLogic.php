@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
     if (empty($username)) {
-        $errors['username'] = 'Username is required.';
+        $errors['username'] = 'Username is required.';  
     }
     if (empty($password)) {
         $errors['password'] = 'Password is required.';

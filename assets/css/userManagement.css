@@ -26,6 +26,7 @@
     font-style: italic;
     padding: 20px;
 }
+
 /* Animation for action buttons */
 .action-anim {
     transition: transform 0.15s, box-shadow 0.15s;
@@ -37,19 +38,35 @@
     z-index: 2;
 }
 
-/* Table styling */
-.table thead.thead {
-    background-color: #2b7d62 !important;
+/* Modal header styles */
+.modal-header.primary {
+    background-color: #2b7d62;
+    color: #fff;
 }
 
-.table thead.thead th {
-    color: white !important;
-    font-weight: 700;
-    border-bottom: 2px solid rgba(255,255,255,0.1);
+.modal-header.danger {
+    background-color: #dc3545;
+    color: #fff;
 }
 
-/* Ensure consistent row styling */
-.admin-row td {
-    vertical-align: middle;
+/* Modal button styles */
+.btn.primary {
+    background-color: #2b7d62;
+    color: #fff;
 }
 
+.btn.primary:hover {
+    background-color: #23674f;
+    color: #fff;
+}
+
+/* Modal close button */
+.modal-header .close.text-white {
+    color: #fff !important;
+    opacity: 1;
+}
+
+/* Spinner alignment */
+.btn .spinner-border {
+    vertical-align: text-top;
+}

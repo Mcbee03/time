@@ -4,8 +4,6 @@ include '../config/db.php';
 
 // Redirect to login if not authenticated
 if (!isset($_SESSION['admin_id'])) {
-    // Store current URL for redirect back after login
-    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
     header('Location: /pages/login.php');
     exit;
 }
@@ -13,15 +11,7 @@ if (!isset($_SESSION['admin_id'])) {
 $pageTitle = "Deduction Management";
 $activePage = "deduction";
 
-// Sample deductions data
-$deductions = [
-    ['id'=>1, 'deduction'=>'RCBC',      'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
-    ['id'=>2, 'deduction'=>'METROBANK', 'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
-    ['id'=>3, 'deduction'=>'BDO',       'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
-    ['id'=>4, 'deduction'=>'LANDBANK',  'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
-    ['id'=>5, 'deduction'=>'PNB',       'date_from'=>'2025-06-01', 'date_to'=>'2025-06-30'],
-];
-
+include '../logic/DeductionManagement/deductionManagementLogic.php';
 include '../includes/header.php';
 ?>
 
@@ -31,14 +21,16 @@ include '../includes/header.php';
     <h5 class="mb-2 mb-md-0"></h5>
     <div class="d-flex align-items-center gap-2">
       <!-- Search bar with icon beside +Add button -->
-      <div class="input-group mr-2" style="max-width:220px;">
-        <div class="input-group-prepend">
-          <span class="input-group-text bg-white border-right-0" style="color:#2b7d62;">
-            <i class="fas fa-search"></i>
-          </span>
+      <form method="GET" class="d-flex align-items-center mr-2">
+        <div class="input-group" style="max-width:220px;">
+          <div class="input-group-prepend">
+            <span class="input-group-text bg-white border-right-0" style="color:#2b7d62;">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
+          <input type="text" id="searchInput" name="search" class="form-control border-left-0" placeholder="Search deduction...">
         </div>
-        <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Search deduction...">
-      </div>
+      </form>
       <button class="btn btn-success d-flex align-items-center"
               style="background:#2b7d62; color:#fff; font-weight:600; border-radius:6px; border:none; padding:7px 16px;"
               data-toggle="modal" data-target="#addDeductionModal">
@@ -63,135 +55,93 @@ include '../includes/header.php';
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($deductions as $row): ?>
-            <tr>
-              <td style="font-weight:700;"><?= $row['id'] ?></td>
-              <td style="font-weight:700;"><?= htmlspecialchars($row['deduction']) ?></td>
-              <td style="font-weight:700;"><?= htmlspecialchars($row['date_from']) ?></td>
-              <td style="font-weight:700;"><?= htmlspecialchars($row['date_to']) ?></td>
-              <td>
-                <button class="d-inline-flex justify-content-center align-items-center action-anim edit-btn"
-                        style="background:#2b7d62; color:#fff; border:none; border-radius:8px; width:32px; height:32px; margin-right:6px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
-                        title="Edit"
-                        data-toggle="modal"
-                        data-target="#editDeductionModal"
-                        data-id="<?= $row['id'] ?>"
-                        data-deduction="<?= htmlspecialchars($row['deduction']) ?>"
-                        data-date_from="<?= htmlspecialchars($row['date_from']) ?>"
-                        data-date_to="<?= htmlspecialchars($row['date_to']) ?>">
-                    <i class="fas fa-edit" style="font-size:1.1rem;"></i>
-                </button>
-                <button class="d-inline-flex justify-content-center align-items-center action-anim delete-btn"
-                        style="background:#ffefef; color:#e74c3c; border:none; border-radius:8px; width:32px; height:32px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
-                        title="Delete"
-                        data-toggle="modal"
-                        data-target="#deleteDeductionModal"
-                        data-id="<?= $row['id'] ?>">
-                    <i class="fas fa-trash-alt" style="font-size:1.1rem;"></i>
-                </button>
-              </td>
-            </tr>
-          <?php endforeach; ?>
+          <?php if (empty($paginatedDeductions)): ?>
+            <tr><td colspan="5" class="text-center">No deductions found.</td></tr>
+          <?php else: ?>
+            <?php foreach ($paginatedDeductions as $index => $row): ?>
+              <tr>
+                <td style="font-weight:700;"><?= (($currentPage - 1) * $perPage) + $index + 1 ?></td>
+                <td style="font-weight:700;"><?= htmlspecialchars($row['deduction_name']) ?></td>
+                <td style="font-weight:700;"><?= htmlspecialchars($row['start_date']) ?></td>
+                <td style="font-weight:700;"><?= htmlspecialchars($row['end_date']) ?></td>
+                <td>
+                  <button class="d-inline-flex justify-content-center align-items-center action-anim edit-btn"
+                          style="background:#2b7d62; color:#fff; border:none; border-radius:8px; width:32px; height:32px; margin-right:6px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
+                          title="Edit"
+                          data-toggle="modal"
+                          data-target="#editDeductionModal"
+                          data-id="<?= $row['Id'] ?>"
+                          data-deduction="<?= htmlspecialchars($row['deduction_name']) ?>"
+                          data-date_from="<?= htmlspecialchars($row['start_date']) ?>"
+                          data-date_to="<?= htmlspecialchars($row['end_date']) ?>">
+                      <i class="fas fa-edit" style="font-size:1.1rem;"></i>
+                  </button>
+                  <button class="d-inline-flex justify-content-center align-items-center action-anim delete-btn"
+                          style="background:#ffefef; color:#e74c3c; border:none; border-radius:8px; width:32px; height:32px; padding:0; transition: transform 0.15s, box-shadow 0.15s;"
+                          title="Delete"
+                          data-toggle="modal"
+                          data-target="#deleteDeductionModal"
+                          data-id="<?= $row['Id'] ?>"
+                          data-deduction="<?= htmlspecialchars($row['deduction_name']) ?>">
+                      <i class="fas fa-trash-alt" style="font-size:1.1rem;"></i>
+                  </button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
-  </div>
-</div>
 
-<!-- Add Deduction Modal (sample only) -->
-<div class="modal fade" id="addDeductionModal" tabindex="-1" role="dialog" aria-labelledby="addDeductionModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <form>
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #2b7d62; color: white;">
-          <h5 class="modal-title">Add Deduction</h5>
-          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+      <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Entries Info -->
+        <div class="text-muted mb-2 mb-md-0">
+          <?php
+              $startEntry = ($totalRows === 0) ? 0 : $offset + 1;
+              $endEntry = min($offset + $perPage, $totalRows);
+          ?>
+          Showing <?= $startEntry ?> to <?= $endEntry ?> of <?= $totalRows ?> entries
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Deduction</label>
-            <input type="text" name="deduction" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Date From</label>
-            <input type="date" name="date_from" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Date To</label>
-            <input type="date" name="date_to" class="form-control" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Save</button>
+
+        <!-- Pagination -->
+        <div class="pagination-container d-flex flex-wrap justify-content-end">
+          <a href="?page=<?= max(1, $currentPage - 1) ?>"
+             class="btn mr-2 <?= $currentPage == 1 ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == 1 ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+            &laquo; Previous
+          </a>
+          <?php for($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?page=<?= $i ?>"
+               class="btn mx-1"
+               style="background-color: <?= $i == $currentPage ? '#2b7d62' : 'transparent' ?>;
+                      color: <?= $i == $currentPage ? 'white' : '#2b7d62' ?>;
+                      border:1px solid #2b7d62;">
+              <?= $i ?>
+            </a>
+          <?php endfor; ?>
+          <a href="?page=<?= min($totalPages, $currentPage + 1) ?>"
+             class="btn ml-2 <?= $currentPage == $totalPages ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+            Next &raquo;
+          </a>
         </div>
       </div>
-    </form>
+    <?php endif; ?>
   </div>
 </div>
 
-<!-- Edit Deduction Modal (sample only) -->
-<div class="modal fade" id="editDeductionModal" tabindex="-1" role="dialog" aria-labelledby="editDeductionModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <form>
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #2b7d62; color: white;">
-          <h5 class="modal-title">Edit Deduction</h5>
-          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
-        </div>
-        <div class="modal-body">
-          <!-- Form fields for editing -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Save Changes</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- Include Modals -->
+<?php 
+include '../views/DeductionManagement/addModal.php'; 
+include '../views/DeductionManagement/editModal.php'; 
+include '../views/DeductionManagement/deleteModal.php'; 
+?>
 
-<!-- Delete Deduction Modal (sample only) -->
-<div class="modal fade" id="deleteDeductionModal" tabindex="-1" role="dialog" aria-labelledby="deleteDeductionModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <form>
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #2b7d62; color: white;">
-          <h5 class="modal-title">Delete Deduction</h5>
-          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to delete this deduction?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background-color: #2b7d62; color: white;">Delete</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- Include CSS -->
+<link rel="stylesheet" href="../assets/css/deductionManagement.css">
 
-<script>
-// Instant search for deduction table
-document.getElementById('searchInput').addEventListener('keyup', function() {
-  var filter = this.value.toLowerCase();
-  var rows = document.querySelectorAll('#deductionTable tbody tr');
-  rows.forEach(function(row) {
-    var deductionCell = row.cells[1]; // 2nd column is Deduction
-    if (deductionCell && deductionCell.textContent.toLowerCase().indexOf(filter) > -1) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
-  });
-});
-</script>
+<!-- Include JavaScript -->
+<script src="../assets/js/deductionManagement.js"></script>
 
-<style>
-.action-anim:hover, .action-anim:focus {
-    transform: scale(1.13) rotate(-4deg);
-    box-shadow: 0 2px 8px 0 rgba(44,125,98,0.13);
-    z-index: 2;
-}
-</style>

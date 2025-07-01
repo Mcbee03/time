@@ -7,7 +7,7 @@ if (empty($_SESSION['csrf_token'])) {
 <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background:#2b7d62; color:#fff;">
+      <div class="modal-header primary">
         <h5 class="modal-title">Add New User</h5>
         <button type="button" class="close text-white" data-dismiss="modal">
           <span>&times;</span>
@@ -41,7 +41,7 @@ if (empty($_SESSION['csrf_token'])) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background:#2b7d62; color:#fff;">
+          <button type="submit" class="btn primary">
             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
             Submit  
           </button>

@@ -66,4 +66,4 @@ if (isset($_SESSION['admin_id'])) {
 
 <script src="../../assets/js/login.js"></script>
 </body>
-</html>                                                                 
+</html

@@ -72,4 +72,4 @@ if (empty($_SESSION['csrf_token'])) {
       </form>
     </div>
   </div>
-</div>  
+</div> 

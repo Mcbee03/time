@@ -1,0 +1,94 @@
+/* 🔷 Filter Input Field */
+.filter-input {
+  border-radius: 6px;
+}
+
+/* 🔷 Table Styling */
+.table-bordered {
+  border: 4px solid #2b7d62;
+}
+
+.table thead {
+  background: #2b7d62;
+  font-weight: bold;
+}
+
+.table thead th {
+  color: white !important;
+}
+
+/* 🔷 General Buttons */
+.btn {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 7px 16px;
+}
+
+.btn-success {
+  background: #2b7d62;
+  color: #fff;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #256a53;
+}
+
+.btn-outline-clear {
+  background: #f5f5f5;
+  color: #555;
+  border: 1px solid #ccc;
+}
+
+/* 🔷 Pagination Buttons */
+.pagination-container .btn {
+  border: 1px solid #2b7d62;
+  color: #2b7d62;
+  background-color: transparent;
+}
+
+.pagination-container .btn.active {
+  background-color: #2b7d62;
+  color: white;
+}
+
+.pagination-container .btn.disabled {
+  background-color: #a3c2b5;
+  color: white;
+  pointer-events: none;
+}
+
+/* 🔷 Action Buttons */
+.edit-btn,
+.delete-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.edit-btn {
+  background: #2b7d62;
+  color: white;
+}
+
+.delete-btn {
+  background: #ffefef;
+  color: #e74c3c;
+}
+
+/* 🔷 Action Buttons Hover Effects */
+.edit-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.delete-btn:hover {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 4px 8px rgba(255, 77, 77, 0.2);
+}

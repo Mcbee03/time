@@ -1,5 +1,4 @@
 <?php
-// ✅ CSRF Token (make sure session_start() was called in the parent file)
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -8,7 +7,7 @@ if (empty($_SESSION['csrf_token'])) {
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       
-      <div class="modal-header bg-danger text-white">
+      <div class="modal-header danger">
         <h5 class="modal-title">Confirm Delete</h5>
         <button type="button" class="close text-white" data-dismiss="modal">
           <span>&times;</span>
@@ -16,9 +15,7 @@ if (empty($_SESSION['csrf_token'])) {
       </div>
 
       <form id="deleteUserForm" action="../logic/UserManagement/deleteUserLogic.php" method="POST">
-        <!-- CSRF Token -->
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-        <!-- User ID -->
         <input type="hidden" name="id" id="delete_id">
         
         <div class="modal-body">
