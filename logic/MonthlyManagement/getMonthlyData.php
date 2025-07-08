@@ -1,24 +1,11 @@
 <?php
 header('Content-Type: application/json');
 session_start();
-
 include '../../config/db.php';
-
-if (!$conn) {
-    die(json_encode([
-        'success' => false,
-        'message' => 'Database connection failed',
-        'toast' => [
-            'title' => 'Error',
-            'message' => 'Cannot connect to database',
-            'type' => 'error'
-        ]
-    ]));
-}
 
 if (!isset($_SESSION['admin_id'])) {
     http_response_code(401);
-    die(json_encode([
+    echo json_encode([
         'success' => false,
         'message' => 'Unauthorized',
         'toast' => [
@@ -26,66 +13,70 @@ if (!isset($_SESSION['admin_id'])) {
             'message' => 'You need to login first',
             'type' => 'error'
         ]
-    ]));
+    ]);
+    exit;
 }
 
 try {
-    $date_from = $_POST['date_from'] ?? '';
-    $date_to = $_POST['date_to'] ?? '';
-    
-    if (empty($date_from) || empty($date_to)) {
-        throw new Exception('Date range is required');
-    }
-
+    $date_from = mysqli_real_escape_string($conn, $_POST['date_from']);
+    $date_to = mysqli_real_escape_string($conn, $_POST['date_to']);
     $response = [
         'success' => true,
         'users' => [],
-        'deductionTypes' => []
+        'deductionTypes' => [],
+        'toast' => null
     ];
 
-    // Get users with their existing allowances for this period
-    // REMOVED the isActive check since the column doesn't exist
-    $userQuery = "SELECT 
-        u.id, u.Name, u.MemberID, c.Committee,
-        COALESCE(SUM(d.HoursWorked), 0) as HoursWorked,
-        ma.id as allowance_id, ma.DateFrom, ma.DateTo, ma.Rate, ma.TranspoAllowance
+    // ✅ Check overlapping allowance entries
+    $checkQuery = "
+        SELECT id FROM tbl_monthly_allowance 
+        WHERE (
+            (DateFrom BETWEEN '$date_from' AND '$date_to') OR
+            (DateTo BETWEEN '$date_from' AND '$date_to') OR
+            ('$date_from' BETWEEN DateFrom AND DateTo) OR
+            ('$date_to' BETWEEN DateFrom AND DateTo)
+        ) LIMIT 1
+    ";
+    $checkResult = mysqli_query($conn, $checkQuery);
+    if (!$checkResult) {
+        throw new Exception('Date validation failed: ' . mysqli_error($conn));
+    }
+    if (mysqli_num_rows($checkResult) > 0) {
+        throw new Exception('An allowance already exists for this date range or overlaps with existing records');
+    }
+
+    // ✅ Get users with committee and DTR
+    $userQuery = "
+        SELECT u.id, u.Name, u.MemberID, c.Committee, 
+        COALESCE(SUM(d.HoursWorked), 0) as HoursWorked
         FROM tbl_users u
         LEFT JOIN tbl_committee c ON u.Committee_Id = c.Id
-        LEFT JOIN tbl_dtr d ON u.id = d.Users_Id AND d.Date BETWEEN ? AND ?
-        LEFT JOIN tbl_monthly_allowance ma ON ma.Users_Id = u.id 
-            AND (
-                (ma.DateFrom BETWEEN ? AND ?)
-                OR (ma.DateTo BETWEEN ? AND ?)
-                OR (? BETWEEN ma.DateFrom AND ma.DateTo)
-                OR (? BETWEEN ma.DateFrom AND ma.DateTo)
-            )
-        GROUP BY u.id, ma.id";
+        LEFT JOIN tbl_dtr d ON u.id = d.Users_Id AND d.Date BETWEEN '$date_from' AND '$date_to'
+        GROUP BY u.id
+    ";
+    $userResult = mysqli_query($conn, $userQuery);
+    if (!$userResult) {
+        throw new Exception('User query failed: ' . mysqli_error($conn));
+    }
 
-    $stmt = $conn->prepare($userQuery);
-    if (!$stmt) throw new Exception('Failed to prepare user query: ' . $conn->error);
-    
-    $stmt->bind_param('ssssssss', $date_from, $date_to, $date_from, $date_to, $date_from, $date_to, $date_from, $date_to);
-    if (!$stmt->execute()) throw new Exception('User query failed: ' . $stmt->error);
-    
-    $result = $stmt->get_result();
-    while ($user = $result->fetch_assoc()) {
+    while ($user = mysqli_fetch_assoc($userResult)) {
         $response['users'][] = $user;
     }
 
-    // Get active deductions for the period
-    // Also removed isActive check here unless you're sure it exists in tbl_deduction
-    $deductionQuery = "SELECT Id, DeductionType 
-                      FROM tbl_deduction 
-                      WHERE DateFrom <= ? AND DateTo >= ?";
-    
-    $stmt = $conn->prepare($deductionQuery);
-    if (!$stmt) throw new Exception('Failed to prepare deduction query: ' . $conn->error);
-    
-    $stmt->bind_param('ss', $date_to, $date_from);
-    if (!$stmt->execute()) throw new Exception('Deduction query failed: ' . $stmt->error);
-    
-    $result = $stmt->get_result();
-    while ($deduction = $result->fetch_assoc()) {
+    // ✅ Get deduction types (removed Status column condition)
+    $deductionQuery = "
+        SELECT Id, DeductionType 
+        FROM tbl_deduction 
+        WHERE 
+            (DateFrom IS NULL OR DateFrom <= '$date_to') AND 
+            (DateTo IS NULL OR DateTo >= '$date_from')
+    ";
+    $deductionResult = mysqli_query($conn, $deductionQuery);
+    if (!$deductionResult) {
+        throw new Exception('Deduction query failed: ' . mysqli_error($conn));
+    }
+
+    while ($deduction = mysqli_fetch_assoc($deductionResult)) {
         $response['deductionTypes'][] = $deduction;
     }
 
@@ -97,9 +88,9 @@ try {
         'success' => false,
         'message' => $e->getMessage(),
         'toast' => [
-            'title' => 'Error',
+            'title' => 'Validation Error',
             'message' => $e->getMessage(),
-            'type' => 'error'
+            'type' => 'warning'
         ]
     ]);
 }

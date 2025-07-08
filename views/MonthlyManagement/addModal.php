@@ -4,6 +4,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 
+<!-- Add Monthly Allowance Modal -->
 <div class="modal fade" id="addAllowanceModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content" style="border-radius: 10px;">
@@ -11,13 +12,16 @@ if (empty($_SESSION['csrf_token'])) {
         <h5 class="modal-title font-weight-bold w-100 text-center">Add Monthly Allowance</h5>
         <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
       </div>
+
+      <!-- Add Allowance Form -->
       <form method="POST" action="../logic/MonthlyManagement/addMonthlyLogic.php" id="addAllowanceForm">
+        <!-- CSRF Token & Hidden Dates -->
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <input type="hidden" id="form_date_from" name="date_from">
         <input type="hidden" id="form_date_to" name="date_to">
-        
+
         <div class="modal-body p-4">
-          <!-- Date Selection -->
+          <!-- 📅 Date Selection -->
           <div class="form-row mb-3 align-items-end">
             <div class="col-md-4">
               <label class="small font-weight-bold">Date From</label>
@@ -34,9 +38,9 @@ if (empty($_SESSION['csrf_token'])) {
             </div>
           </div>
 
-          <!-- Allowance Table Section -->
+          <!-- 📋 Allowance Table Section -->
           <div id="allowance-section" style="display: none;">
-            <!-- Search Box -->
+            <!-- 🔍 Search -->
             <div class="form-group mb-3">
               <div class="input-group" style="max-width: 300px;">
                 <input type="text" class="form-control form-control-sm" placeholder="Search name..." id="memberSearch">
@@ -47,8 +51,8 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
               </div>
             </div>
-            
-            <!-- Allowance Table -->
+
+            <!-- 📊 Table -->
             <div class="table-responsive">
               <table class="table table-bordered table-sm" id="allowanceTable">
                 <thead style="background-color: #2b7d62;" class="text-white text-center font-weight-bold">
@@ -64,14 +68,14 @@ if (empty($_SESSION['csrf_token'])) {
                   </tr>
                 </thead>
                 <tbody id="allowanceTableBody">
-                  <!-- Will be populated by JavaScript -->
+                  <!-- Generated rows by JS -->
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- Modal Footer -->
+        <!-- Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             <i class="fas fa-times-circle mr-1"></i> Cancel

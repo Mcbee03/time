@@ -2,125 +2,162 @@
 session_start();
 include '../../config/db.php';
 
-header('Content-Type: application/json');
-
 if (!isset($_SESSION['admin_id'])) {
-    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
+}
+
+// FETCH DATA
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['date_from']) || isset($_GET['id']))) {
+    $date_from = $_GET['date_from'] ?? '';
+    $date_to = $_GET['date_to'] ?? '';
+    
+    if (isset($_GET['id'])) {
+        $stmt = $conn->prepare("SELECT DateFrom, DateTo FROM tbl_monthly_allowance WHERE Id = ? LIMIT 1");
+        $stmt->bind_param('i', $_GET['id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            echo json_encode(['success' => false, 'message' => 'Record not found']);
+            exit;
+        }
+        
+        $row = $result->fetch_assoc();
+        $date_from = $row['DateFrom'];
+        $date_to = $row['DateTo'];
+    }
+
+    $stmt = $conn->prepare("
+        SELECT 
+            u.Id as user_id, u.PBNum, u.MemberID, u.Name, c.Committee,
+            ma.Id as allowance_id, ma.Rate, ma.TranspoAllowance, ma.HoursWorked,
+            d.Id as deduction_id, d.DeductionType, ud.Amount as deduction_amount
+        FROM tbl_monthly_allowance ma
+        JOIN tbl_users u ON ma.Users_Id = u.Id
+        LEFT JOIN tbl_committee c ON u.Committee_Id = c.Id
+        LEFT JOIN tbl_user_deduction ud ON u.Id = ud.Users_Id
+        LEFT JOIN tbl_deduction d ON ud.Deduction_Id = d.Id
+        WHERE ma.DateFrom = ? AND ma.DateTo = ?
+    ");
+    
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'message' => 'Query failed: ' . $conn->error]);
+        exit;
+    }
+    
+    $stmt->bind_param('ss', $date_from, $date_to);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $uid = $row['user_id'];
+        if (!isset($users[$uid])) {
+            $users[$uid] = [
+                'id' => $uid,
+                'PBNum' => $row['PBNum'],
+                'Name' => $row['Name'],
+                'MemberID' => $row['MemberID'],
+                'Committee' => $row['Committee'],
+                'allowance_id' => $row['allowance_id'],
+                'Rate' => $row['Rate'],
+                'TranspoAllowance' => $row['TranspoAllowance'],
+                'HoursWorked' => $row['HoursWorked'],
+                'Deductions' => []
+            ];
+        }
+
+        if ($row['deduction_id']) {
+            $users[$uid]['Deductions'][$row['deduction_id']] = [
+                'DeductionType' => $row['DeductionType'],
+                'Amount' => $row['deduction_amount']
+            ];
+        }
+    }
+
+    $stmt = $conn->prepare("SELECT Id, DeductionType FROM tbl_deduction WHERE (DateFrom IS NULL OR DateFrom <= ?) AND (DateTo IS NULL OR DateTo >= ?)");
+    $stmt->bind_param('ss', $date_to, $date_from);
+    $stmt->execute();
+    $deductionTypes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    header('Content-Type: application/json');
     echo json_encode([
-        'success' => false,
-        'message' => 'Unauthorized access',
-        'toast' => [
-            'title' => 'Error',
-            'message' => 'You must be logged in as admin',
-            'type' => 'error'
-        ]
+        'success' => true,
+        'date_from' => $date_from,
+        'date_to' => $date_to,
+        'users' => array_values($users),
+        'deductionTypes' => $deductionTypes
     ]);
     exit;
 }
 
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// UPDATE
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
+    }
 
-if (!$id) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Missing ID',
-        'toast' => [
-            'title' => 'Error',
-            'message' => 'Missing or invalid ID',
-            'type' => 'error'
-        ]
-    ]);
-    exit;
-}
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to'];
+    
+    mysqli_begin_transaction($conn);
+    try {
+        if (!isset($_POST['user_id']) || !is_array($_POST['user_id'])) {
+            throw new Exception('Invalid user data');
+        }
 
-// Get DateFrom and DateTo of this allowance group
-$headerQuery = "SELECT DateFrom, DateTo FROM tbl_monthly_allowance WHERE id = $id LIMIT 1";
-$headerResult = mysqli_query($conn, $headerQuery);
-if (!$headerResult || mysqli_num_rows($headerResult) == 0) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Allowance not found',
-        'toast' => [
-            'title' => 'Error',
-            'message' => 'Allowance record not found',
-            'type' => 'error'
-        ]
-    ]);
-    exit;
-}
-$header = mysqli_fetch_assoc($headerResult);
-$date_from = $header['DateFrom'];
-$date_to = $header['DateTo'];
+        foreach ($_POST['user_id'] as $i => $user_id) {
+            $rate = isset($_POST['rate'][$i]) ? floatval($_POST['rate'][$i]) : 0;
+            $transpo = isset($_POST['transpo_allowance'][$i]) ? floatval($_POST['transpo_allowance'][$i]) : 0;
+            $hoursWorked = isset($_POST['hours_worked'][$i]) ? floatval($_POST['hours_worked'][$i]) : 0;
+            $allowance_id = isset($_POST['allowance_id'][$i]) ? intval($_POST['allowance_id'][$i]) : 0;
 
-// Get all deduction types active within the allowance period
-$deductionTypes = [];
-$deductionQuery = "SELECT Id, DeductionType FROM tbl_deduction 
-                   WHERE DateFrom <= '$date_to' AND DateTo >= '$date_from'";
-$deductionResult = mysqli_query($conn, $deductionQuery);
-while ($d = mysqli_fetch_assoc($deductionResult)) {
-    $deductionTypes[] = $d;
-}
+            if ($allowance_id <= 0) continue;
 
-// Fetch all users included in this allowance period (joined by DateFrom and DateTo)
-$userQuery = "
-    SELECT 
-        u.id,
-        u.Name,
-        u.MemberID,
-        c.Committee,
-        ma.id AS allowance_id,
-        ma.HoursWorked,
-        ma.Rate,
-        ma.TranspoAllowance,
-        ma.UserDeduction_Id
-    FROM tbl_monthly_allowance ma
-    JOIN tbl_users u ON ma.Users_Id = u.id
-    LEFT JOIN tbl_committee c ON u.Committee_Id = c.Id
-    WHERE ma.DateFrom = '$date_from' AND ma.DateTo = '$date_to'
-";
-$userResult = mysqli_query($conn, $userQuery);
+            // Update allowance including hours worked
+            $stmt = $conn->prepare("UPDATE tbl_monthly_allowance SET Rate = ?, TranspoAllowance = ?, HoursWorked = ? WHERE Id = ?");
+            $stmt->bind_param('dddi', $rate, $transpo, $hoursWorked, $allowance_id);
+            $stmt->execute();
 
-$users = [];
-$userIds = [];
+            if (isset($_POST['deduction_amount']) && is_array($_POST['deduction_amount'])) {
+                foreach ($_POST['deduction_amount'] as $uid => $deductions) {
+                    if ($uid != $user_id) continue;
+                    
+                    foreach ($deductions as $deduction_id => $amount) {
+                        $amount = floatval($amount);
+                        $deduction_id = intval($deduction_id);
+                        $current_time = date('Y-m-d H:i:s');
 
-while ($row = mysqli_fetch_assoc($userResult)) {
-    $row['Deductions'] = []; // Placeholder
-    $users[$row['id']] = $row;
-    $userIds[] = $row['id'];
-}
+                        $stmt = $conn->prepare("SELECT Id FROM tbl_user_deduction WHERE Users_Id = ? AND Deduction_Id = ?");
+                        $stmt->bind_param('ii', $user_id, $deduction_id);
+                        $stmt->execute();
+                        $exists = $stmt->get_result()->num_rows > 0;
 
-// Fetch all deductions for those users within this period
-if (!empty($userIds)) {
-    $userIdsStr = implode(",", array_map('intval', $userIds));
-    $deductionQuery = "
-        SELECT ud.Users_Id, ud.Deduction_Id, ud.Amount
-        FROM tbl_user_deduction ud
-        JOIN tbl_monthly_allowance ma ON ma.UserDeduction_Id = ud.id
-        WHERE ma.Users_Id IN ($userIdsStr) 
-        AND ma.DateFrom = '$date_from' AND ma.DateTo = '$date_to'
-    ";
-    $deductionResult = mysqli_query($conn, $deductionQuery);
-    while ($row = mysqli_fetch_assoc($deductionResult)) {
-        $uid = $row['Users_Id'];
-        $did = $row['Deduction_Id'];
-        $users[$uid]['Deductions'][$did] = ['Amount' => $row['Amount']];
+                        if ($amount > 0) {
+                            if ($exists) {
+                                $stmt = $conn->prepare("UPDATE tbl_user_deduction SET Amount = ?, updated_at = ? WHERE Users_Id = ? AND Deduction_Id = ?");
+                                $stmt->bind_param('dsii', $amount, $current_time, $user_id, $deduction_id);
+                            } else {
+                                $stmt = $conn->prepare("INSERT INTO tbl_user_deduction (Users_Id, Deduction_Id, Amount, created_at, updated_at) VALUES (?, ?, ?, ?, ?)");
+                                $stmt->bind_param('iidss', $user_id, $deduction_id, $amount, $current_time, $current_time);
+                            }
+                            $stmt->execute();
+                        } else if ($exists) {
+                            $stmt = $conn->prepare("DELETE FROM tbl_user_deduction WHERE Users_Id = ? AND Deduction_Id = ?");
+                            $stmt->bind_param('ii', $user_id, $deduction_id);
+                            $stmt->execute();
+                        }
+                    }
+                }
+            }
+        }
+
+        mysqli_commit($conn);
+        echo json_encode(['success' => true, 'message' => 'Allowance updated successfully']);
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }
-
-// Re-index for front-end consumption
-$responseUsers = array_values($users);
-
-echo json_encode([
-    'success' => true,
-    'message' => 'Edit allowance data loaded',
-    'toast' => [
-        'title' => 'Success',
-        'message' => 'Data fetched successfully',
-        'type' => 'success'
-    ],
-    'date_from' => $date_from,
-    'date_to' => $date_to,
-    'deductionTypes' => $deductionTypes,
-    'users' => $responseUsers
-]);
 ?>

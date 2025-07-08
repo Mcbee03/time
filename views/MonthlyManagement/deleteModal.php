@@ -4,7 +4,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 
-<!-- Monthly Delete Confirmation Modal -->
 <div class="modal fade" id="deleteMonthlyModal" tabindex="-1" role="dialog" aria-labelledby="deleteMonthlyModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -14,20 +13,17 @@ if (empty($_SESSION['csrf_token'])) {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="deleteMonthlyForm" method="POST" action="../logic/MonthlyManagement/deleteMonthlyLogic.php">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-        <input type="hidden" name="id" id="deleteMonthlyId">
-        <div class="modal-body">
-          <p>Are you sure you want to delete this allowance record?</p>
-          <p class="text-danger mb-0">This action cannot be undone and will delete all associated data.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">
-            <i class="fas fa-trash mr-1"></i> Delete
-          </button>
-        </div>
-      </form>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this allowance record?</p>
+        <p class="text-danger mb-0">This action cannot be undone and will delete all associated data.</p>
+        <input type="hidden" id="deleteCsrfToken" value="<?= $_SESSION['csrf_token'] ?>">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+          <i class="fas fa-trash mr-1"></i> Delete
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -4,7 +4,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 
-<!-- 🔧 Edit Allowance Modal -->
 <div class="modal fade" id="editAllowanceModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content" style="border-radius: 10px;">
@@ -19,7 +18,7 @@ if (empty($_SESSION['csrf_token'])) {
           <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
           <input type="hidden" name="allowance_id" id="editAllowanceId">
 
-          <!-- 🔍 Search Box -->
+          <!-- Search Box -->
           <div class="form-group mb-3">
             <div class="input-group" style="max-width: 300px;">
               <input type="text" class="form-control form-control-sm" placeholder="Search name..." id="editMemberSearch">
@@ -31,7 +30,7 @@ if (empty($_SESSION['csrf_token'])) {
             </div>
           </div>
 
-          <!-- 📅 Date Range -->
+          <!-- Date Range -->
           <div class="form-row mb-3">
             <div class="col-md-6">
               <label class="small font-weight-bold">Date From</label>
@@ -43,7 +42,7 @@ if (empty($_SESSION['csrf_token'])) {
             </div>
           </div>
 
-          <!-- 📋 Editable Table -->
+          <!-- Editable Table -->
           <div class="table-responsive">
             <table class="table table-bordered table-sm" id="editAllowanceTable">
               <thead style="background-color: #2b7d62;" class="text-center text-white">
@@ -78,4 +77,3 @@ if (empty($_SESSION['csrf_token'])) {
     </div>
   </div>
 </div>
-      

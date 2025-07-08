@@ -2,33 +2,22 @@
 session_start();
 include '../../config/db.php';
 
-// Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
     die(json_encode([
         'success' => false, 
         'message' => 'Unauthorized',
-        'toast' => [
-            'title' => 'Error',
-            'message' => 'You are not authorized',
-            'type' => 'error'
-        ]
+        'toast' => ['title' => 'Error', 'message' => 'You are not authorized', 'type' => 'error']
     ]));
 }
 
-// Validate CSRF token
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     die(json_encode([
         'success' => false,
         'message' => 'Invalid CSRF token',
-        'toast' => [
-            'title' => 'Security Error',
-            'message' => 'Invalid request',
-            'type' => 'error'
-        ]
+        'toast' => ['title' => 'Security Error', 'message' => 'Invalid request', 'type' => 'error']
     ]));
 }
 
-// Get and validate date range
 $date_from = isset($_POST['date_from']) ? mysqli_real_escape_string($conn, $_POST['date_from']) : '';
 $date_to = isset($_POST['date_to']) ? mysqli_real_escape_string($conn, $_POST['date_to']) : '';
 
@@ -36,30 +25,21 @@ if (empty($date_from) || empty($date_to)) {
     die(json_encode([
         'success' => false,
         'message' => 'Date range is required',
-        'toast' => [
-            'title' => 'Validation Error',
-            'message' => 'Please select date range',
-            'type' => 'warning'
-        ]
+        'toast' => ['title' => 'Validation Error', 'message' => 'Please select date range', 'type' => 'warning']
     ]));
 }
 
-// Validate same month
 $from_month = date('m-Y', strtotime($date_from));
 $to_month = date('m-Y', strtotime($date_to));
 if ($from_month !== $to_month) {
     die(json_encode([
         'success' => false,
         'message' => 'Invalid month range',
-        'toast' => [
-            'title' => 'Validation Error',
-            'message' => 'Dates must be in same month',
-            'type' => 'warning'
-        ]
+        'toast' => ['title' => 'Validation Error', 'message' => 'Dates must be in same month', 'type' => 'warning']
     ]));
 }
 
-// Check for existing allowance for this month
+// Check for existing allowance
 $month_start = date('Y-m-01', strtotime($date_from));
 $month_end = date('Y-m-t', strtotime($date_from));
 $checkQuery = "SELECT id FROM tbl_monthly_allowance 
@@ -75,17 +55,11 @@ if (mysqli_num_rows($checkResult) > 0) {
     die(json_encode([
         'success' => false,
         'message' => 'Allowance exists for this month',
-        'toast' => [
-            'title' => 'Validation Error',
-            'message' => 'Monthly allowance exists',
-            'type' => 'warning'
-        ]
+        'toast' => ['title' => 'Validation Error', 'message' => 'Monthly allowance exists', 'type' => 'warning']
     ]));
 }
 
-// Start transaction
 mysqli_begin_transaction($conn);
-
 try {
     $user_ids = $_POST['user_id'] ?? [];
     $rates = $_POST['rate'] ?? [];
@@ -97,7 +71,16 @@ try {
         $rate = floatval($rates[$index] ?? 0);
         $transpo = floatval($transpo_allowances[$index] ?? 0);
 
-        // Check if user already has allowance for this period
+        // Get hours worked from DTR
+        $hoursQuery = "SELECT COALESCE(SUM(HoursWorked), 0) as total_hours 
+                      FROM tbl_dtr 
+                      WHERE Users_Id = '$user_id' 
+                      AND Date BETWEEN '$date_from' AND '$date_to'";
+        $hoursResult = mysqli_query($conn, $hoursQuery);
+        $hoursRow = mysqli_fetch_assoc($hoursResult);
+        $hoursWorked = $hoursRow['total_hours'];
+
+        // Check if user already has allowance
         $checkUserQuery = "SELECT id FROM tbl_monthly_allowance 
                           WHERE Users_Id = '$user_id' 
                           AND (
@@ -112,7 +95,7 @@ try {
             throw new Exception("User already has allowance for this period");
         }
 
-        // Insert deductions if any
+        // Process deductions
         $userDeductionId = null;
         if (isset($deduction_amounts[$user_id])) {
             $deductionValues = [];
@@ -135,7 +118,6 @@ try {
             }
         }
 
-        // Insert default deduction if none
         if ($userDeductionId === null) {
             $defaultDeductionQuery = "INSERT INTO tbl_user_deduction 
                                      (Users_Id, Deduction_Id, Amount, created_at)
@@ -146,10 +128,10 @@ try {
             $userDeductionId = mysqli_insert_id($conn);
         }
 
-        // Insert allowance record
+        // Insert allowance with hours worked
         $query = "INSERT INTO tbl_monthly_allowance 
-                  (Users_Id, Rate, TranspoAllowance, UserDeduction_Id, DateFrom, DateTo, created_at)
-                  VALUES ('$user_id', '$rate', '$transpo', '$userDeductionId', '$date_from', '$date_to', NOW())";
+                  (Users_Id, Rate, TranspoAllowance, HoursWorked, UserDeduction_Id, DateFrom, DateTo, created_at)
+                  VALUES ('$user_id', '$rate', '$transpo', '$hoursWorked', '$userDeductionId', '$date_from', '$date_to', NOW())";
         
         if (!mysqli_query($conn, $query)) {
             throw new Exception("Failed to save allowance: " . mysqli_error($conn));
@@ -161,11 +143,7 @@ try {
     echo json_encode([
         'success' => true,
         'message' => 'Monthly allowance saved successfully',
-        'toast' => [
-            'title' => 'Success',
-            'message' => 'Allowance saved successfully',
-            'type' => 'success'
-        ],
+        'toast' => ['title' => 'Success', 'message' => 'Allowance saved successfully', 'type' => 'success'],
         'date_from' => $date_from,
         'date_to' => $date_to
     ]);
@@ -175,11 +153,7 @@ try {
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage(),
-        'toast' => [
-            'title' => 'Error',
-            'message' => $e->getMessage(),
-            'type' => 'error'
-        ]
+        'toast' => ['title' => 'Error', 'message' => $e->getMessage(), 'type' => 'error']
     ]);
 }
 ?>

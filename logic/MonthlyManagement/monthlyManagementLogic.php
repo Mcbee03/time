@@ -10,8 +10,12 @@ if (!isset($_SESSION['admin_id'])) {
 $date_from = $_GET['date_from'] ?? '';
 $date_to = $_GET['date_to'] ?? '';
 
-// Build the base query
-$query = "SELECT ma.id, ma.DateFrom as date_from, ma.DateTo as date_to 
+// Build the base query to group by date range
+$query = "SELECT 
+            MIN(ma.id) as id, 
+            ma.DateFrom as date_from, 
+            ma.DateTo as date_to,
+            COUNT(*) as member_count
           FROM tbl_monthly_allowance ma";
 
 $where = [];
@@ -34,7 +38,7 @@ if (!empty($where)) {
     $query .= " WHERE " . implode(" AND ", $where);
 }
 
-$query .= " ORDER BY ma.DateFrom DESC";
+$query .= " GROUP BY ma.DateFrom, ma.DateTo ORDER BY ma.DateFrom ASC";
 
 // Prepare and execute the query
 $stmt = $conn->prepare($query);
@@ -42,7 +46,7 @@ if ($params) {
     $stmt->bind_param($types, ...$params);
 }
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result();  
 
 $allowances = [];
 while ($row = $result->fetch_assoc()) {

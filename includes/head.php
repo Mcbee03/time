@@ -45,3 +45,4 @@
         "timeOut": "3000"
     };
 </script>
+<meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?>">

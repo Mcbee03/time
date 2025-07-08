@@ -15,7 +15,7 @@ include '../logic/MonthlyManagement/monthlyManagementLogic.php';
 ?>
 
 <div class="main-content-container">
-    <!-- Filter Form (Original Container) -->
+    <!-- Filter Form -->
     <div class="card card-primary card-outline elevation-2 p-3 mb-4">
         <form method="GET">
             <div class="form-row align-items-end">
@@ -46,7 +46,7 @@ include '../logic/MonthlyManagement/monthlyManagementLogic.php';
         </form>
     </div>
 
-    <!-- Table (Updated to match deductionManagement style) -->
+    <!-- Allowance Table -->
     <div class="card card-primary card-outline elevation-2 p-3">
         <div class="card-body">
             <div class="table-responsive">
@@ -95,10 +95,9 @@ include '../logic/MonthlyManagement/monthlyManagementLogic.php';
                 </table>
             </div>
 
-            <!-- Pagination (Updated to match deductionManagement style) -->
+            <!-- Pagination -->
             <?php if ($totalPages > 1): ?>
                 <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
-                    <!-- Entries Info -->
                     <div class="text-muted mb-2 mb-md-0">
                         <?php
                             $startEntry = ($totalItems === 0) ? 0 : $offset + 1;
@@ -107,7 +106,6 @@ include '../logic/MonthlyManagement/monthlyManagementLogic.php';
                         Showing <?= $startEntry ?> to <?= $endEntry ?> of <?= $totalItems ?> entries
                     </div>
 
-                    <!-- Pagination -->
                     <div class="pagination-container d-flex flex-wrap justify-content-end">
                         <a href="?<?= http_build_query(array_merge($_GET, ['page' => max(1, $page - 1)])) ?>"
                            class="btn mr-2 <?= $page == 1 ? 'disabled' : '' ?>"
