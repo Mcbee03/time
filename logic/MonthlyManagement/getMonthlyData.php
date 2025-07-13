@@ -80,7 +80,7 @@ try {
         $response['deductionTypes'][] = $deduction;
     }
 
-    echo json_encode($response);
+    echo json_encode($response);    
 
 } catch (Exception $e) {
     http_response_code(400);

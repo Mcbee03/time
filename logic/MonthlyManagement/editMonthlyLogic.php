@@ -28,16 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['date_from']) || isset(
         $date_to = $row['DateTo'];
     }
 
+    // First get all users with their allowance data
     $stmt = $conn->prepare("
         SELECT 
             u.Id as user_id, u.PBNum, u.MemberID, u.Name, c.Committee,
-            ma.Id as allowance_id, ma.Rate, ma.TranspoAllowance, ma.HoursWorked,
-            d.Id as deduction_id, d.DeductionType, ud.Amount as deduction_amount
+            ma.Id as allowance_id, ma.Rate, ma.TranspoAllowance, ma.HoursWorked
         FROM tbl_monthly_allowance ma
         JOIN tbl_users u ON ma.Users_Id = u.Id
         LEFT JOIN tbl_committee c ON u.Committee_Id = c.Id
-        LEFT JOIN tbl_user_deduction ud ON u.Id = ud.Users_Id
-        LEFT JOIN tbl_deduction d ON ud.Deduction_Id = d.Id
         WHERE ma.DateFrom = ? AND ma.DateTo = ?
     ");
     
@@ -52,34 +50,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['date_from']) || isset(
 
     $users = [];
     while ($row = $result->fetch_assoc()) {
-        $uid = $row['user_id'];
-        if (!isset($users[$uid])) {
-            $users[$uid] = [
-                'id' => $uid,
-                'PBNum' => $row['PBNum'],
-                'Name' => $row['Name'],
-                'MemberID' => $row['MemberID'],
-                'Committee' => $row['Committee'],
-                'allowance_id' => $row['allowance_id'],
-                'Rate' => $row['Rate'],
-                'TranspoAllowance' => $row['TranspoAllowance'],
-                'HoursWorked' => $row['HoursWorked'],
-                'Deductions' => []
-            ];
-        }
-
-        if ($row['deduction_id']) {
-            $users[$uid]['Deductions'][$row['deduction_id']] = [
-                'DeductionType' => $row['DeductionType'],
-                'Amount' => $row['deduction_amount']
-            ];
-        }
+        $users[$row['user_id']] = [
+            'id' => $row['user_id'],
+            'PBNum' => $row['PBNum'],
+            'Name' => $row['Name'],
+            'MemberID' => $row['MemberID'],
+            'Committee' => $row['Committee'],
+            'allowance_id' => $row['allowance_id'],
+            'Rate' => $row['Rate'],
+            'TranspoAllowance' => $row['TranspoAllowance'],
+            'HoursWorked' => $row['HoursWorked'],
+            'Deductions' => []
+        ];
     }
 
-    $stmt = $conn->prepare("SELECT Id, DeductionType FROM tbl_deduction WHERE (DateFrom IS NULL OR DateFrom <= ?) AND (DateTo IS NULL OR DateTo >= ?)");
+    // Now get deductions that are active during the allowance period
+    $stmt = $conn->prepare("
+        SELECT d.Id, d.DeductionType 
+        FROM tbl_deduction d
+        WHERE (d.DateFrom IS NULL OR d.DateFrom <= ?) 
+        AND (d.DateTo IS NULL OR d.DateTo >= ?)
+    ");
     $stmt->bind_param('ss', $date_to, $date_from);
     $stmt->execute();
     $deductionTypes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    // Get user deductions that are active during this period
+    if (!empty($users)) {
+        $user_ids = array_keys($users);
+        $placeholders = implode(',', array_fill(0, count($user_ids), '?'));
+        
+        $stmt = $conn->prepare("
+            SELECT ud.Users_Id, ud.Deduction_Id, ud.Amount, d.DeductionType
+            FROM tbl_user_deduction ud
+            JOIN tbl_deduction d ON ud.Deduction_Id = d.Id
+            WHERE ud.Users_Id IN ($placeholders)
+            AND (d.DateFrom IS NULL OR d.DateFrom <= ?)
+            AND (d.DateTo IS NULL OR d.DateTo >= ?)
+        ");
+        
+        $types = str_repeat('i', count($user_ids)) . 'ss';
+        $params = array_merge($user_ids, [$date_to, $date_from]);
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        while ($row = $result->fetch_assoc()) {
+            $user_id = $row['Users_Id'];
+            if (isset($users[$user_id])) {
+                $users[$user_id]['Deductions'][$row['Deduction_Id']] = [
+                    'DeductionType' => $row['DeductionType'],
+                    'Amount' => $row['Amount']
+                ];
+            }
+        }
+    }
 
     header('Content-Type: application/json');
     echo json_encode([

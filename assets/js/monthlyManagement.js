@@ -221,11 +221,17 @@ function renderEditAllowanceTable(data) {
     });
 
     $('.deduction-input, [name="transpo_allowance[]"]').on('input', function() {
-        const row = $(this).closest('tr');
-        const transpo = parseFloat(row.find('[name="transpo_allowance[]"]').val()) || 0;
-        const deductions = row.find('.deduction-input').get().reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
-        row.find('.savings-cell').text((transpo - deductions).toFixed(2));
-    });
+    const row = $(this).closest('tr');
+    const transpo = parseFloat(row.find('[name="transpo_allowance[]"]').val()) || 0;
+    
+    // Only include deductions with values > 0
+    const deductions = row.find('.deduction-input').get().reduce((sum, input) => {
+        const val = parseFloat(input.value) || 0;
+        return val > 0 ? sum + val : sum;
+    }, 0);
+    
+    row.find('.savings-cell').text((transpo - deductions).toFixed(2));
+});
 }
 
 function createDeductionSubheader(deductionTypes) {
@@ -239,6 +245,16 @@ function calculateUserSavings(user) {
     const deductions = user.Deductions ? Object.values(user.Deductions).reduce((sum, d) => sum + (d.Amount || 0), 0) : 0;
     return (transpo - deductions).toFixed(2);
 }
+
+// Update the savings calculation event handler
+$('.deduction-input, [name="transpo_allowance[]"]').on('input', function() {
+    const row = $(this).closest('tr');
+    const transpo = parseFloat(row.find('[name="transpo_allowance[]"]').val()) || 0;
+    const deductions = row.find('.deduction-input').get().reduce((sum, input) => {
+        return sum + (parseFloat(input.value) || 0);
+    }, 0);
+    row.find('.savings-cell').text((transpo - deductions).toFixed(2));
+});
 
 // ========== FORM HANDLING ==========
 function submitAllowanceForm() {
