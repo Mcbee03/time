@@ -159,7 +159,7 @@ function generateMonthlyReport($dateFrom, $dateTo, $exportFormat) {
 
 function generateMonthlyPDF($data, $deductionTypes, $dateFrom, $dateTo) {
     ob_clean();
-    $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
+    $mpdf = new \Mpdf\Mpdf(['format' => [215.9, 279.4]]);
     $mpdf->SetDisplayMode('fullpage');
 
     $style = '<style>
@@ -172,13 +172,12 @@ function generateMonthlyPDF($data, $deductionTypes, $dateFrom, $dateTo) {
         th { background-color: #f0f0f0; text-align: center; }
         .right { text-align: right; }
         .center { text-align: center; }
-        .deduction-details { font-size: 8pt; color: #555; margin-top: 3px; }
     </style>';
 
     $mpdf->WriteHTML($style, \Mpdf\HTMLParserMode::HEADER_CSS);
 
     $monthYear = date('F Y', strtotime($dateFrom));
-    $html = "<h1>MONTHLY TRANSPORTATION ALLOWANCE REPORT</h1>";
+    $html = "<h1>MONTHLY ALLOWANCE REPORT</h1>";
     $html .= "<h2>For the month of $monthYear</h2>";
 
     $grouped = [];
@@ -194,26 +193,23 @@ function generateMonthlyPDF($data, $deductionTypes, $dateFrom, $dateTo) {
             <th>Member ID</th>
             <th>Duty Hours</th>
             <th>Rate</th>
-            <th>Transpo Allowance</th>
-            <th>Less Deductions</th>
-            <th>Regular Savings</th>
-        </tr></thead><tbody>";
+            <th>Transpo Allowance</th>";
+        foreach ($deductionTypes as $dedType) {
+            $html .= "<th>{$dedType['DeductionType']}</th>";
+        }
+        $html .= "<th>Regular Savings</th></tr></thead><tbody>";
 
         foreach ($members as $member) {
-            $totalDeductions = 0;
-            $deductionDetails = [];
-
+            // Prepare deduction amounts per type
+            $deductionMap = [];
+            foreach ($deductionTypes as $dedType) {
+                $deductionMap[$dedType['Id']] = 0;
+            }
             foreach ($member['deductions'] as $deduction) {
-                $amount = floatval($deduction['Amount']);
-                $totalDeductions += $amount;
-                $deductionDetails[] = $deduction['DeductionType'] . ': ' . number_format($amount, 2);
+                $deductionMap[$deduction['Deduction_Id']] = floatval($deduction['Amount']);
             }
-
+            $totalDeductions = array_sum($deductionMap);
             $savings = floatval($member['TranspoAllowance']) - $totalDeductions;
-            $deductionsDisplay = number_format($totalDeductions, 2);
-            if (!empty($deductionDetails)) {
-                $deductionsDisplay .= '<div class="deduction-details">' . implode('<br>', $deductionDetails) . '</div>';
-            }
 
             $html .= "<tr>
                 <td>{$member['Committee']}</td>
@@ -221,17 +217,106 @@ function generateMonthlyPDF($data, $deductionTypes, $dateFrom, $dateTo) {
                 <td class='center'>{$member['MemberID']}</td>
                 <td class='center'>{$member['HoursWorked']}</td>
                 <td class='right'>" . number_format($member['Rate'], 2) . "</td>
-                <td class='right'>" . number_format($member['TranspoAllowance'], 2) . "</td>
-                <td class='right'>$deductionsDisplay</td>
-                <td class='right'>" . number_format($savings, 2) . "</td>
+                <td class='right'>" . number_format($member['TranspoAllowance'], 2) . "</td>";
+            foreach ($deductionTypes as $dedType) {
+                $html .= "<td class='right'>" . number_format($deductionMap[$dedType['Id']], 2) . "</td>";
+            }
+            $html .= "<td class='right'>" . number_format($savings, 2) . "</td>
             </tr>";
         }
-
         $html .= "</tbody></table>";
     }
 
     $mpdf->WriteHTML($html);
     $mpdf->Output("Monthly_Allowance_Report_$monthYear.pdf", "D");
+    exit;
+}
+
+function generateMonthlyExcel($data, $deductionTypes, $dateFrom, $dateTo) {
+    ob_clean();
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    $monthYear = date('F Y', strtotime($dateFrom));
+    $sheet->setCellValue('A1', 'MONTHLY ALLOWANCE REPORT');
+    $sheet->setCellValue('A2', "For the month of $monthYear");
+    $colCount = 7 + count($deductionTypes); // Committee, Name, Member ID, Duty Hours, Rate, Transpo, Deductions..., Savings
+    $lastCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colCount);
+    $sheet->mergeCells("A1:{$lastCol}1");
+    $sheet->mergeCells("A2:{$lastCol}2");
+
+    // Style for title
+    $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+    $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
+    $rowNum = 4;
+    $headers = [
+        'Committee', 'Name', 'Member ID', 'Duty Hours', 'Rate', 'Transpo Allowance'
+    ];
+    foreach ($deductionTypes as $dedType) {
+        $headers[] = $dedType['DeductionType'];
+    }
+    $headers[] = 'Regular Savings';
+    $sheet->fromArray($headers, NULL, "A$rowNum");
+    $headerRange = "A$rowNum:{$lastCol}{$rowNum}";
+    $sheet->getStyle($headerRange)->getFont()->setBold(true);
+    $rowNum++;
+
+    // Group by committee
+    $grouped = [];
+    foreach ($data as $row) {
+        $grouped[$row['Committee']][] = $row;
+    }
+
+    foreach ($grouped as $committee => $members) {
+        $sheet->setCellValue("A$rowNum", strtoupper($committee));
+        $sheet->mergeCells("A{$rowNum}:{$lastCol}{$rowNum}");
+        $rowNum++;
+
+        foreach ($members as $member) {
+            $deductionMap = [];
+            foreach ($deductionTypes as $dedType) {
+                $deductionMap[$dedType['Id']] = 0;
+            }
+            foreach ($member['deductions'] as $deduction) {
+                $deductionMap[$deduction['Deduction_Id']] = floatval($deduction['Amount']);
+            }
+            $totalDeductions = array_sum($deductionMap);
+            $savings = floatval($member['TranspoAllowance']) - $totalDeductions;
+
+            $rowData = [
+                $member['Committee'],
+                $member['Name'],
+                $member['MemberID'],
+                $member['HoursWorked'],
+                number_format($member['Rate'], 2),
+                number_format($member['TranspoAllowance'], 2)
+            ];
+            foreach ($deductionTypes as $dedType) {
+                $rowData[] = number_format($deductionMap[$dedType['Id']], 2);
+            }
+            $rowData[] = number_format($savings, 2);
+
+            $sheet->fromArray($rowData, NULL, "A$rowNum");
+            $rowNum++;
+        }
+        $rowNum++;
+    }
+
+    foreach (range('A', $lastCol) as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    // CLEAR OUTPUT BUFFER BEFORE SENDING HEADERS AND FILE
+    if (ob_get_length()) ob_end_clean();
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="Monthly_Allowance_Report_' . $monthYear . '.xlsx"');
+    header('Cache-Control: max-age=0');
+
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save('php://output');
     exit;
 }
 
@@ -273,7 +358,7 @@ function generateDTRReport($dateFrom, $dateTo, $memberId, $exportFormat) {
 
 function generateDTRPDF($data, $dateFrom, $dateTo) {
     ob_clean();
-    $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
+    $mpdf = new \Mpdf\Mpdf(['format' => [215.9, 279.4]]);
     $html = '<style>
         body { font-family: Arial; }
         h1, h2, h3 { text-align: center; }
@@ -281,7 +366,7 @@ function generateDTRPDF($data, $dateFrom, $dateTo) {
         th, td { border: 1px solid #ccc; padding: 5px; text-align: center; }
     </style>';
     $html .= "<h1>DAILY TIME RECORD REPORT</h1>";
-    $html .= "<h2>From " . date('M d, Y', strtotime($dateFrom)) . " to " . date('M d, Y', strtotime($dateTo)) . "</h2>";
+    $html .= "<h2>From " . date('m-d-Y', strtotime($dateFrom)) . " to " . date('m-d-Y', strtotime($dateTo)) . "</h2>";
 
     $grouped = [];
     foreach ($data as $row) {
@@ -295,11 +380,14 @@ function generateDTRPDF($data, $dateFrom, $dateTo) {
         </tr></thead><tbody>";
 
         foreach ($entries as $entry) {
+            $formattedDate = date('m-d-Y', strtotime($entry['Date']));
+            $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
+            $formattedTimeOut = date('h:i A', strtotime($entry['TimeOUT']));
             $html .= "<tr>
-                <td>" . $entry['Date'] . "</td>
-                <td>" . $entry['TimeIN'] . "</td>
-                <td>" . $entry['TimeOUT'] . "</td>
-                <td>" . $entry['HoursWorked'] . "</td>
+                <td>$formattedDate</td>
+                <td>$formattedTimeIn</td>
+                <td>$formattedTimeOut</td>
+                <td>{$entry['HoursWorked']}</td>
             </tr>";
         }
 
@@ -311,14 +399,19 @@ function generateDTRPDF($data, $dateFrom, $dateTo) {
     exit;
 }
 
+
 function generateDTRExcel($data, $dateFrom, $dateTo) {
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
 
     $sheet->setCellValue('A1', 'DAILY TIME RECORD REPORT');
-    $sheet->setCellValue('A2', 'From ' . $dateFrom . ' to ' . $dateTo);
+    $sheet->setCellValue('A2', 'From ' . date('m-d-Y', strtotime($dateFrom)) . ' to ' . date('m-d-Y', strtotime($dateTo)));
     $sheet->mergeCells('A1:D1');
     $sheet->mergeCells('A2:D2');
+
+    // Style for title
+    $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+    $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
     $rowNum = 4;
     $grouped = [];
@@ -332,13 +425,20 @@ function generateDTRExcel($data, $dateFrom, $dateTo) {
         $rowNum++;
 
         $sheet->fromArray(['DATE', 'TIME IN', 'TIME OUT', 'HOURS WORKED'], NULL, "A$rowNum");
+        $headerRange = "A{$rowNum}:D{$rowNum}";
+        $sheet->getStyle($headerRange)->getFont()->setBold(true);
+
         $rowNum++;
 
         foreach ($entries as $entry) {
+            $formattedDate = date('m-d-Y', strtotime($entry['Date']));
+            $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
+            $formattedTimeOut = date('h:i A', strtotime($entry['TimeOUT']));
+
             $sheet->fromArray([
-                $entry['Date'],
-                $entry['TimeIN'],
-                $entry['TimeOUT'],
+                $formattedDate,
+                $formattedTimeIn,
+                $formattedTimeOut,
                 $entry['HoursWorked']
             ], NULL, "A$rowNum");
             $rowNum++;
@@ -359,3 +459,4 @@ function generateDTRExcel($data, $dateFrom, $dateTo) {
     $writer->save('php://output');
     exit;
 }
+

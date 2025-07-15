@@ -50,7 +50,7 @@
               <th>ID</th>
               <th>PB#</th>
               <th>Member ID</th>
-              <th>Name</th>
+              <th>Fullname</th>
               <th>Committee</th>
               <th>Action</th>
             </tr>

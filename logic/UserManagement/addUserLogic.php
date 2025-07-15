@@ -14,7 +14,13 @@ $member_id = trim($_POST['member_id']);
 $name = trim($_POST['name']);
 $committee_id = intval($_POST['committee_id']);
 
-if ($pb_number && $member_id && $name && $committee_id) {
+// Validate that either PB Number or Member ID exists
+if ((!$pb_number && !$member_id) || !$name || !$committee_id) {
+    echo json_encode(['success' => false, 'message' => 'Either PB Number or Member ID is required, and all other fields are mandatory']);
+    exit;
+}
+
+if ($name && $committee_id) {
     $stmt = $conn->prepare("INSERT INTO tbl_users (PBNum, MemberID, Name, Committee_ID, created_at) VALUES (?, ?, ?, ?, NOW())");
     $stmt->bind_param("sssi", $pb_number, $member_id, $name, $committee_id);
 

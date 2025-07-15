@@ -19,19 +19,19 @@ if (empty($_SESSION['csrf_token'])) {
           
           <div class="form-group">
             <label>PB Number</label>
-            <input type="text" name="pb_number" class="form-control" required>
+            <input type="text" name="pb_number" class="form-control">
           </div>
           <div class="form-group">
             <label>Member ID</label>
-            <input type="text" name="member_id" class="form-control" required>
+            <input type="text" name="member_id" class="form-control">
           </div>
           <div class="form-group">
-            <label>Name</label>
+            <label>Fullname</label>
             <input type="text" name="name" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Committee</label>
-            <select name="committee_id" class="form-control" required>
+            <select name="committee_id" class="form-control" required style="font-size: 1.0rem; height: 43px">
               <option value="" disabled selected>~ Select Committee ~</option>
               <?php foreach ($committees as $committee): ?>
                 <option value="<?= $committee['ID'] ?>"><?= htmlspecialchars($committee['Committee']) ?></option>

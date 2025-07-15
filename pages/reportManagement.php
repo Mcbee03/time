@@ -25,7 +25,7 @@
                     <!-- Report Selection -->
                     <div class="form-group">
                         <label style="font-weight:600;">Report</label>
-                        <select class="form-control" name="reportType" id="reportType" required>
+                        <select class="form-control" name="reportType" id="reportType" required style="font-size: 1.0rem; height: 43px">
                             <option value="" selected disabled>Select Report</option>
                             <option value="monthly">Monthly Allowance Report</option>
                             <option value="dtr">DTR Report</option>
@@ -53,7 +53,7 @@
                     <!-- Format Selection -->
                     <div class="form-group">
                         <label style="font-weight:600;">Export Format</label>
-                        <select class="form-control" name="exportFormat" required>
+                        <select class="form-control" name="exportFormat" required style="font-size: 1.0rem; height: 43px">
                             <option value="pdf">PDF</option>
                             <option value="excel">Excel</option>
                         </select>

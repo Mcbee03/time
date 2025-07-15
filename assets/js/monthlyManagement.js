@@ -493,3 +493,43 @@ function resetAllowanceForm() {
         generateBtn.show().html('<i class="fas fa-plus-circle mr-1"></i> Generate').prop('disabled', false);
     }
 }
+
+//  MODAL COLUMN SIZES   ----Add this function to your existing JS
+function adjustTableColumns() {
+    const tables = ['#allowanceTable', '#editAllowanceTable'];
+    
+    tables.forEach(tableId => {
+        const table = $(tableId);
+        if (table.length) {
+            // Calculate available width for deductions
+            const fixedColumnsWidth = table.find('th:not([colspan])').get().reduce((sum, th) => {
+                return sum + $(th).outerWidth();
+            }, 0);
+            
+            const tableWidth = table.width();
+            const availableWidth = tableWidth - fixedColumnsWidth;
+            const deductionCount = table.find('th[colspan]').attr('colspan') || 0;
+            const deductionWidth = Math.max(80, availableWidth / deductionCount);
+            
+            // Apply widths to deduction columns
+            table.find('th[colspan]').each(function() {
+                const colspan = parseInt($(this).attr('colspan'));
+                $(this).width(deductionWidth * colspan);
+            });
+            
+            table.find('.deduction-input').each(function() {
+                $(this).css('max-width', `${deductionWidth}px`);
+            });
+        }
+    });
+}
+
+// Call this function when the modal is shown and when window is resized
+$(document).on('shown.bs.modal', '#addAllowanceModal, #editAllowanceModal', function() {
+    adjustTableColumns();
+    $(window).on('resize', adjustTableColumns);
+});
+
+$(document).on('hidden.bs.modal', '#addAllowanceModal, #editAllowanceModal', function() {
+    $(window).off('resize', adjustTableColumns);
+});

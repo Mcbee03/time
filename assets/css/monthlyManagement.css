@@ -92,3 +92,244 @@
   transform: scale(1.1) rotate(-5deg);
   box-shadow: 0 4px 8px rgba(255, 77, 77, 0.2);
 }
+
+/*              MODAL CONTAINER             */
+
+/* Modal table container */
+.modal .table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Table column width constraints */
+#allowanceTable, #editAllowanceTable {
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+/* Fixed widths for important columns */
+#allowanceTable th:nth-child(1), 
+#editAllowanceTable th:nth-child(1) { 
+  width: 120px; /* Committee */
+  min-width: 120px;
+}
+
+#allowanceTable th:nth-child(2), 
+#editAllowanceTable th:nth-child(2) { 
+  width: 180px; /* Name */
+  min-width: 180px;
+}
+
+#allowanceTable th:nth-child(3), 
+#editAllowanceTable th:nth-child(3) { 
+  width: 100px; /* Member ID */
+  min-width: 100px;
+}
+
+#allowanceTable th:nth-child(4), 
+#editAllowanceTable th:nth-child(4) { 
+  width: 80px; /* Duty Hours */
+  min-width: 80px;
+}
+
+#allowanceTable th:nth-child(5), 
+#editAllowanceTable th:nth-child(5) { 
+  width: 80px; /* Rate - fixed width */
+  min-width: 80px;  
+}
+
+#allowanceTable th:nth-child(6), 
+#editAllowanceTable th:nth-child(6) { 
+  width: 120px; /* Transpo Allowance - fixed width */
+  min-width: 120px;
+}
+
+#allowanceTable th:last-child, 
+#editAllowanceTable th:last-child { 
+  width: 120px; /* Regular Savings */
+  min-width: 120px;
+}
+
+/* Deduction columns - flexible but with min width */
+#allowanceTable th[colspan], 
+#editAllowanceTable th[colspan] {
+  width: auto;
+}
+
+#allowanceTable td:not(:first-child):not(:last-child), 
+#editAllowanceTable td:not(:first-child):not(:last-child) {
+  white-space: nowrap;
+}
+
+/* Input field styling */
+.modal .table input[type="number"] {
+  min-width: 60px;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Make deduction inputs slightly smaller */
+.modal .table .deduction-input {
+  min-width: 50px;
+  max-width: 80px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .modal-dialog {
+    max-width: 95%;
+    margin: 1.75rem auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #allowanceTable th:nth-child(1), 
+  #editAllowanceTable th:nth-child(1) { 
+    width: 100px;
+    min-width: 100px;
+  }
+  
+  #allowanceTable th:nth-child(2), 
+  #editAllowanceTable th:nth-child(2) { 
+    width: 150px;
+    min-width: 150px;
+  }
+}
+
+/* 🔷 Modal Table Container - Deduction Scroll */
+.modal .deduction-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+/* Fix the first columns */
+.modal .table-fixed-columns {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 1;
+  box-shadow: 2px 0 3px rgba(0,0,0,0.1);
+}
+
+/* Make deduction columns scrollable */
+.modal .deduction-scroll-content {
+  display: inline-block;
+  min-width: 100%;
+}
+
+/* Style for the scrollbar */
+.modal .deduction-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.modal .deduction-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.modal .deduction-scroll-container::-webkit-scrollbar-thumb {
+  background: #2b7d62;
+  border-radius: 4px;
+}
+
+/* Adjust column widths */
+.modal .table th.deduction-header,
+.modal .table td.deduction-cell {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+/* Keep fixed columns visible */
+.modal .table th.fixed-column,
+.modal .table td.fixed-column {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 2;
+}
+
+.modal .table th.fixed-column:nth-child(2),
+.modal .table td.fixed-column:nth-child(2) {
+  left: 120px;
+  z-index: 2;
+}
+
+.modal .table th.fixed-column:nth-child(3),
+.modal .table td.fixed-column:nth-child(3) {
+  left: 300px;
+  z-index: 2;
+}
+
+/* Table Container with Fixed and Scrollable Columns */
+.table-container-wrapper {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.table-fixed-columns {
+  flex: 0 0 auto;
+  width: 600px; /* Adjust based on your fixed columns width */
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.table-scrollable-columns {
+  flex: 1 1 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.deduction-scroll-container {
+  min-width: 100%;
+  width: auto;
+  overflow-x: auto;
+}
+
+/* Ensure tables align properly */
+.table-fixed-columns table,
+.table-scrollable-columns table {
+  margin-bottom: 0;
+  table-layout: fixed;
+}
+
+/* Fixed column widths */
+.table-fixed-columns th:nth-child(1) { width: 120px; } /* Committee */
+.table-fixed-columns th:nth-child(2) { width: 180px; } /* Name */
+.table-fixed-columns th:nth-child(3) { width: 100px; } /* Member ID */
+.table-fixed-columns th:nth-child(4) { width: 80px; }  /* Duty Hours */
+.table-fixed-columns th:nth-child(5) { width: 80px; }  /* Rate */
+.table-fixed-columns th:nth-child(6) { width: 120px; } /* Transpo Allowance */
+.table-fixed-columns th:nth-child(7) { width: 120px; } /* Regular Savings */
+
+/* Scrollable deduction columns */
+.table-scrollable-columns th,
+.table-scrollable-columns td {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+/* Header alignment */
+.table-fixed-columns thead th,
+.table-scrollable-columns thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .table-fixed-columns {
+    width: 550px;
+  }
+}
+
+@media (max-width: 992px) {
+  .table-fixed-columns {
+    width: 450px;
+  }
+  .table-fixed-columns th:nth-child(2) { width: 150px; } /* Name */
+}

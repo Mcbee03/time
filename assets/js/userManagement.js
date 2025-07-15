@@ -4,6 +4,15 @@ $(document).ready(function () {
     $(document).on('submit', '#addUserForm', function (e) {
         e.preventDefault();
         const form = $(this);
+        const pb_number = form.find('[name="pb_number"]').val().trim();
+        const member_id = form.find('[name="member_id"]').val().trim();
+        
+        // Validate either PB Number or Member ID exists
+        if (!pb_number && !member_id) {
+            toastr.error('Either PB Number or Member ID is required');
+            return false;
+        }
+
         const submitBtn = form.find('button[type="submit"]');
         const originalText = submitBtn.html();
 
@@ -67,6 +76,15 @@ $(document).ready(function () {
     $(document).on('submit', '#editUserForm', function (e) {
         e.preventDefault();
         const form = $(this);
+        const pb_number = form.find('[name="pb_number"]').val().trim();
+        const member_id = form.find('[name="member_id"]').val().trim();
+        
+        // Validate either PB Number or Member ID exists
+        if (!pb_number && !member_id) {
+            toastr.error('Either PB Number or Member ID is required');
+            return false;
+        }
+
         const submitBtn = form.find('button[type="submit"]');
         const originalText = submitBtn.html();
 

@@ -58,7 +58,7 @@ if (empty($_SESSION['csrf_token'])) {
                 <thead style="background-color: #2b7d62;" class="text-white text-center font-weight-bold">
                   <tr>
                     <th>Committee</th>
-                    <th>Name</th>
+                    <th>Fullname</th>
                     <th>Member ID</th>
                     <th>Duty Hours</th>
                     <th>Rate</th>
@@ -74,7 +74,7 @@ if (empty($_SESSION['csrf_token'])) {
             </div>
           </div>
         </div>
-
+  
         <!-- Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
