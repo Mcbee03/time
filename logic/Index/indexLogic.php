@@ -41,8 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
                         $_SESSION['message'] = "Member $memberID is already timed in today!";
                     } else {
                         // Insert time in record
-                        $stmt = $conn->prepare("INSERT INTO tbl_dtr (Users_Id, Date, TimeIN, created_at) VALUES (?, ?, NOW(), NOW())");
-                        $stmt->bind_param("is", $userData['Id'], $today);
+                        $now = date('Y-m-d H:i:s'); // PHP time in Asia/Manila
+                        $stmt = $conn->prepare("INSERT INTO tbl_dtr (Users_Id, Date, TimeIN, created_at) VALUES (?, ?, ?, ?)");
+                        $stmt->bind_param("isss", $userData['Id'], $today, $now, $now);
                         $stmt->execute();
                         $stmt->close();
                         
@@ -62,8 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
                     
                     if ($existingEntry) {
                         // Update with time out
-                        $stmt = $conn->prepare("UPDATE tbl_dtr SET TimeOUT = NOW(), updated_at = NOW(), HoursWorked = TIMESTAMPDIFF(SECOND, TimeIN, NOW())/3600 WHERE Id = ?");
-                        $stmt->bind_param("i", $existingEntry['Id']);
+                        $now = date('Y-m-d H:i:s');
+                        $stmt = $conn->prepare("UPDATE tbl_dtr SET TimeOUT = ?, updated_at = ?, HoursWorked = TIMESTAMPDIFF(SECOND, TimeIN, ?)/3600 WHERE Id = ?");
+                        $stmt->bind_param("sssi", $now, $now, $now, $existingEntry['Id']);
                         $stmt->execute();
                         $stmt->close();
                         

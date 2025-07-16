@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../../config/db.php';
+date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['admin_id'])) {
     die(json_encode([
@@ -61,6 +62,7 @@ if (mysqli_num_rows($checkResult) > 0) {
 
 mysqli_begin_transaction($conn);
 try {
+    $now = date('Y-m-d H:i:s');
     $user_ids = $_POST['user_id'] ?? [];
     $rates = $_POST['rate'] ?? [];
     $transpo_allowances = $_POST['transpo_allowance'] ?? [];
@@ -103,7 +105,7 @@ try {
                 $deduction_id = mysqli_real_escape_string($conn, $deduction_id);
                 $amount = floatval($amount) ?: 0;
                 if ($amount > 0) {
-                    $deductionValues[] = "('$user_id', '$deduction_id', '$amount', NOW())";
+                    $deductionValues[] = "('$user_id', '$deduction_id', '$amount', '$now')";
                 }
             }
             
@@ -121,7 +123,7 @@ try {
         if ($userDeductionId === null) {
             $defaultDeductionQuery = "INSERT INTO tbl_user_deduction 
                                      (Users_Id, Deduction_Id, Amount, created_at)
-                                     VALUES ('$user_id', 0, 0, NOW())";
+                                     VALUES ('$user_id', 0, 0, '$now')";
             if (!mysqli_query($conn, $defaultDeductionQuery)) {
                 throw new Exception("Failed to create default deduction");
             }
@@ -130,8 +132,8 @@ try {
 
         // Insert allowance with hours worked
         $query = "INSERT INTO tbl_monthly_allowance 
-                  (Users_Id, Rate, TranspoAllowance, HoursWorked, UserDeduction_Id, DateFrom, DateTo, created_at)
-                  VALUES ('$user_id', '$rate', '$transpo', '$hoursWorked', '$userDeductionId', '$date_from', '$date_to', NOW())";
+        (Users_Id, Rate, TranspoAllowance, HoursWorked, UserDeduction_Id, DateFrom, DateTo, created_at)
+         VALUES ('$user_id', '$rate', '$transpo', '$hoursWorked', '$userDeductionId', '$date_from', '$date_to', '$now')";
         
         if (!mysqli_query($conn, $query)) {
             throw new Exception("Failed to save allowance: " . mysqli_error($conn));

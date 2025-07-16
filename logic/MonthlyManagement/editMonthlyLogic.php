@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../../config/db.php';
+date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['admin_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -119,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['date_from']) || isset(
 
 // UPDATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
     }

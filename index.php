@@ -40,8 +40,6 @@ include 'logic/Index/indexLogic.php';
                 <?php endif; ?>
                 
                 <h4 class="dtr-title text-center">OFFICER DAILY TIME RECORD</h4>
-                
-                <!-- Divider -->
                 <hr class="divider">
 
                 <!-- Real Time Clock -->
@@ -97,10 +95,9 @@ include 'logic/Index/indexLogic.php';
                             
                             <?php if ($timedInStatus): ?>
                                 <?php
-                                // Get the latest time in record using MySQLi
                                 $stmt = $conn->prepare("SELECT TimeIN FROM tbl_dtr 
-                                                      WHERE Users_Id = ? AND Date = ? 
-                                                      AND TimeOUT IS NULL ORDER BY TimeIN DESC LIMIT 1");
+                                                        WHERE Users_Id = ? AND Date = ? 
+                                                        AND TimeOUT IS NULL ORDER BY TimeIN DESC LIMIT 1");
                                 $stmt->bind_param("is", $userData['Id'], $today);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
@@ -120,8 +117,28 @@ include 'logic/Index/indexLogic.php';
     </div>
 </div>
 
+<!-- Focus trigger for Time In/Out button if member found -->
+<?php if ($searchedMemberID !== null && $userData): ?>
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        const timeBtn = document.querySelector('.btn-time');
+        if (timeBtn) {
+            timeBtn.focus();
+
+            // Optional: press enter again will submit
+            timeBtn.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    timeBtn.click();
+                }
+            });
+        }
+    });
+</script>
+<?php endif; ?>
+
+
 <!-- Custom JS -->
 <script src="/assets/js/index.js"></script>
-
 </body>
-</html> 
+</html>

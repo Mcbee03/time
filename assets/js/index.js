@@ -1,4 +1,4 @@
-// Enhanced Real-time clock function with AM/PM formatting
+// Real-time clock with formatting
 function updateClock() {
     const now = new Date();
     const options = {
@@ -10,68 +10,86 @@ function updateClock() {
         day: 'numeric',
         year: 'numeric'
     };
-    
-    // Format the time with proper spacing
     const formattedTime = now.toLocaleString('en-US', options)
-        .replace(/,/g, '')  // Remove commas
-        .replace(/\s+/g, ' '); // Normalize spaces
-    
+        .replace(/,/g, '')
+        .replace(/\s+/g, ' ');
     document.getElementById('clock-text').innerText = formattedTime;
-    
-    // Add pulse animation every second
+
     const clockElement = document.getElementById('realtime-clock');
     if (clockElement) {
         clockElement.style.animation = 'none';
-        void clockElement.offsetWidth; // Trigger reflow
+        void clockElement.offsetWidth;
         clockElement.style.animation = 'pulse 1s';
     }
 }
 
-// Auto-focus the search input when page loads
+// Focus search input
 function autoFocusSearch() {
     const searchInput = document.querySelector('.search-input');
     if (searchInput) {
         searchInput.focus();
-        
-        // If coming back from a search, select all text for easy replacement
         if (searchInput.value) {
             searchInput.select();
         }
     }
 }
 
-// Add smooth transitions for UI elements
+// Focus Time In/Out button
+function autoFocusTimeButton() {
+    const timeButton = document.querySelector('.btn-time');
+    if (timeButton) {
+        timeButton.focus();
+        timeButton.classList.add('focused-keyboard');
+
+        // Pressing Enter will click the button
+        timeButton.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                timeButton.click();
+            }
+        });
+
+        // Also bind Enter to document if button is focused
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && document.activeElement === timeButton) {
+                e.preventDefault();
+                timeButton.click();
+            }
+        });
+    }
+}
+
+
+// Hover effects
 function setupUITransitions() {
-    // Button hover effects
     $('.btn-time').hover(
-        function() {
+        function () {
             $(this).css({
                 'transform': 'translateY(-2px)',
                 'box-shadow': '0 4px 8px rgba(0,0,0,0.1)'
             });
         },
-        function() {
+        function () {
             $(this).css({
                 'transform': 'translateY(0)',
                 'box-shadow': 'none'
             });
         }
     );
-    
-    // Card hover effect
+
     $('.status-card').hover(
-        function() {
+        function () {
             $(this).css('transform', 'scale(1.01)');
         },
-        function() {
+        function () {
             $(this).css('transform', 'scale(1)');
         }
     );
 }
 
-// Handle form submission with feedback
+// Form validation
 function handleFormSubmission() {
-    $('form').on('submit', function(e) {
+    $('form').on('submit', function (e) {
         const memberIdInput = $(this).find('input[name="member_id"]');
         if (memberIdInput.length && !memberIdInput.val().trim()) {
             e.preventDefault();
@@ -81,41 +99,38 @@ function handleFormSubmission() {
     });
 }
 
-// Add animation for alerts
+// Alert animation
 function setupAlertAnimations() {
-    $('.alert').on('close.bs.alert', function() {
-        $(this).animate({ opacity: 0, height: 0 }, 300, function() {
+    $('.alert').on('close.bs.alert', function () {
+        $(this).animate({ opacity: 0, height: 0 }, 300, function () {
             $(this).remove();
         });
         return false;
     });
 }
 
-// Main document ready function
-$(document).ready(function() {
-    // Initialize all components
+// Run everything
+$(document).ready(function () {
     updateClock();
     autoFocusSearch();
+  
+
     setupUITransitions();
     handleFormSubmission();
     setupAlertAnimations();
-    
-    // Update clock every second
+
     setInterval(updateClock, 1000);
-    
-    // Auto-hide alerts after 7 seconds
-    setTimeout(function() {
+
+    setTimeout(function () {
         $('.alert').alert('close');
     }, 7000);
-    
-    // Add click sound effect for buttons (optional)
-    $('.btn-time, .btn-search').on('click', function() {
-        const audio = new Audio('/assets/sounds/click.mp3'); // Add this file if you want sound
+
+    $('.btn-time, .btn-search').on('click', function () {
+        const audio = new Audio('/assets/sounds/click.mp3');
         audio.volume = 0.3;
         audio.play().catch(e => console.log('Audio play failed:', e));
     });
-    
-    // Prevent form resubmission on page refresh
+
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
