@@ -20,12 +20,12 @@ if (empty($_SESSION['csrf_token'])) {
           
           <div class="form-group">
             <label>PB Number</label>
-            <input type="text" name="pb_number" class="form-control" required>
+            <input type="text" name="pb_number" class="form-control">
           </div>
           
           <div class="form-group">
             <label>Member ID</label>
-            <input type="text" name="member_id" class="form-control" required>
+            <input type="text" name="member_id" class="form-control">
           </div>
           
           <div class="form-group">

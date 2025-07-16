@@ -24,10 +24,8 @@ $name = trim($_POST['name']);
 $username = trim($_POST['username']);
 $password = !empty($_POST['password']) ? $_POST['password'] : null;
 
-// Validate inputs
+// Validate inputs - only these are mandatory now
 $errors = [];
-if (empty($pbNumber)) $errors[] = "PB Number is required";
-if (empty($memberId)) $errors[] = "Member ID is required";
 if (empty($name)) $errors[] = "Name is required";
 if (empty($username)) $errors[] = "Username is required";
 
@@ -66,3 +64,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>

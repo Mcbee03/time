@@ -7,8 +7,8 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_tok
     die(json_encode(['success' => false, 'message' => 'Security validation failed']));
 }
 
-// Required fields
-$required = ['pb_number', 'member_id', 'name', 'username', 'password', 'confirm_password'];
+// Required fields - only these are mandatory now
+$required = ['name', 'username', 'password', 'confirm_password'];
 foreach ($required as $field) {
     if (empty($_POST[$field])) {
         die(json_encode(['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)).' is required']));
@@ -32,7 +32,7 @@ if ($stmt->get_result()->num_rows > 0) {
     die(json_encode(['success' => false, 'message' => 'Username already exists']));
 }
 
-// Create admin
+// Create admin - both PB Number and Member ID can be empty
 $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
 $stmt = $conn->prepare("INSERT INTO tbl_adminlogin (PBNum, MemberID, Name, username, password) VALUES (?, ?, ?, ?, ?)");
 $stmt->bind_param('sssss', $_POST['pb_number'], $_POST['member_id'], $_POST['name'], $_POST['username'], $hashedPassword);

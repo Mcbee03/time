@@ -11,13 +11,12 @@ $(document).ready(function () {
         }
     });
     // ➕ ADD Admin - Submit
-     // Add Admin Form
     $(document).on('submit', '#addAdminForm', function(e) {
         e.preventDefault();
         const form = $(this);
         const submitBtn = form.find('button[type="submit"]');
         
-        // Disable button immediately
+        // Disable button immediately (no PB/Member ID validation needed)
         submitBtn.prop('disabled', true).html('Adding...');
         
         $.ajax({
@@ -30,19 +29,18 @@ $(document).ready(function () {
                     form.trigger('reset');
                     $('#addModal').modal('hide');
                     
-                    // Force button enable + reload after modal closes
                     setTimeout(() => {
                         submitBtn.prop('disabled', false);
                         location.reload();
                     }, 300);
                 } else {
                     toastr.error(response.message);
-                    submitBtn.prop('disabled', false);
+                    submitBtn.prop('disabled', false).html('Submit');
                 }
             },
             error: function() {
                 toastr.error('Server error');
-                submitBtn.prop('disabled', false);
+                submitBtn.prop('disabled', false).html('Submit');
             }
         });
     }); 
@@ -82,6 +80,7 @@ $(document).ready(function () {
         const submitBtn = form.find('button[type="submit"]');
         const originalText = submitBtn.html();
 
+        // No PB/Member ID validation needed
         submitBtn.prop('disabled', true).html('Updating...');
 
         $.ajax({
