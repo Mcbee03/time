@@ -2,6 +2,7 @@
 session_start();
 include '../../config/db.php';
 date_default_timezone_set('Asia/Manila');
+mysqli_query($conn, "SET time_zone = '+08:00'");
 // Validate CSRF token
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);

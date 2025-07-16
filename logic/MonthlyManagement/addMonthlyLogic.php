@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../../config/db.php';
+mysqli_query($conn, "SET time_zone = '+08:00'");
 date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['admin_id'])) {
