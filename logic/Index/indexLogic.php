@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/db.php'; // Make sure this path is correct
+include 'config/db.php';
 date_default_timezone_set('Asia/Manila');
 $today = date('Y-m-d');
 
@@ -16,8 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
     $memberID = trim($_POST['member_id']);
     
     if ($memberID !== '') {
-        // Check if member exists in database
-        $stmt = $conn->prepare("SELECT * FROM tbl_users WHERE MemberID = ? OR PBNum = ?");
+        // Check if member exists in database (including Profile)
+        $stmt = $conn->prepare("SELECT Id, Name, MemberID, PBNum, Profile FROM tbl_users WHERE MemberID = ? OR PBNum = ?");
         $stmt->bind_param("ss", $memberID, $memberID);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['member_id'])) {
                         $_SESSION['message'] = "Member $memberID is already timed in today!";
                     } else {
                         // Insert time in record
-                        $now = date('Y-m-d H:i:s'); // PHP time in Asia/Manila
+                        $now = date('Y-m-d H:i:s');
                         $stmt = $conn->prepare("INSERT INTO tbl_dtr (Users_Id, Date, TimeIN, created_at) VALUES (?, ?, ?, ?)");
                         $stmt->bind_param("isss", $userData['Id'], $today, $now, $now);
                         $stmt->execute();

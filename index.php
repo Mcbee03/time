@@ -53,7 +53,7 @@ include 'logic/Index/indexLogic.php';
                 <?php endif; ?>
                 
                 <!-- Search Form -->
-                <form method="POST" class="mb-4">
+                <form method="POST" class="mb-3">
                     <div class="input-group input-group-lg shadow-sm">
                         <input type="text" name="member_id" class="form-control search-input" 
                                placeholder="Enter Member ID / PB#" required
@@ -65,6 +65,30 @@ include 'logic/Index/indexLogic.php';
                         </div>
                     </div>
                 </form>
+                
+                <!-- Profile Display -->
+                <?php if ($searchedMemberID !== null && $userData): ?>
+                    <div class="profile-display text-center mb-3">
+                        <div class="profile-frame mx-auto">
+                            <div class="profile-container">
+                                <?php if (!empty($userData['Profile'])): ?>
+                                    <img src="data:image/jpeg;base64,<?= base64_encode($userData['Profile']) ?>" 
+                                        class="profile-img" 
+                                        alt="Officer Profile"
+                                        style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #28a745;">
+                                <?php else: ?>
+                                    <img src="/assets/images/default-profile.png" 
+                                        class="profile-img" 
+                                        alt="Default Profile"
+                                        style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #28a745;">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    
+                    </div>
+                <?php endif; ?>
+
+
                 
                 <?php if ($searchedMemberID !== null && $userData): ?>
                     <!-- Time In/Out Button -->
@@ -124,8 +148,6 @@ include 'logic/Index/indexLogic.php';
         const timeBtn = document.querySelector('.btn-time');
         if (timeBtn) {
             timeBtn.focus();
-
-            // Optional: press enter again will submit
             timeBtn.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -137,8 +159,6 @@ include 'logic/Index/indexLogic.php';
 </script>
 <?php endif; ?>
 
-
-<!-- Custom JS -->
 <script src="/assets/js/index.js"></script>
 </body>
 </html>

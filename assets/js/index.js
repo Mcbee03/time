@@ -118,7 +118,7 @@ $(document).ready(function () {
     setupUITransitions();
     handleFormSubmission();
     setupAlertAnimations();
-
+    animateProfileDisplay();
     setInterval(updateClock, 1000);
 
     setTimeout(function () {
@@ -135,3 +135,18 @@ $(document).ready(function () {
         window.history.replaceState(null, null, window.location.href);
     }
 });
+
+// Add this to your existing JavaScript
+function animateProfileDisplay() {
+    const profileDisplay = document.querySelector('.profile-display');
+    if (profileDisplay) {
+        profileDisplay.style.opacity = '0';
+        profileDisplay.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            profileDisplay.style.transition = 'all 0.4s ease-out';
+            profileDisplay.style.opacity = '1';
+            profileDisplay.style.transform = 'translateY(0)';
+        }, 100);
+    }
+}

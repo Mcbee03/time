@@ -70,3 +70,54 @@
 .btn .spinner-border {
     vertical-align: text-top;
 }
+
+.upload-container {
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.upload-placeholder {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.upload-placeholder i {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.upload-preview {
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Add this to your main CSS file */
+.img-upload-container {
+    border: 5px solid #2b7d62; /* Solid green border */
+    border-radius: 8px;
+    padding: 5px;
+    display: inline-block;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.img-upload-container img {
+    object-fit: cover;
+    border-radius: 5px;
+    display: block; /* Ensures no extra space below image */
+    width: 100px;
+    height: 100px;
+}
+
+.custom-file-label::after {
+    content: "Browse";
+}
+
+.img-upload-container:hover {
+    border-color: #23674f; /* Darker green on hover */
+}

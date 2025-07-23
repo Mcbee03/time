@@ -18,7 +18,7 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($currentPage - 1) * $perPage;
 
 $query = "
-  SELECT u.Id, u.Name, u.MemberID, u.PBNum, c.Committee 
+  SELECT u.Id, u.Profile, u.Name, u.MemberID, u.PBNum, c.Committee 
   FROM tbl_users u
   LEFT JOIN tbl_committee c ON u.Committee_ID = c.ID
   WHERE 1=1
@@ -29,6 +29,7 @@ $countQuery = "
   LEFT JOIN tbl_committee c ON u.Committee_ID = c.ID
   WHERE 1=1
 ";
+
 
 if (!empty($searchQuery)) {
     $searchTerm = "%$searchQuery%";

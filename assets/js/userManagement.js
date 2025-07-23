@@ -1,40 +1,30 @@
 $(document).ready(function () {
-
     // ➕ ADD User
     $(document).on('submit', '#addUserForm', function (e) {
         e.preventDefault();
-        const form = $(this);
-        const pb_number = form.find('[name="pb_number"]').val().trim();
-        const member_id = form.find('[name="member_id"]').val().trim();
-        
-        // Validate either PB Number or Member ID exists
-        if (!pb_number && !member_id) {
-            toastr.error('Either PB Number or Member ID is required');
-            return false;
-        }
+        const form = $(this)[0];
+        const formData = new FormData(form);
 
-        const submitBtn = form.find('button[type="submit"]');
+        const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-
-        submitBtn.prop('disabled', true).html('Adding...');
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Adding...');
 
         $.ajax({
-            url: form.attr('action'),
+            url: $(this).attr('action'),
             type: 'POST',
-            data: form.serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
                     $('#addMemberModal').modal('hide');
                     toastr.success('User added successfully');
-                    setTimeout(() => {
-                        submitBtn.prop('disabled', false).html(originalText);
-                        location.reload();
-                    }, 300);
+                    setTimeout(() => location.reload(), 500);
                 } else {
                     toastr.error(res.message || 'Failed to add user.');
-                    submitBtn.prop('disabled', false).html(originalText);
                 }
+                submitBtn.prop('disabled', false).html(originalText);
             },
             error: function () {
                 toastr.error('Server error occurred.');
@@ -42,74 +32,97 @@ $(document).ready(function () {
             }
         });
     });
+    // ✏️ EDIT User - Load data into modal
+    // ✏️ EDIT User - Load data into modal
+    $(document).on('click', '.editUserBtn', function() {
+        const userId = $(this).data('id');
+        console.log("Edit button clicked for user ID:", userId); // Debug
+        
+        if (!userId || userId <= 0) {
+            toastr.error('Invalid user ID');
+            return;
+        }
 
-    // ✏️ LOAD User to Edit Modal
-    $(document).on('click', '.edit-btn', function () {
-        const id = $(this).data('id');
-        if (!id) return toastr.error('User ID missing.');
+        // Show loading state
+        const editBtn = $(this);
+        const originalBtnHtml = editBtn.html();
+        editBtn.html('<span class="spinner-border spinner-border-sm"></span> Loading...').prop('disabled', true);
 
         $.ajax({
             url: '../logic/UserManagement/getUserData.php',
             type: 'POST',
-            data: { id },
+            data: { id: userId },
             dataType: 'json',
-            success: function (res) {
-                if (res.success && res.data) {
-                    const user = res.data;
-                    $('#edit_id').val(user.Id);
-                    $('#edit_pb_number').val(user.PBNum);
-                    $('#edit_member_id').val(user.MemberID);
-                    $('#edit_name').val(user.Name);
-                    $('#edit_committee_id').val(user.Committee_ID);
+            success: function(response) {
+                console.log("Server response:", response); // Debug
+                
+                // Restore button state
+                editBtn.html(originalBtnHtml).prop('disabled', false);
+
+                if (response.success && response.data) {
+                    const user = response.data;
+                    console.log("User data:", user); // Debug
+                    
+                    // Fill form fields
+                    $('#editUserId').val(user.Id);
+                    $('#editPBNumber').val(user.PBNum || '');
+                    $('#editMemberID').val(user.MemberID || '');
+                    $('#editName').val(user.Name || '');
+                    $('#editCommittee').val(user.Committee_Id || '');
+
+                    // Display profile image
+                    if (user.Profile) {
+                        $('#editProfilePreview').attr('src', 'data:image/jpeg;base64,' + user.Profile);
+                    } else {
+                        $('#editProfilePreview').attr('src', '../assets/images/uploadicon.png');
+                    }
+
+                    // Show modal
                     $('#editMemberModal').modal('show');
                 } else {
-                    toastr.error(res.message || 'Invalid user data received.');
+                    toastr.error(response.message || 'Failed to load user data');
                 }
             },
-            error: function () {
-                toastr.error('AJAX error while fetching user.');
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", error); // Debug
+                editBtn.html(originalBtnHtml).prop('disabled', false);
+                toastr.error('Error loading user data: ' + error);
             }
         });
     });
 
-    // ✏️ SUBMIT Edit User
+    // Edit User (Submit)
     $(document).on('submit', '#editUserForm', function (e) {
         e.preventDefault();
-        const form = $(this);
-        const pb_number = form.find('[name="pb_number"]').val().trim();
-        const member_id = form.find('[name="member_id"]').val().trim();
-        
-        // Validate either PB Number or Member ID exists
-        if (!pb_number && !member_id) {
-            toastr.error('Either PB Number or Member ID is required');
-            return false;
-        }
-
-        const submitBtn = form.find('button[type="submit"]');
+        const formData = new FormData(this);
+        const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-
-        submitBtn.prop('disabled', true).html('Updating...');
+        
+        console.log("Submitting edit form"); // Debugging
+        
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Saving...');
 
         $.ajax({
-            url: form.attr('action'),
+            url: $(this).attr('action'),
             type: 'POST',
-            data: form.serialize(),
+            data: formData,
+            contentType: false,
+            processData: false,
             dataType: 'json',
             success: function (res) {
+                console.log("Edit response:", res); // Debugging
                 if (res.success) {
                     $('#editMemberModal').modal('hide');
                     toastr.success('User updated successfully');
-                    setTimeout(() => {
-                        submitBtn.prop('disabled', false).html(originalText);
-                        location.reload();
-                    }, 300);
+                    setTimeout(() => location.reload(), 500);
                 } else {
-                    toastr.error(res.message || 'Failed to update user.');
-                    submitBtn.prop('disabled', false).html(originalText);
+                    toastr.error(res.message || 'Update failed.');
                 }
+                submitBtn.prop('disabled', false).html(originalText);
             },
-            error: function () {
-                toastr.error('Server error while updating.');
+            error: function (xhr, status, error) {
+                console.error("Edit error:", error); // Debugging
+                toastr.error('Server error: ' + error);
                 submitBtn.prop('disabled', false).html(originalText);
             }
         });
@@ -132,7 +145,7 @@ $(document).ready(function () {
         const submitBtn = form.find('button[type="submit"]');
         const originalText = submitBtn.html();
 
-        submitBtn.prop('disabled', true).html('Deleting...');
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Deleting...');
 
         $.ajax({
             url: form.attr('action'),
@@ -164,6 +177,15 @@ $(document).ready(function () {
         const form = $(this).find('form')[0];
         if (form) form.reset();
 
+        // Reset image previews
+        if ($(this).attr('id') === 'addMemberModal') {
+            $('#addProfilePreview').attr('src', '../assets/images/uploadicon.png');
+            $('.custom-file-label').text('Upload Picture');
+        } else if ($(this).attr('id') === 'editMemberModal') {
+            // Don't reset the edit preview as it might have existing image
+            $('.custom-file-label').text('Upload Picture');
+        }
+
         const submitBtn = $(this).find('button[type="submit"]');
         if (submitBtn.length) {
             const btnId = submitBtn.attr('id');
@@ -191,4 +213,34 @@ $(document).ready(function () {
         });
     });
 
-});
+    // Image upload preview for Add Modal
+    $(document).on('change', '#addProfileUpload', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Update file label
+            $(this).next('.custom-file-label').text(file.name);
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#addProfilePreview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+     });
+    });
+    // Image upload preview for Edit Modal
+    $(document).on('change', '#editProfileUpload', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Update file label
+            $(this).next('.custom-file-label').text(file.name);
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#editProfilePreview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
