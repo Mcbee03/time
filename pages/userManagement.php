@@ -140,4 +140,4 @@ include '../views/UserManagement/editModal.php';
 include '../views/UserManagement/deleteModal.php';
 ?>
 
-<script src="../assets/js/userManagement.js"></script>
+<script src="../assets/js/userManagement.js?v=<?= time() ?>"></script>
