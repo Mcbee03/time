@@ -77,7 +77,7 @@ include 'logic/Index/indexLogic.php';
                                         alt="Officer Profile"
                                         style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #28a745;">
                                 <?php else: ?>
-                                    <img src="/assets/images/default-profile.png" 
+                                    <img src="/assets/images/default.png" 
                                         class="profile-img" 
                                         alt="Default Profile"
                                         style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #28a745;">
