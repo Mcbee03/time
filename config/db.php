@@ -1,5 +1,5 @@
 <?php
-	$host  = 'srv1486.hstgr.io';
+	$host  = 'localhost';
 	$username  = 'u209391291_dtr';
 	$password   = "Nvdcmis@1976";
 	$database  = "u209391291_dtr";

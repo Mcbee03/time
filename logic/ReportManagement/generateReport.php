@@ -382,7 +382,8 @@ function generateDTRPDF($data, $dateFrom, $dateTo) {
         foreach ($entries as $entry) {
             $formattedDate = date('m-d-Y', strtotime($entry['Date']));
             $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
-            $formattedTimeOut = date('h:i A', strtotime($entry['TimeOUT']));
+            $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
+
             $html .= "<tr>
                 <td>$formattedDate</td>
                 <td>$formattedTimeIn</td>
@@ -433,7 +434,8 @@ function generateDTRExcel($data, $dateFrom, $dateTo) {
         foreach ($entries as $entry) {
             $formattedDate = date('m-d-Y', strtotime($entry['Date']));
             $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
-            $formattedTimeOut = date('h:i A', strtotime($entry['TimeOUT']));
+            $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
+
 
             $sheet->fromArray([
                 $formattedDate,
