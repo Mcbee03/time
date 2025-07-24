@@ -21,15 +21,22 @@ include '../includes/header.php';
   <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
     <h5 class="mb-2 mb-md-0">User Management</h5>
     <div class="d-flex align-items-center gap-2">
-      <form method="GET" class="d-flex align-items-center mr-2">
+      <form method="GET" class="d-flex align-items-center mr-2" id="searchForm">
         <div class="input-group" style="max-width:220px;">
           <div class="input-group-prepend">
             <span class="input-group-text bg-white border-right-0" style="color:#2b7d62;">
               <i class="fas fa-search"></i>
             </span>
           </div>
-          <input type="text" id="searchInput" name="search" class="form-control border-left-0"
-                 placeholder="Search..." value="<?= htmlspecialchars($searchQuery) ?>">
+          <input 
+            type="text" 
+            id="searchInput" 
+            name="search" 
+            class="form-control border-left-0" 
+            placeholder="Search by Name, MemberID, PB#..." 
+            value="<?= htmlspecialchars($searchQuery) ?>"
+            autocomplete="off"
+          >
         </div>
       </form>
       <button class="btn btn-success d-flex align-items-center"
@@ -108,24 +115,41 @@ include '../includes/header.php';
         <div class="text-muted mb-2 mb-md-0">
           Showing <?= $startEntry ?> to <?= $endEntry ?> of <?= $totalRows ?> entries
         </div>
+
         <div class="pagination-container d-flex flex-wrap justify-content-end">
+          <?php
+            // Pagination logic to show 5 pages max
+            $maxButtons = 5;
+            $half = floor($maxButtons / 2);
+
+            $startPage = max(1, $currentPage - $half);
+            $endPage = $startPage + $maxButtons - 1;
+
+            if ($endPage > $totalPages) {
+                $endPage = $totalPages;
+                $startPage = max(1, $endPage - $maxButtons + 1);
+            }
+          ?>
+
           <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= max(1, $currentPage - 1) ?>"
-            class="btn mr-2 <?= $currentPage == 1 ? 'disabled' : '' ?>"
-            style="background-color: <?= $currentPage == 1 ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+             class="btn mr-2 <?= $currentPage == 1 ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == 1 ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
             &laquo; Previous
           </a>
-          <?php for($i = 1; $i <= $totalPages; $i++): ?>
+
+          <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
             <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= $i ?>"
-              class="btn mx-1"
-              style="background-color: <?= $i == $currentPage ? '#2b7d62' : 'transparent' ?>;
+               class="btn mx-1"
+               style="background-color: <?= $i == $currentPage ? '#2b7d62' : 'transparent' ?>;
                       color: <?= $i == $currentPage ? 'white' : '#2b7d62' ?>;
                       border:1px solid #2b7d62;">
               <?= $i ?>
             </a>
           <?php endfor; ?>
+
           <a href="?search=<?= urlencode($searchQuery) ?>&page=<?= min($totalPages, $currentPage + 1) ?>"
-            class="btn ml-2 <?= $currentPage == $totalPages ? 'disabled' : '' ?>"
-            style="background-color: <?= $currentPage == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
+             class="btn ml-2 <?= $currentPage == $totalPages ? 'disabled' : '' ?>"
+             style="background-color: <?= $currentPage == $totalPages ? '#a3c2b5' : '#2b7d62' ?>; color:white;">
             Next &raquo;
           </a>
         </div>

@@ -201,17 +201,18 @@ $(document).ready(function () {
     $(document).on('keyup', '#searchInput', function () {
         const filter = $(this).val().toLowerCase().trim();
         $('#userTable tbody tr').each(function () {
-            const name = $(this).find('td:eq(1)').text().toLowerCase();
-            const memberId = $(this).find('td:eq(2)').text().toLowerCase();
-            const pbNum = $(this).find('td:eq(3)').text().toLowerCase();
+            const pbNum = $(this).find('td:eq(2)').text().toLowerCase();
+            const memberId = $(this).find('td:eq(3)').text().toLowerCase();
+            const name = $(this).find('td:eq(4)').text().toLowerCase();
 
             $(this).toggle(
-                name.includes(filter) ||
+                pbNum.includes(filter) ||
                 memberId.includes(filter) ||
-                pbNum.includes(filter)
+                name.includes(filter)
             );
         });
     });
+
 
     // Image upload preview for Add Modal
     $(document).on('change', '#addProfileUpload', function(e) {
