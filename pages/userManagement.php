@@ -33,7 +33,7 @@ include '../includes/header.php';
             id="searchInput" 
             name="search" 
             class="form-control border-left-0" 
-            placeholder="Search by Name, MemberID, PB#..." 
+            placeholder="Search..." 
             value="<?= htmlspecialchars($searchQuery) ?>"
             autocomplete="off"
           >
