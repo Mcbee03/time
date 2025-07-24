@@ -76,7 +76,7 @@ include '../includes/header.php';
                     <img src="data:image/jpeg;base64,<?= base64_encode($member['Profile']) ?>" 
                          style="width:60px; height:60px; border-radius:8px; object-fit:cover;">
                   <?php else: ?>
-                    <img src="../assets/img/default.png" 
+                    <img src="../assets/images/default.png" 
                          style="width:60px; height:60px; border-radius:8px; object-fit:cover;">
                   <?php endif; ?>
                 </td>
