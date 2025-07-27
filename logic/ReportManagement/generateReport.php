@@ -373,27 +373,37 @@ function generateDTRPDF($data, $dateFrom, $dateTo) {
         $grouped[$row['Name']][] = $row;
     }
 
-    foreach ($grouped as $name => $entries) {
-        $html .= "<h3>$name - " . $entries[0]['Committee'] . "</h3>";
-        $html .= "<table><thead><tr>
-            <th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>HOURS WORKED</th>
-        </tr></thead><tbody>";
+foreach ($grouped as $name => $entries) {
+    $html .= "<h3>$name - " . $entries[0]['Committee'] . "</h3>";
+    $html .= "<table><thead><tr>
+        <th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>HOURS WORKED</th>
+    </tr></thead><tbody>";
 
-        foreach ($entries as $entry) {
-            $formattedDate = date('m-d-Y', strtotime($entry['Date']));
-            $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
-            $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
+    $totalHours = 0;
+    foreach ($entries as $entry) {
+        $formattedDate = date('m-d-Y', strtotime($entry['Date']));
+        $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
+        $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
 
-            $html .= "<tr>
-                <td>$formattedDate</td>
-                <td>$formattedTimeIn</td>
-                <td>$formattedTimeOut</td>
-                <td>{$entry['HoursWorked']}</td>
-            </tr>";
-        }
+        $totalHours += floatval($entry['HoursWorked']);
 
-        $html .= "</tbody></table>";
+        $html .= "<tr>
+            <td>$formattedDate</td>
+            <td>$formattedTimeIn</td>
+            <td>$formattedTimeOut</td>
+            <td>{$entry['HoursWorked']}</td>
+        </tr>";
     }
+
+    // Append TOTAL row
+    $html .= "<tr>
+        <td colspan='3'><strong>TOTAL</strong></td>
+        <td><strong>" . number_format($totalHours, 2) . "</strong></td>
+    </tr>";
+
+    $html .= "</tbody></table>";
+}
+
 
     $mpdf->WriteHTML($html);
     $mpdf->Output("DTR_Report.pdf", "D");
@@ -420,34 +430,42 @@ function generateDTRExcel($data, $dateFrom, $dateTo) {
         $grouped[$row['Name']][] = $row;
     }
 
-    foreach ($grouped as $name => $entries) {
-        $sheet->setCellValue("A$rowNum", "$name - " . $entries[0]['Committee']);
-        $sheet->mergeCells("A$rowNum:D$rowNum");
+foreach ($grouped as $name => $entries) {
+    $sheet->setCellValue("A$rowNum", "$name - " . $entries[0]['Committee']);
+    $sheet->mergeCells("A$rowNum:D$rowNum");
+    $rowNum++;
+
+    $sheet->fromArray(['DATE', 'TIME IN', 'TIME OUT', 'HOURS WORKED'], NULL, "A$rowNum");
+    $headerRange = "A{$rowNum}:D{$rowNum}";
+    $sheet->getStyle($headerRange)->getFont()->setBold(true);
+    $rowNum++;
+
+    $totalHours = 0;
+    foreach ($entries as $entry) {
+        $formattedDate = date('m-d-Y', strtotime($entry['Date']));
+        $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
+        $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
+
+        $sheet->fromArray([
+            $formattedDate,
+            $formattedTimeIn,
+            $formattedTimeOut,
+            $entry['HoursWorked']
+        ], NULL, "A$rowNum");
+
+        $totalHours += floatval($entry['HoursWorked']);
         $rowNum++;
-
-        $sheet->fromArray(['DATE', 'TIME IN', 'TIME OUT', 'HOURS WORKED'], NULL, "A$rowNum");
-        $headerRange = "A{$rowNum}:D{$rowNum}";
-        $sheet->getStyle($headerRange)->getFont()->setBold(true);
-
-        $rowNum++;
-
-        foreach ($entries as $entry) {
-            $formattedDate = date('m-d-Y', strtotime($entry['Date']));
-            $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
-            $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
-
-
-            $sheet->fromArray([
-                $formattedDate,
-                $formattedTimeIn,
-                $formattedTimeOut,
-                $entry['HoursWorked']
-            ], NULL, "A$rowNum");
-            $rowNum++;
-        }
-
-        $rowNum += 2;
     }
+
+    // Append TOTAL row
+    $sheet->setCellValue("A$rowNum", 'TOTAL');
+    $sheet->mergeCells("A$rowNum:C$rowNum");
+    $sheet->setCellValue("D$rowNum", number_format($totalHours, 2));
+    $sheet->getStyle("A$rowNum:D$rowNum")->getFont()->setBold(true);
+
+    $rowNum += 2;
+}
+
 
     foreach (range('A', 'D') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
