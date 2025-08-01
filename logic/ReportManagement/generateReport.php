@@ -358,58 +358,95 @@ function generateDTRReport($dateFrom, $dateTo, $memberId, $exportFormat) {
 
 function generateDTRPDF($data, $dateFrom, $dateTo) {
     ob_clean();
-    $mpdf = new \Mpdf\Mpdf(['format' => [215.9, 279.4]]);
-    $html = '<style>
+    $mpdf = new \Mpdf\Mpdf([
+        'format' => [215.9, 279.4],
+        'margin_top' => 30
+    ]);
+    $mpdf->SetDisplayMode('fullpage');
+
+    // CSS
+    $style = '<style>
         body { font-family: Arial; }
-        h1, h2, h3 { text-align: center; }
+        h1, h2, h3 { text-align: center;}
+        h1 { font-size: 16pt; }
+        h2 { font-size: 12pt; margin-bottom: 10px; }
+        h3 { font-size: 11pt; margin-top: 20px; margin-bottom: 5px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10pt; }
         th, td { border: 1px solid #ccc; padding: 5px; text-align: center; }
+        .total-row { font-weight: bold; background-color: #f0f0f0; }
     </style>';
-    $html .= "<h1>DAILY TIME RECORD REPORT</h1>";
-    $html .= "<h2>From " . date('m-d-Y', strtotime($dateFrom)) . " to " . date('m-d-Y', strtotime($dateTo)) . "</h2>";
+    $mpdf->WriteHTML($style, \Mpdf\HTMLParserMode::HEADER_CSS);
 
+    // Header (repeats every page)
+    $formattedFrom = date('m-d-Y', strtotime($dateFrom));
+    $formattedTo   = date('m-d-Y', strtotime($dateTo));
+    $header = "
+        <div style='text-align:center;'>
+            <h1>DAILY TIME RECORD REPORT</h1>
+            <h2>From $formattedFrom to $formattedTo</h2>
+           
+        </div>
+    ";
+    $mpdf->SetHTMLHeader($header, 'O', true);  // Repeat header on each page
+
+    // Group by Name
     $grouped = [];
     foreach ($data as $row) {
         $grouped[$row['Name']][] = $row;
     }
 
-foreach ($grouped as $name => $entries) {
-    $html .= "<h3>$name - " . $entries[0]['Committee'] . "</h3>";
-    $html .= "<table><thead><tr>
-        <th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>HOURS WORKED</th>
-    </tr></thead><tbody>";
+    $html = '';
+    $count = 0;
+    $totalUsers = count($grouped);
 
-    $totalHours = 0;
-    foreach ($entries as $entry) {
-        $formattedDate = date('m-d-Y', strtotime($entry['Date']));
-        $formattedTimeIn = date('h:i A', strtotime($entry['TimeIN']));
-        $formattedTimeOut = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
+    foreach ($grouped as $name => $entries) {
+        $count++;
+        $html .= "<h3>$name - {$entries[0]['Committee']}</h3>";
+        $html .= "<table>
+            <thead>
+                <tr>
+                    <th>DATE</th>
+                    <th>TIME IN</th>
+                    <th>TIME OUT</th>
+                    <th>HOURS WORKED</th>
+                </tr>
+            </thead>
+            <tbody>";
 
-        $totalHours += floatval($entry['HoursWorked']);
+        $totalHours = 0;
+        foreach ($entries as $entry) {
+            $d   = date('m-d-Y', strtotime($entry['Date']));
+            $in  = date('h:i A', strtotime($entry['TimeIN']));
+            $out = !empty($entry['TimeOUT']) ? date('h:i A', strtotime($entry['TimeOUT'])) : 'N/A';
 
-        $html .= "<tr>
-            <td>$formattedDate</td>
-            <td>$formattedTimeIn</td>
-            <td>$formattedTimeOut</td>
-            <td>{$entry['HoursWorked']}</td>
+            $totalHours += floatval($entry['HoursWorked']);
+
+            $html .= "<tr>
+                <td>$d</td>
+                <td>$in</td>
+                <td>$out</td>
+                <td>{$entry['HoursWorked']}</td>
+            </tr>";
+        }
+
+        // Total Row
+        $html .= "<tr class='total-row'>
+            <td colspan='3'>TOTAL</td>
+            <td>" . number_format($totalHours, 2) . "</td>
         </tr>";
+
+        $html .= "</tbody></table>";
+
+        // Page break between officers
+        if ($count < $totalUsers) {
+            $html .= "<pagebreak />";
+        }
     }
 
-    // Append TOTAL row
-    $html .= "<tr>
-        <td colspan='3'><strong>TOTAL</strong></td>
-        <td><strong>" . number_format($totalHours, 2) . "</strong></td>
-    </tr>";
-
-    $html .= "</tbody></table>";
-}
-
-
-    $mpdf->WriteHTML($html);
+    $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
     $mpdf->Output("DTR_Report.pdf", "D");
     exit;
 }
-
 
 function generateDTRExcel($data, $dateFrom, $dateTo) {
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
